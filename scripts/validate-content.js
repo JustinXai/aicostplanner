@@ -75,6 +75,7 @@ async function validatePage(filePath, url) {
 
   const title = extractMeta(html, /<title>([^<]+)<\/title>/i);
   if (!title) pageErrors.push('Missing title tag');
+  else if (title.length > 60) pageErrors.push(`Title too long: ${title.length} chars (max 60): "${title}"`);
 
   const metaDesc = extractMeta(html, /<meta[^>]*name=["']description["'][^>]*content=["']([^"']+)["']/i) ||
     extractMeta(html, /<meta[^>]*content=["']([^"']+)["'][^>]*name=["']description["']/i);
