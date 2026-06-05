@@ -1,0 +1,124 @@
+# Release Gate Rules for AICostPlanner
+
+## Pre-Release Checklist
+
+### Build Verification
+- [ ] `npm run build` succeeds
+- [ ] No TypeScript errors
+- [ ] No Astro errors
+- [ ] All pages generate
+
+### Validator Results
+- [ ] `npm run validate:content` passes
+- [ ] `npm run validate:claims` passes (0 banned claims)
+- [ ] `npm run validate:links` passes
+- [ ] `npm run validate:sitemap-llms` passes
+- [ ] `npm run validate:jsonld` passes
+
+### Content Verification
+- [ ] All titles unique
+- [ ] All meta descriptions unique
+- [ ] All H1s unique
+- [ ] All canonicals present and absolute
+- [ ] All JSON-LD URLs absolute
+- [ ] AI Summary on every page
+- [ ] FAQ on every page
+- [ ] Last updated date on every page
+
+### CTA Verification
+- [ ] Primary CTA URL correct: `https://app.rutaapi.com/register?lng=en`
+- [ ] Secondary CTA URL correct: `https://app.rutaapi.com/pricing`
+- [ ] No other external CTAs
+
+### Contamination Check
+- [ ] No LinkAI references
+- [ ] No AI API Doctor references
+- [ ] No aiapiprice.com references
+- [ ] No AI API Radar references
+- [ ] No SellerFixHub references
+- [ ] No ExtensionFixes references
+
+## Page Status
+
+### Homepage
+- H1 must be: "AI API Cost Planner for Agents, Media Models and API Credits"
+- No TODO/scaffold placeholders
+- Full console preview
+
+### Full Pages (No TODOs Allowed)
+1. /claude-code-token-cost/
+2. /openrouter-credits/
+3. /video-generation-api-pricing/
+
+### Scaffold Pages (TODOs Allowed)
+1. /openai-api-credits/
+2. /openai-api-billing/
+3. /openai-api-usage/
+4. /api-billing-mismatch/
+5. /coding-agent-cost/
+6. /agent-token-usage/
+7. /image-generation-api-pricing/
+8. /gpt-image-api-cost/
+9. /sora-api-pricing/
+10. /kling-api-pricing/
+11. /runway-api-pricing/
+12. /failed-generation-cost/
+13. /media-api-cost/
+14. /small-prepaid-test/
+
+## Production Deployment
+
+### Pre-Deploy
+1. All local checks pass
+2. Validators pass
+3. Git commit with message
+
+### Post-Deploy
+1. Homepage returns 200
+2. All full pages return 200
+3. sitemap.xml returns 200
+4. robots.txt returns 200
+5. llms.txt returns 200
+
+### Cache-Busted Check
+1. Homepage title correct
+2. Homepage H1 correct
+3. Homepage canonical correct
+4. CTA hrefs correct
+
+## Final Gates
+
+### FOUNDATION_READY
+- Local build + validators pass
+- Production verification pending
+
+### PRODUCTION_READY
+- Local build + validators pass
+- Production live checks pass
+
+## Never Claim
+
+"Doing" or "Done" until:
+1. Build passes
+2. All validators pass
+3. Production verified (if applicable)
+
+## Commands
+
+```bash
+# Full verification
+npm run verify
+
+# Individual
+npm run validate:content
+npm run validate:claims
+npm run validate:links
+npm run validate:sitemap-llms
+npm run validate:jsonld
+
+# Build
+npm run build
+
+# Preview
+npm run preview
+```

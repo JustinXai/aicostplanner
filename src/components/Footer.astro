@@ -1,0 +1,181 @@
+---
+
+---
+
+<footer class="footer">
+  <div class="footer-container">
+    <div class="footer-main">
+      <div class="footer-brand">
+        <a href="/" class="footer-logo">
+          <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="32" height="32" rx="6" fill="#0a0d12"/>
+            <rect x="2" y="2" width="28" height="28" rx="4" stroke="#22d3ee" stroke-width="1.5" fill="none"/>
+            <path d="M8 10h16M8 16h12M8 22h8" stroke="#22d3ee" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="24" cy="22" r="3" fill="#10b981"/>
+          </svg>
+          <span>AICostPlanner</span>
+        </a>
+        <p class="footer-tagline">
+          Estimate AI API costs before you scale agent or media workflows.
+        </p>
+      </div>
+      
+      <div class="footer-links">
+        <div class="footer-section">
+          <h4>Cost Guides</h4>
+          <ul>
+            <li><a href="/claude-code-token-cost/">Claude Code Token Cost</a></li>
+            <li><a href="/openrouter-credits/">OpenRouter Credits</a></li>
+            <li><a href="/openai-api-credits/">OpenAI API Credits</a></li>
+            <li><a href="/video-generation-api-pricing/">Video Generation Pricing</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="/small-prepaid-test/">Small Prepaid Test</a></li>
+            <li><a href="/api-billing-mismatch/">Billing Mismatch</a></li>
+            <li><a href="/failed-generation-cost/">Failed Generation Cost</a></li>
+            <li><a href="/media-api-cost/">Media API Cost</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h4>RutaAPI</h4>
+          <ul>
+            <li><a href="https://app.rutaapi.com/pricing" target="_blank" rel="noopener">View Pricing</a></li>
+            <li><a href="https://app.rutaapi.com/register?lng=en" target="_blank" rel="noopener">Create API Key</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p class="footer-disclaimer">
+        AICostPlanner provides educational cost planning information. 
+        Pricing and model availability may change. Always check live provider pricing before scaling.
+      </p>
+      <p class="footer-copyright">
+        &copy; 2026 AICostPlanner. Not affiliated with OpenAI, Anthropic, Google, Runway, or Kling.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--color-bg-dark);
+    border-top: 1px solid var(--color-bg-dark-border);
+    padding: var(--space-16) 0 var(--space-8);
+    margin-top: auto;
+  }
+  
+  .footer-container {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 var(--space-6);
+  }
+  
+  .footer-main {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: var(--space-12);
+    padding-bottom: var(--space-10);
+    border-bottom: 1px solid var(--color-bg-dark-border);
+  }
+  
+  .footer-logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    color: var(--color-text-dark);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: var(--space-4);
+  }
+  
+  .footer-logo:hover {
+    color: var(--color-text-dark);
+  }
+  
+  .footer-tagline {
+    font-size: 0.875rem;
+    color: var(--color-text-dark-muted);
+    max-width: 28ch;
+    margin: 0;
+    line-height: 1.6;
+  }
+  
+  .footer-links {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-8);
+  }
+  
+  .footer-section h4 {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-text-dark-subtle);
+    margin-bottom: var(--space-4);
+  }
+  
+  .footer-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .footer-section li {
+    margin-bottom: var(--space-2);
+  }
+  
+  .footer-section a {
+    font-size: 0.875rem;
+    color: var(--color-text-dark-muted);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+  
+  .footer-section a:hover {
+    color: var(--color-accent-cyan);
+  }
+  
+  .footer-bottom {
+    padding-top: var(--space-8);
+  }
+  
+  .footer-disclaimer {
+    font-size: 0.8125rem;
+    color: var(--color-text-dark-subtle);
+    max-width: 70ch;
+    margin: 0 0 var(--space-3) 0;
+    line-height: 1.6;
+  }
+  
+  .footer-copyright {
+    font-size: 0.75rem;
+    color: var(--color-text-dark-subtle);
+    margin: 0;
+  }
+  
+  @media (max-width: 768px) {
+    .footer-main {
+      grid-template-columns: 1fr;
+      gap: var(--space-8);
+    }
+    
+    .footer-links {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .footer-links {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,59 @@
+# Always Rules for AICostPlanner
+
+## Project Identity
+
+AICostPlanner is a static cost-intent acquisition site. It is NOT AI API Ops. It is NOT LinkAI. It is NOT AI API Doctor. It is NOT aiapiprice.com. It is NOT AI API Radar.
+
+## Critical Constraints
+
+1. **No backend** - Static site only
+2. **No database** - No user data
+3. **No payment** - Routes to RutaAPI only
+4. **No scraping** - Educational content only
+5. **No cross-project contamination** - Never link to other projects
+
+## Allowed External CTAs
+
+- Primary: `https://app.rutaapi.com/register?lng=en`
+- Secondary: `https://app.rutaapi.com/pricing`
+
+## Prohibited
+
+- Any link to: LinkAI, AI API Doctor, aiapiprice.com, AI API Radar, SellerFixHub, ExtensionFixes, guides.link-ai.cc, api1.link-ai.cc, aiapidoctor.com
+- Claims: cheapest, lowest price, guaranteed compatible, all models available, unlimited usage, no billing risk, official partner
+- Exact pricing claims (unless verified live)
+
+## Safe Wording
+
+- "check live pricing"
+- "pricing can change"
+- "model availability varies"
+- "test small before scaling"
+- "educational purposes"
+- "not affiliated with [provider]"
+
+## Design Direction
+
+Agent Budget Console V2:
+- Dark hero (near-black background)
+- Light content sections
+- Restrained accent colors (cyan/blue/green only)
+- Monospace for technical labels only
+- No purple gradients
+- No cyberpunk excess
+
+## SEO Requirements
+
+- Unique title/meta/H1 per page
+- Canonical URL (absolute)
+- AI Summary block per page
+- FAQ per page
+- Last updated date
+- Internal links
+
+## Before Every Edit
+
+1. Confirm this is AICostPlanner
+2. Check AGENTS.md and PROJECT_MEMORY.md
+3. Run `npm run validate:claims` after changes
+4. Never add cross-project links

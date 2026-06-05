@@ -1,0 +1,113 @@
+# Claims Rules for AICostPlanner
+
+## Absolute Bans
+
+Never write these words/phrases:
+
+### Price Claims
+- cheapest
+- lowest price
+- most affordable
+- best value
+- lowest cost
+- rock-bottom
+
+### Guarantee Claims
+- guaranteed
+- guaranteed compatible
+- guaranteed to work
+- always available
+- always works
+- 100% compatible
+
+### Availability Claims
+- all models available
+- every model supported
+- complete model list
+- unlimited models
+
+### Usage Claims
+- unlimited usage
+- unlimited API calls
+- unlimited requests
+- no rate limits
+
+### Billing Claims
+- no billing risk
+- no surprise charges
+- no hidden fees
+- transparent pricing (without qualification)
+
+### Partnership Claims
+- official partner
+- official reseller
+- certified partner
+- authorized dealer
+
+### Provider Endorsements
+- RutaAPI supports [unspecified model]
+- RutaAPI supports every model
+- RutaAPI is the cheapest
+- RutaAPI is the best
+
+### Exact Pricing
+- exact pricing: $X.XX
+- costs exactly $X
+- "You will pay $X"
+
+## Safe Alternatives
+
+### Instead of Price Claims
+- "Check live pricing"
+- "Pricing varies by model"
+- "Compare provider pricing"
+- "Prices can change"
+
+### Instead of Guarantee Claims
+- "Most models are compatible"
+- "Check model availability"
+- "Test with your workflow"
+
+### Instead of Availability Claims
+- "Many popular models available"
+- "Check provider documentation"
+- "Model availability varies"
+
+### Instead of Billing Claims
+- "Monitor your usage"
+- "Set usage alerts"
+- "Review provider billing"
+- "Test small to understand costs"
+
+### For Provider Info
+- "Check official provider docs"
+- "Verify with provider"
+- "Pricing from provider documentation"
+
+## Verification Required
+
+Only state specific prices or features if:
+1. Verified from official provider documentation
+2. Verified from live provider website
+3. Stated as "as of [date]" with source
+
+## Media API Specific
+
+For video/image generation:
+- NEVER claim RutaAPI supports Sora, Kling, Runway without verification
+- Use "examples of pricing patterns"
+- Include "model availability can change"
+- Include Sora deprecation/availability warning
+
+## Testing Requirements
+
+After writing any content:
+1. Run `npm run validate:claims`
+2. Fix any flagged claims
+3. Verify no banned words present
+4. Check for safe alternatives
+
+## Cross-Reference
+
+See SEO_GEO_RULES.md for more claim guidance.
+See TASTE_GUIDE.md for tone guidance.

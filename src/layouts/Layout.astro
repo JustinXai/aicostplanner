@@ -1,0 +1,50 @@
+---
+export interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  type?: 'website' | 'article';
+  lastUpdated?: string;
+}
+
+const {
+  title,
+  description,
+  canonical,
+  type = 'website',
+  lastUpdated
+} = Astro.props;
+
+const siteUrl = 'https://aicostplanner.com';
+const fullCanonical = canonical || new URL(Astro.url.pathname, siteUrl).href;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title} | AICostPlanner</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={fullCanonical} />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="generator" content={Astro.generator} />
+  
+  <!-- Open Graph -->
+  <meta property="og:type" content={type} />
+  <meta property="og:url" content={fullCanonical} />
+  <meta property="og:title" content={`${title} | AICostPlanner`} />
+  <meta property="og:description" content={description} />
+  <meta property="og:site_name" content="AICostPlanner" />
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content={`${title} | AICostPlanner`} />
+  <meta name="twitter:description" content={description} />
+  
+  {lastUpdated && <meta name="last-updated" content={lastUpdated} />}
+</head>
+<body>
+  <slot />
+</body>
+</html>

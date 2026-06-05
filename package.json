@@ -1,0 +1,23 @@
+{
+  "name": "aicostplanner",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "AI API Cost Planner for Agents, Media Models and API Credits",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "validate:content": "node scripts/validate-content.js",
+    "validate:claims": "node scripts/validate-claims.js",
+    "validate:links": "node scripts/validate-links.js",
+    "validate:sitemap-llms": "node scripts/validate-sitemap-llms.js",
+    "validate:jsonld": "node scripts/validate-jsonld.js",
+    "verify": "npm run build && npm run validate:content && npm run validate:claims && npm run validate:links && npm run validate:sitemap-llms && npm run validate:jsonld"
+  },
+  "dependencies": {
+    "astro": "^4.16.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0"
+  }
+}

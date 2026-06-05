@@ -1,0 +1,108 @@
+# Content Rules for AICostPlanner
+
+## Content Quality Standards
+
+### Per-Page Requirements
+
+Every page MUST have:
+- Unique title tag
+- Unique meta description
+- Unique H1
+- Canonical URL (absolute, HTTPS)
+- AI Summary block (120-180 words)
+- FAQ section (3-5 questions)
+- Last updated date
+- Internal links to related content
+
+### AI Summary Block
+
+Each AI Summary must:
+- Be 120-180 words
+- Be written for AI answer extraction
+- Clearly state "educational" nature
+- Include "check live pricing"
+- Include "test small before scaling"
+- Use natural language flow
+- NOT claim official provider status
+
+### FAQ Section
+
+Each FAQ must:
+- Have 3-5 questions
+- Have crawlable text (NOT JS-only)
+- Answer practical questions users ask
+- Be concise and helpful
+
+## Safe Wording
+
+### Use Instead Of | Not
+- "check live pricing" | exact prices
+- "pricing can change" | guaranteed prices
+- "model availability varies" | all models available
+- "test small before scaling" | guaranteed results
+- "examples for reference" | official endorsement
+
+### Never Write
+- "cheapest"
+- "lowest price"
+- "guaranteed compatible"
+- "all models available"
+- "unlimited usage"
+- "no billing risk"
+- "no failed generation cost"
+- "failed jobs never charge"
+- "official partner"
+- "RutaAPI supports every model"
+
+## Technical Labels (Monospace)
+
+Use monospace font for:
+- `request_id`
+- `tokens_in`
+- `tokens_out`
+- `tool_calls`
+- `retries`
+- `model`
+- `pricing_unit`
+- `job_id`
+- `dashboard_check`
+
+## Internal Linking
+
+Link related pages:
+- Claude Code → Coding Agent → Agent Token Usage
+- OpenRouter → OpenAI API Credits → API Billing Mismatch
+- Video Pricing → Failed Generation → Media API Cost
+- Image Pricing → GPT Image Cost
+
+## CTA Blocks
+
+Every page should end with:
+
+```html
+<div class="cta-block">
+  <h3>Ready to start?</h3>
+  <p>Create an API key with $1 trial credit...</p>
+  <div class="cta-buttons">
+    <a href="https://app.rutaapi.com/register?lng=en" class="btn btn-primary">
+      Create API Key <span class="btn-subtext">$1 trial credit</span>
+    </a>
+    <a href="https://app.rutaapi.com/pricing" class="btn btn-secondary-dark">
+      View Live Pricing
+    </a>
+  </div>
+</div>
+```
+
+## Scaffold Pages
+
+Scaffold pages MAY contain:
+- "Scaffold content to expand later" note
+- Basic structure
+- Placeholder FAQ questions
+- TODO markers
+
+Full pages (homepage, 3 full content pages) must NOT have:
+- TODO markers
+- Scaffold placeholders
+- Incomplete content

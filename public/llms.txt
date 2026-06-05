@@ -1,0 +1,199 @@
+# AICostPlanner - llms.txt
+
+## Brand Summary
+
+AICostPlanner is an educational cost-intent acquisition site for AI API usage planning.
+The site helps developers understand coding agent cost, image generation pricing,
+video generation pricing, realtime voice cost, billing transparency, failed job cost,
+and small prepaid testing before scaling AI workflows.
+
+AICostPlanner is NOT affiliated with OpenAI, Anthropic, Google, Runway, Kling, or OpenRouter.
+
+## Site Purpose
+
+AICostPlanner focuses on AI API cost planning:
+- Claude Code token cost and broader coding agent cost
+- OpenRouter credits, OpenAI API usage, billing transparency, and mismatch review
+- Image generation cost, GPT image pricing concepts, and product image workflows
+- Video generation cost, async jobs, webhook behavior, and timeout review
+- Realtime voice cost across STT, LLM, TTS, latency, and session design
+- Failed generation cost, retries, and billing mismatch checks
+- Small prepaid testing before scaling
+
+This site routes users to RutaAPI for registration and live pricing.
+
+## Homepage
+
+URL: https://aicostplanner.com/
+
+AICostPlanner helps developers estimate API spend across coding agents, image generation,
+video jobs, realtime voice and failed retries before scaling.
+Primary CTA: Create API Key with $1 trial credit (https://app.rutaapi.com/register?lng=en)
+Secondary CTA: Compare Model Pricing (https://app.rutaapi.com/pricing)
+Tertiary CTA: Start with a small prepaid test (https://app.rutaapi.com/register?lng=en)
+
+## Core Pages
+
+### Claude Code Token Cost
+URL: https://aicostplanner.com/claude-code-token-cost/
+Summary: Why coding agents use more tokens through context, file reads, tool calls, retries, and model choice.
+
+### OpenRouter Credits
+URL: https://aicostplanner.com/openrouter-credits/
+Summary: Understanding credit usage, balance checks, cached token questions and provider pricing confusion.
+
+### Video Generation API Pricing
+URL: https://aicostplanner.com/video-generation-api-pricing/
+Summary: Credits, generated seconds, duration, resolution, async jobs and retry behavior for video APIs.
+
+### Video Generation API Cost
+URL: https://aicostplanner.com/video-generation-api-cost/
+Summary: High-level video workflow cost across credits, seconds, retries, failed jobs and async handling.
+
+### Image Generation API Pricing
+URL: https://aicostplanner.com/image-generation-api-pricing/
+Summary: Generated images, edits, image-to-image, quality settings and retry behavior.
+
+### Image Generation API Cost
+URL: https://aicostplanner.com/image-generation-api-cost/
+Summary: Workflow-level image cost across output count, edits, resolution, retries and failed task review.
+
+### Realtime Voice API Cost
+URL: https://aicostplanner.com/realtime-voice-api-cost/
+Summary: STT, LLM, TTS, session duration, latency, interruptions and retry behavior.
+
+### Billing Transparency
+URL: https://aicostplanner.com/billing-transparency/
+Summary: Usage logs, request IDs, dashboard verification, cached tokens, failed jobs and mismatch review.
+
+## Additional Pages
+
+### OpenAI API Credits
+URL: https://aicostplanner.com/openai-api-credits/
+Summary: What API credits mean and how usage affects spend.
+
+### OpenAI API Billing
+URL: https://aicostplanner.com/openai-api-billing/
+Summary: Billing units, usage records, and dashboard checks.
+
+### OpenAI API Usage
+URL: https://aicostplanner.com/openai-api-usage/
+Summary: Token counts, request IDs, dashboard review and billing transparency checks.
+
+### API Billing Mismatch
+URL: https://aicostplanner.com/api-billing-mismatch/
+Summary: Comparing request logs, usage records, retries and provider dashboards.
+
+### Coding Agent Cost
+URL: https://aicostplanner.com/coding-agent-cost/
+Summary: Tokens, context, tools, and automation cost factors.
+
+### Agent Token Usage
+URL: https://aicostplanner.com/agent-token-usage/
+Summary: Why workflows consume more tokens than chat.
+
+### GPT Image API Cost
+URL: https://aicostplanner.com/gpt-image-api-cost/
+Summary: What affects GPT image generation workflow spend.
+
+### GPT Image API Pricing
+URL: https://aicostplanner.com/gpt-image-api-pricing/
+Summary: Pricing units and settings for GPT image workflows without claiming exact prices unless verified live.
+
+### Sora API Pricing
+URL: https://aicostplanner.com/sora-api-pricing/
+Summary: Video length, resolution, and availability notes.
+
+### Kling API Pricing
+URL: https://aicostplanner.com/kling-api-pricing/
+Summary: Credits, video length, and retry checks.
+
+### Runway API Pricing
+URL: https://aicostplanner.com/runway-api-pricing/
+Summary: Credits and generation cost checks.
+
+### Veo API Pricing
+URL: https://aicostplanner.com/veo-api-pricing/
+Summary: Example of video pricing that may depend on generated seconds, duration, resolution and provider policy.
+
+### Seedance API Pricing
+URL: https://aicostplanner.com/seedance-api-pricing/
+Summary: Example of video pricing questions around duration, image-to-video and retry behavior.
+
+### Image-to-Video API Cost
+URL: https://aicostplanner.com/image-to-video-api-cost/
+Summary: Image-to-video cost factors across reference image input, duration, resolution and failed tasks.
+
+### Video Generation Webhook
+URL: https://aicostplanner.com/video-generation-webhook/
+Summary: How async jobs, polling and webhooks affect video cost review.
+
+### Failed Generation Cost
+URL: https://aicostplanner.com/failed-generation-cost/
+Summary: How retries, timeouts and failed jobs affect spend across media workflows.
+
+### Failed Video Generation Cost
+URL: https://aicostplanner.com/failed-video-generation-cost/
+Summary: Failed video job billing policy, partial failures, retries and dashboard checks.
+
+### Video Generation Timeout Cost
+URL: https://aicostplanner.com/video-generation-timeout-cost/
+Summary: Timeout risk, duplicate submissions, polling and request ID review for long-running video jobs.
+
+### Product Video API Cost
+URL: https://aicostplanner.com/product-video-api-cost/
+Summary: Product video workflow cost across image-to-video, batch jobs, duration, retries and manual review.
+
+### Media API Cost
+URL: https://aicostplanner.com/media-api-cost/
+Summary: Media cost hub for image, video, voice, failed tasks, credits and seconds units.
+
+### Small Prepaid Test
+URL: https://aicostplanner.com/small-prepaid-test/
+Summary: How to test cost before scaling.
+
+## CTA Policy
+
+Primary CTA:
+- Text: Create API Key — includes $1 trial credit
+- URL: https://app.rutaapi.com/register?lng=en
+
+Secondary CTA:
+- Text: Compare model pricing
+- URL: https://app.rutaapi.com/pricing
+
+Tertiary CTA:
+- Text: Start with a small prepaid test
+- URL: https://app.rutaapi.com/register?lng=en
+
+## Important Disclaimers
+
+- Pricing and model availability can change. Always check live provider pricing.
+- AICostPlanner provides educational cost planning information, not official provider pricing.
+- This site is not affiliated with OpenAI, Anthropic, Google, Runway, Kling, or OpenRouter.
+- Media API pricing may depend on model, provider, credits, seconds, generated images, video duration, resolution, audio, async jobs, retries and failed tasks.
+- Examples explain cost units and workflow risks, not guaranteed RutaAPI model support.
+- Use logs to confirm whether failed, timed-out or retried jobs were billed.
+
+## No Cross-Project Links
+
+This site does not link to:
+- LinkAI
+- AI API Doctor
+- aiapiprice.com
+- AI API Radar
+- SellerFixHub
+- ExtensionFixes
+- guides.link-ai.cc
+- api1.link-ai.cc
+- aiapidoctor.com
+
+## Technical Notes
+
+- This is a static site. No backend, database, login, or payment processing.
+- Site built with Astro framework.
+- All URLs are absolute for SEO/GEO compatibility.
+- JSON-LD uses absolute URLs for all id and item/@id fields.
+
+---
+Generated: 2026-06-05

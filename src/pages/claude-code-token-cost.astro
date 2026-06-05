@@ -1,0 +1,649 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import '../styles/global.css';
+
+const siteUrl = 'https://aicostplanner.com';
+const currentDate = new Date().toISOString().split('T')[0];
+
+const breadcrumbs = [
+  { label: 'Claude Code Cost', href: '/claude-code-token-cost/' },
+];
+
+const internalLinks = [
+  { href: '/coding-agent-cost/', label: 'Coding Agent Cost' },
+  { href: '/agent-token-usage/', label: 'Agent Token Usage' },
+  { href: '/openai-api-usage/', label: 'OpenAI API Usage' },
+  { href: '/api-billing-mismatch/', label: 'API Billing Mismatch' },
+  { href: '/image-generation-api-cost/', label: 'Image Generation API Cost' },
+  { href: '/video-generation-api-cost/', label: 'Video Generation API Cost' },
+];
+---
+
+<PageLayout
+  title="Claude Code Token Cost: Why Coding Agents Use More Tokens"
+  description="Learn why Claude Code token cost can rise through context, file reads, tool calls, retries and model choice before scaling."
+  canonical={`${siteUrl}/claude-code-token-cost/`}
+  type="article"
+  lastUpdated={currentDate}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Claude Code Token Cost: Why Coding Agents Use More Tokens",
+      "description": "Learn why Claude Code token cost can rise through context, file reads, tool calls, retries and model choice before scaling.",
+      "author": {
+        "@type": "Organization",
+        "name": "AICostPlanner"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "AICostPlanner",
+        "url": siteUrl
+      },
+      "datePublished": currentDate,
+      "dateModified": currentDate,
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": `${siteUrl}/claude-code-token-cost/`
+      }
+    })} />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": siteUrl
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Claude Code Token Cost",
+          "item": `${siteUrl}/claude-code-token-cost/`
+        }
+      ]
+    })} />
+  </Fragment>
+
+  <Header />
+  
+  <main>
+    <!-- Hero Section -->
+    <section class="hero-dark">
+      <div class="container">
+        <Breadcrumb items={breadcrumbs} />
+        <h1 class="page-title">Claude Code Token Cost: Why Coding Agents Use More Tokens</h1>
+        <p class="page-meta">
+          <span class="label-mono">Last updated: {currentDate}</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- Content Section -->
+    <section class="section-light content-section">
+      <div class="container container-narrow">
+        <!-- Quick Answer -->
+        <div class="quick-answer">
+          <h2>Quick Answer</h2>
+          <p>
+            Claude Code token cost tends to be higher than simple chat interactions because coding agents 
+            load project context, read files, execute tool calls, and maintain longer conversation histories. 
+            Each file read, tool call, and retry adds token overhead. Understanding these patterns helps 
+            you estimate costs before scaling agent workflows.
+          </p>
+        </div>
+
+        <!-- Who This Is For -->
+        <h2>Who This Is For</h2>
+        <p>
+          This guide is for developers and technical leads planning to use Claude Code or similar 
+          coding agents in automated workflows. If you're building agents that read codebases, 
+          execute commands, or run for extended periods, understanding token cost patterns helps 
+          you budget and scale responsibly.
+        </p>
+
+        <!-- Cost Unit -->
+        <h2>What Cost Unit Matters</h2>
+        <p>
+          Claude Code uses <span class="mono">token</span> as the primary cost unit. Both input tokens 
+          (prompt, context, file content) and output tokens (model responses) are charged. The total 
+          cost depends on model choice, context window usage, and the number of interactions.
+        </p>
+
+        <div class="unit-note">
+          <span class="label-mono label-mono-cyan">Note</span>
+          <p>
+            Different Claude models (Haiku, Sonnet, Opus, etc.) have different per-token pricing. 
+            Check live pricing before selecting a model for production workflows.
+          </p>
+        </div>
+
+        <!-- Key Cost Drivers -->
+        <h2>Key Cost Drivers</h2>
+        <p>Coding agents accumulate tokens through several patterns:</p>
+        <ul>
+          <li><strong>Context loading</strong> — Project files, dependencies, and conversation history are loaded with each request</li>
+          <li><strong>Tool calls</strong> — File reads, writes, and command executions add token overhead</li>
+          <li><strong>Retries</strong> — Failed operations may trigger retries that consume additional tokens</li>
+          <li><strong>Model choice</strong> — Different models have different per-token pricing</li>
+          <li><strong>Automation patterns</strong> — Multiple parallel agents or long-running sessions multiply usage</li>
+        </ul>
+
+        <!-- Token Usage Patterns -->
+        <h2>Token Usage Patterns in Coding Agents</h2>
+        <p>
+          Unlike simple chat interactions, coding agents often work with large context windows. 
+          A typical coding agent session might include:
+        </p>
+        <ul>
+          <li>Initial project context loading (thousands of tokens)</li>
+          <li>File reads for each file being modified (hundreds to thousands per file)</li>
+          <li>Command output parsing (tool call results)</li>
+          <li>Conversation history that grows with each turn</li>
+        </ul>
+
+        <!-- Model Choice -->
+        <h2>Model Choice and Context Management</h2>
+        <p>
+          Claude offers multiple models with different capabilities and pricing:
+        </p>
+        <ul>
+          <li><strong>Claude Haiku</strong> — Lower cost, faster, suitable for simpler tasks</li>
+          <li><strong>Claude Sonnet</strong> — Balanced cost and capability for most coding tasks</li>
+          <li><strong>Claude Opus</strong> — Higher cost, best for complex reasoning and large contexts</li>
+        </ul>
+        <p>
+          Managing context by limiting file reads, summarizing history, or using focused prompts 
+          can reduce token usage significantly.
+        </p>
+
+        <!-- File Reads and Tool Calls -->
+        <h2>Why File Reads and Tool Calls Increase Cost</h2>
+        <p>
+          Each tool call in Claude Code involves:
+        </p>
+        <ol>
+          <li>The agent deciding to call a tool (reasoning tokens)</li>
+          <li>The tool being executed and results returned</li>
+          <li>The agent processing the results (more reasoning tokens)</li>
+          <li>The response being generated (output tokens)</li>
+        </ol>
+        <p>
+          Large file reads can add thousands of tokens per call. Multiple tool calls in a single 
+          session multiply this overhead.
+        </p>
+
+        <!-- Retries and Multiple Instances -->
+        <h2>Why Retries and Multiple Agent Instances Increase Cost</h2>
+        <p>
+          Failed requests, rate limits, or context window errors can trigger retries. Each retry:
+        </p>
+        <ul>
+          <li>Re-sends the full context (input tokens)</li>
+          <li>May add retry headers or additional prompts</li>
+          <li>Counts toward your API usage regardless of success</li>
+        </ul>
+        <p>
+          Running multiple parallel agent instances compounds this—each instance is a separate 
+          API call with its own context loading.
+        </p>
+
+        <!-- Small Balance Testing -->
+        <h2>How to Test with a Small Balance</h2>
+        <p>
+          Before scaling, test with a small prepaid balance:
+        </p>
+        <ol>
+          <li>Start with a minimal task (single file read and modification)</li>
+          <li>Record the <span class="mono">request_id</span>, <span class="mono">tokens_in</span>, and <span class="mono">tokens_out</span></li>
+          <li>Compare against your provider dashboard usage</li>
+          <li>Scale gradually, monitoring cost per task</li>
+        </ol>
+
+        <!-- Dashboard Checklist -->
+        <h2>Usage / Dashboard Checklist</h2>
+        <p>When reviewing Claude Code usage:</p>
+        <ul class="checklist">
+          <li>
+            <span class="checklist-icon">&#10003;</span>
+            <span>Check <span class="mono">tokens_in</span> and <span class="mono">tokens_out</span> per request</span>
+          </li>
+          <li>
+            <span class="checklist-icon">&#10003;</span>
+            <span>Review <span class="mono">tool_calls</span> count and complexity</span>
+          </li>
+          <li>
+            <span class="checklist-icon">&#10003;</span>
+            <span>Look for retry patterns in request logs</span>
+          </li>
+          <li>
+            <span class="checklist-icon">&#10003;</span>
+            <span>Compare estimated cost vs. actual dashboard charges</span>
+          </li>
+          <li>
+            <span class="checklist-icon">&#10003;</span>
+            <span>Set usage alerts if available</span>
+          </li>
+        </ul>
+
+        <!-- Internal Links -->
+        <h2>Related Guides</h2>
+        <div class="link-cards">
+          {internalLinks.map(link => (
+            <a href={link.href} class="link-card">
+              <h4>{link.label}</h4>
+              <p>Learn more about this topic</p>
+            </a>
+          ))}
+        </div>
+
+        <div class="unit-note media-note">
+          <span class="label-mono label-mono-cyan">Broader API cost planning</span>
+          <p>
+            If you are comparing coding agent spend with image or video workflow budgets, use the
+            image and video cost hubs to keep token-based agent estimates separate from media billing units
+            such as generated images, seconds, duration, async jobs and retries.
+          </p>
+        </div>
+
+        <!-- AI Summary -->
+        <div class="ai-summary-block">
+          <div class="ai-summary-label">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 16v-4M12 8h.01"/>
+            </svg>
+            AI Summary
+          </div>
+          <p>
+            Claude Code token cost is higher than simple chat because coding agents load project context, 
+            read files, and execute tool calls. Input tokens include prompts, file content, and conversation 
+            history. Output tokens include reasoning and responses. Model choice (Haiku, Sonnet, Opus) 
+            affects per-token pricing. Retries, tool calls, and multiple agent instances multiply cost. 
+            This guide is for educational purposes; check live provider pricing before scaling. Test with 
+            a small prepaid balance to verify actual cost behavior.
+          </p>
+        </div>
+
+        <!-- FAQ -->
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-list">
+          <div class="faq-item">
+            <h3 class="faq-question">Why does Claude Code use so many tokens?</h3>
+            <p class="faq-answer">
+              Claude Code loads project context, reads files, and maintains conversation history. 
+              Each file read adds hundreds to thousands of tokens. Tool calls add reasoning overhead. 
+              Long-running sessions accumulate context that must be processed with each turn.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">How can I reduce Claude Code token usage?</h3>
+            <p class="faq-answer">
+              Use smaller context windows, limit file reads to essential files, use focused prompts, 
+              consider lower-cost models for simpler tasks, and implement context summarization for 
+              long-running sessions.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Do tool calls always cost more?</h3>
+            <p class="faq-answer">
+              Each tool call adds overhead: the tool results are included in the context for the 
+              next turn. However, using tools to read specific files may be more efficient than 
+              asking the model to infer information from incomplete context.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">How do I estimate Claude Code cost for a project?</h3>
+            <p class="faq-answer">
+              Start by estimating input tokens (project size, conversation history) and output tokens 
+              (expected responses). Multiply by your model's per-token pricing. Test with a small 
+              balance to verify estimates match reality.
+            </p>
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="cta-block">
+          <h3>Ready to start?</h3>
+          <p>Create an API key with $1 trial credit and explore live model pricing.</p>
+          <div class="cta-buttons">
+            <a href="https://app.rutaapi.com/register?lng=en" class="btn btn-primary" target="_blank" rel="noopener">
+              Create API Key
+              <span class="btn-subtext">$1 trial credit</span>
+            </a>
+            <a href="https://app.rutaapi.com/pricing" class="btn btn-secondary-dark" target="_blank" rel="noopener">
+              View Live Pricing
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</PageLayout>
+
+<style>
+  .hero-dark {
+    background: var(--color-bg-dark);
+    padding: var(--space-12) 0 var(--space-10);
+    border-bottom: 1px solid var(--color-bg-dark-border);
+  }
+  
+  .hero-dark :global(.breadcrumb) {
+    margin-bottom: var(--space-6);
+  }
+  
+  .page-title {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: var(--color-text-dark);
+    line-height: 1.15;
+    margin: 0 0 var(--space-4) 0;
+    letter-spacing: -0.02em;
+  }
+  
+  .page-meta {
+    margin: 0;
+  }
+  
+  .content-section {
+    padding: var(--space-12) 0 var(--space-16);
+    background: var(--color-bg-light);
+  }
+  
+  .quick-answer {
+    background: var(--color-bg-light-elevated);
+    border-left: 4px solid var(--color-accent-blue);
+    padding: var(--space-6);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    margin-bottom: var(--space-10);
+  }
+  
+  .quick-answer h2 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-bottom: var(--space-3);
+  }
+  
+  .quick-answer p {
+    margin: 0;
+    color: var(--color-text-light);
+    line-height: 1.7;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin: var(--space-10) 0 var(--space-4);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-border-light);
+  }
+  
+  h2:first-of-type {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+  }
+  
+  p {
+    color: var(--color-text-light-muted);
+    line-height: 1.75;
+    margin-bottom: var(--space-4);
+  }
+  
+  ul, ol {
+    color: var(--color-text-light-muted);
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+  
+  li {
+    margin-bottom: var(--space-2);
+    line-height: 1.7;
+  }
+  
+  .mono {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+    background: var(--color-bg-light-muted);
+    padding: 0.125em 0.375em;
+    border-radius: var(--radius-sm);
+  }
+  
+  .unit-note {
+    background: rgba(245, 158, 11, 0.08);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    margin: var(--space-6) 0;
+  }
+  
+  .unit-note .label-mono {
+    display: block;
+    margin-bottom: var(--space-2);
+  }
+  
+  .unit-note p {
+    margin: 0;
+    font-size: 0.9375rem;
+  }
+  
+  .checklist {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-3) 0;
+  }
+  
+  .checklist-icon {
+    color: var(--color-accent-green);
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+  
+  .link-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
+  }
+  
+  .link-card {
+    display: block;
+    padding: var(--space-5);
+    background: var(--color-bg-light-elevated);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: all var(--transition-fast);
+  }
+  
+  .link-card:hover {
+    border-color: var(--color-accent-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+  
+  .link-card h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin: 0 0 var(--space-2) 0;
+  }
+  
+  .link-card p {
+    font-size: 0.875rem;
+    color: var(--color-text-light-muted);
+    margin: 0;
+  }
+  
+  .unit-note {
+    background: rgba(34, 211, 238, 0.04);
+    border: 1px solid rgba(34, 211, 238, 0.12);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    margin: var(--space-6) 0 var(--space-10);
+  }
+  .unit-note p { margin: var(--space-3) 0 0; }
+  .media-note { border-color: rgba(59, 130, 246, 0.18); }
+  
+  .ai-summary-block {
+    background: linear-gradient(135deg, rgba(34, 211, 238, 0.04), rgba(59, 130, 246, 0.04));
+    border: 1px solid rgba(34, 211, 238, 0.15);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+    margin: var(--space-10) 0;
+  }
+  
+  .ai-summary-label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-accent-cyan);
+    margin-bottom: var(--space-4);
+  }
+  
+  .ai-summary-block p {
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.8;
+  }
+  
+  .faq-list {
+    margin-bottom: var(--space-10);
+  }
+  
+  .faq-item {
+    padding: var(--space-6) 0;
+    border-bottom: 1px solid var(--color-border-light);
+  }
+  
+  .faq-item:first-child {
+    border-top: 1px solid var(--color-border-light);
+  }
+  
+  .faq-question {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-bottom: var(--space-3);
+  }
+  
+  .faq-answer {
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.7;
+  }
+  
+  .cta-block {
+    text-align: center;
+    padding: var(--space-10);
+    background: var(--color-bg-light-muted);
+    border-radius: var(--radius-xl);
+    margin-top: var(--space-10);
+  }
+  
+  .cta-block h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-bottom: var(--space-3);
+  }
+  
+  .cta-block p {
+    max-width: 40ch;
+    margin: 0 auto var(--space-6);
+  }
+  
+  .cta-buttons {
+    display: flex;
+    gap: var(--space-4);
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .btn-primary {
+    background: linear-gradient(135deg, var(--color-accent-blue), var(--color-accent-cyan));
+    color: white;
+    padding: var(--space-3) var(--space-6);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    transition: all var(--transition-fast);
+  }
+  
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    color: white;
+  }
+  
+  .btn-subtext {
+    font-size: 0.75rem;
+    font-weight: 400;
+    opacity: 0.9;
+    background: rgba(255,255,255,0.15);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+  }
+  
+  .btn-secondary-dark {
+    background: transparent;
+    color: var(--color-text-light);
+    padding: var(--space-3) var(--space-6);
+    border-radius: var(--radius-md);
+    font-weight: 500;
+    border: 1px solid var(--color-border-light);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    transition: all var(--transition-fast);
+  }
+  
+  .btn-secondary-dark:hover {
+    border-color: var(--color-accent-blue);
+    color: var(--color-accent-blue);
+  }
+  
+  @media (max-width: 640px) {
+    .page-title {
+      font-size: 1.75rem;
+    }
+    
+    .link-cards {
+      grid-template-columns: 1fr;
+    }
+    
+    .cta-buttons {
+      flex-direction: column;
+    }
+    
+    .cta-buttons .btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>

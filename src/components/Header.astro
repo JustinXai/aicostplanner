@@ -1,0 +1,162 @@
+---
+const navItems = [
+  { label: 'Claude Code Cost', href: '/claude-code-token-cost/' },
+  { label: 'OpenRouter Credits', href: '/openrouter-credits/' },
+  { label: 'OpenAI API', href: '/openai-api-credits/' },
+  { label: 'Media API', href: '/media-api-cost/' },
+  { label: 'Failed Jobs', href: '/failed-generation-cost/' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="header">
+  <div class="header-container">
+    <a href="/" class="logo">
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="6" fill="#0a0d12"/>
+        <rect x="2" y="2" width="28" height="28" rx="4" stroke="#22d3ee" stroke-width="1.5" fill="none"/>
+        <path d="M8 10h16M8 16h12M8 22h8" stroke="#22d3ee" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="24" cy="22" r="3" fill="#10b981"/>
+      </svg>
+      <span class="logo-text">AICostPlanner</span>
+    </a>
+    
+    <nav class="nav">
+      {navItems.map(item => (
+        <a 
+          href={item.href} 
+          class:list={['nav-link', { active: currentPath === item.href || currentPath === item.href.slice(0, -1) }]}
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
+    
+    <div class="header-actions">
+      <a href="https://app.rutaapi.com/pricing" class="btn-secondary-small" target="_blank" rel="noopener">
+        View Pricing
+      </a>
+      <a href="https://app.rutaapi.com/register?lng=en" class="btn-primary-small" target="_blank" rel="noopener">
+        Create API Key
+      </a>
+    </div>
+  </div>
+</header>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10, 13, 18, 0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--color-bg-dark-border);
+  }
+  
+  .header-container {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 var(--space-6);
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-8);
+  }
+  
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    text-decoration: none;
+    color: var(--color-text-dark);
+  }
+  
+  .logo:hover {
+    color: var(--color-text-dark);
+  }
+  
+  .logo-text {
+    font-weight: 600;
+    font-size: 1.125rem;
+    letter-spacing: -0.02em;
+  }
+  
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+  
+  .nav-link {
+    padding: var(--space-2) var(--space-3);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-dark-muted);
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+  }
+  
+  .nav-link:hover {
+    color: var(--color-text-dark);
+    background: var(--color-bg-dark-highlight);
+  }
+  
+  .nav-link.active {
+    color: var(--color-accent-cyan);
+  }
+  
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  
+  .btn-secondary-small, .btn-primary-small {
+    padding: var(--space-2) var(--space-4);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+  }
+  
+  .btn-secondary-small {
+    color: var(--color-text-dark-muted);
+    border: 1px solid var(--color-bg-dark-border);
+  }
+  
+  .btn-secondary-small:hover {
+    color: var(--color-text-dark);
+    border-color: var(--color-text-dark-muted);
+  }
+  
+  .btn-primary-small {
+    background: var(--color-accent-blue);
+    color: white;
+  }
+  
+  .btn-primary-small:hover {
+    background: var(--color-accent-cyan);
+    color: var(--color-bg-dark);
+  }
+  
+  @media (max-width: 1024px) {
+    .nav {
+      display: none;
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .header-actions {
+      gap: var(--space-2);
+    }
+    
+    .btn-secondary-small, .btn-primary-small {
+      padding: var(--space-2) var(--space-3);
+    }
+  }
+</style>

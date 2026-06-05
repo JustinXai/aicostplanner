@@ -1,0 +1,189 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import '../styles/global.css';
+
+const siteUrl = 'https://aicostplanner.com';
+const currentDate = new Date().toISOString().split('T')[0];
+const breadcrumbs = [{ label: 'Image Generation API Pricing', href: '/image-generation-api-pricing/' }];
+const internalLinks = [
+  { href: '/image-generation-api-cost/', label: 'Image Generation API Cost' },
+  { href: '/gpt-image-api-pricing/', label: 'GPT Image API Pricing' },
+  { href: '/gpt-image-api-cost/', label: 'GPT Image API Cost' },
+  { href: '/failed-generation-cost/', label: 'Failed Generation Cost' },
+];
+---
+
+<PageLayout
+  title="Image Generation API Pricing: Images, Edits and Quality Settings"
+  description="Understand image generation API pricing across generated images, edits, image-to-image workflows, quality settings, retries and usage review."
+  canonical={`${siteUrl}/image-generation-api-pricing/`}
+  type="article"
+  lastUpdated={currentDate}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org", "@type": "Article",
+      "headline": "Image Generation API Pricing: Images, Edits and Quality Settings",
+      "description": "Understand image generation API pricing across generated images, edits, image-to-image workflows, quality settings, retries and usage review.",
+      "author": { "@type": "Organization", "name": "AICostPlanner" },
+      "publisher": { "@type": "Organization", "name": "AICostPlanner", "url": siteUrl },
+      "datePublished": currentDate, "dateModified": currentDate,
+      "mainEntityOfPage": { "@type": "WebPage", "@id": `${siteUrl}/image-generation-api-pricing/` }
+    })} />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org", "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": siteUrl },
+        { "@type": "ListItem", "position": 2, "name": "Image Generation API Pricing", "item": `${siteUrl}/image-generation-api-pricing/` }
+      ]
+    })} />
+  </Fragment>
+
+  <Header />
+  <main>
+    <section class="hero-dark">
+      <div class="container">
+        <Breadcrumb items={breadcrumbs} />
+        <h1 class="page-title">Image Generation API Pricing</h1>
+        <p class="page-meta"><span class="label-mono">Last updated: {currentDate}</span></p>
+      </div>
+    </section>
+
+    <section class="section-light content-section">
+      <div class="container container-narrow">
+        <div class="quick-answer">
+          <h2>Quick Answer</h2>
+          <p>
+            Image generation API pricing can depend on provider, generated image count, edits,
+            image-to-image workflows, quality settings, resolution and retry behavior. Some providers
+            frame this as per-image pricing, while others combine workflow settings that change the final bill.
+          </p>
+        </div>
+
+        <h2>What pricing pages for images usually answer</h2>
+        <p>
+          A pricing page helps you understand which units and settings affect image spend before you
+          start comparing detailed workflow cost. For image APIs, that usually means clarifying whether
+          the provider cares most about generated image count, edit operations, variation requests,
+          resolution, quality tier or a combination of those settings.
+        </p>
+
+        <h2>Common pricing variables for image generation</h2>
+        <ul>
+          <li><span class="mono">image</span> — number of generated images per request</li>
+          <li><span class="mono">edit</span> — image editing or inpainting operations</li>
+          <li><span class="mono">image-to-image</span> — reference image workflows that may carry different pricing</li>
+          <li><span class="mono">resolution</span> — larger output can increase cost</li>
+          <li><span class="mono">quality</span> — higher detail or quality modes may cost more</li>
+        </ul>
+
+        <h2>Pricing pages should connect to usage review</h2>
+        <p>
+          Image generation is often easier to reason about than video, but pricing still becomes less
+          obvious when your app adds retries, moderation failures, invalid input handling or multiple
+          output sizes. A good pricing review should connect to usage logs, request IDs and failed task
+          review so you can confirm how your actual workflow behaves in production.
+        </p>
+
+        <h2>GPT image pricing is related but distinct</h2>
+        <p>
+          GPT image cost and GPT image pricing are close topics, but not identical. A cost page usually
+          helps you budget the whole workflow, while a pricing page focuses more on units and settings.
+          Keeping both helps avoid thin duplication as long as each page keeps a separate intent.
+        </p>
+
+        <h2>Small prepaid test checklist</h2>
+        <ul class="checklist">
+          <li><span class="checklist-icon">&#10003;</span><span>Generate one small image batch first</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Record request IDs and output counts</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Test edits and image-to-image separately</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Compare quality settings with billed usage</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Check how failed or retried jobs are recorded</span></li>
+        </ul>
+
+        <h2>Related image cost guides</h2>
+        <div class="link-cards">
+          {internalLinks.map(link => (
+            <a href={link.href} class="link-card"><h4>{link.label}</h4><p>Read the related image billing topic</p></a>
+          ))}
+        </div>
+
+        <div class="ai-summary-block">
+          <div class="ai-summary-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg> AI Summary</div>
+          <p>
+            Image generation API pricing often depends on generated images, edits, image-to-image
+            workflows, resolution, quality settings and retry behavior. This page explains pricing
+            concepts rather than claiming exact live prices. It is educational and designed to help
+            developers understand which units matter before they scale image workflows. Check live
+            provider pricing before production use, and test small before scaling. Use logs and request
+            IDs to confirm whether failed or retried jobs affected billed usage.
+          </p>
+        </div>
+
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-list">
+          <div class="faq-item"><h3 class="faq-question">Is image API pricing always per image?</h3><p class="faq-answer">Often, but not always. Providers may also vary cost by edit type, image-to-image mode, resolution or quality settings.</p></div>
+          <div class="faq-item"><h3 class="faq-question">Should I separate pricing and cost pages?</h3><p class="faq-answer">Yes, if one page focuses on billing units and another covers full workflow spend, retries and usage review.</p></div>
+          <div class="faq-item"><h3 class="faq-question">Can failed image requests affect spend?</h3><p class="faq-answer">They can, depending on provider billing policy. Check usage logs and dashboard records to confirm what happened.</p></div>
+        </div>
+
+        <div class="cta-block">
+          <h3>Ready to test image workflows carefully?</h3>
+          <p>Create an API key with $1 trial credit, compare model pricing and start with a small prepaid test.</p>
+          <div class="cta-buttons">
+            <a href="https://app.rutaapi.com/register?lng=en" class="btn btn-primary" target="_blank" rel="noopener">Create API Key <span class="btn-subtext">$1 trial credit</span></a>
+            <a href="https://app.rutaapi.com/pricing" class="btn btn-secondary-dark" target="_blank" rel="noopener">Compare Model Pricing</a>
+            <a href="https://app.rutaapi.com/register?lng=en" class="btn btn-secondary-dark" target="_blank" rel="noopener">Start with a Small Prepaid Test</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</PageLayout>
+
+<style>
+  .hero-dark { background: var(--color-bg-dark); padding: var(--space-12) 0 var(--space-10); border-bottom: 1px solid var(--color-bg-dark-border); }
+  .hero-dark :global(.breadcrumb) { margin-bottom: var(--space-6); }
+  .page-title { font-size: 2.25rem; font-weight: 700; color: var(--color-text-dark); line-height: 1.15; margin: 0 0 var(--space-4) 0; letter-spacing: -0.02em; }
+  .page-meta { margin: 0; }
+  .content-section { padding: var(--space-12) 0 var(--space-16); background: var(--color-bg-light); }
+  .quick-answer { background: var(--color-bg-light-elevated); border-left: 4px solid var(--color-accent-blue); padding: var(--space-6); border-radius: 0 var(--radius-md) var(--radius-md) 0; margin-bottom: var(--space-10); }
+  .quick-answer h2 { font-size: 1.125rem; font-weight: 600; color: var(--color-text-light); margin-bottom: var(--space-3); }
+  .quick-answer p { margin: 0; color: var(--color-text-light); line-height: 1.7; }
+  h2 { font-size: 1.5rem; font-weight: 600; color: var(--color-text-light); margin: var(--space-10) 0 var(--space-4); padding-top: var(--space-6); border-top: 1px solid var(--color-border-light); }
+  h2:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+  p { color: var(--color-text-light-muted); line-height: 1.75; margin-bottom: var(--space-4); }
+  ul, ol { color: var(--color-text-light-muted); margin-bottom: var(--space-4); padding-left: var(--space-6); }
+  li { margin-bottom: var(--space-2); line-height: 1.7; }
+  .mono { font-family: var(--font-mono); font-size: 0.875em; background: var(--color-bg-light-muted); padding: 0.125em 0.375em; border-radius: var(--radius-sm); }
+  .checklist { list-style: none; padding: 0; }
+  .checklist li { display: flex; align-items: flex-start; gap: var(--space-3); padding: var(--space-3) 0; }
+  .checklist-icon { color: var(--color-accent-green); font-weight: bold; flex-shrink: 0; }
+  .link-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-4); margin-bottom: var(--space-8); }
+  .link-card { display: block; padding: var(--space-5); background: var(--color-bg-light-elevated); border: 1px solid var(--color-border-light); border-radius: var(--radius-md); text-decoration: none; transition: all var(--transition-fast); }
+  .link-card:hover { border-color: var(--color-accent-blue); transform: translateY(-2px); }
+  .link-card h4 { font-size: 1rem; font-weight: 600; color: var(--color-text-light); margin: 0 0 var(--space-2) 0; }
+  .link-card p { font-size: 0.875rem; color: var(--color-text-light-muted); margin: 0; }
+  .ai-summary-block { background: linear-gradient(135deg, rgba(34, 211, 238, 0.04), rgba(59, 130, 246, 0.04)); border: 1px solid rgba(34, 211, 238, 0.15); border-radius: var(--radius-xl); padding: var(--space-6); margin: var(--space-10) 0; }
+  .ai-summary-label { display: flex; align-items: center; gap: var(--space-2); font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-accent-cyan); margin-bottom: var(--space-4); }
+  .ai-summary-block p { margin: 0; font-size: 0.9375rem; line-height: 1.8; }
+  .faq-list { margin-bottom: var(--space-10); }
+  .faq-item { padding: var(--space-6) 0; border-bottom: 1px solid var(--color-border-light); }
+  .faq-item:first-child { border-top: 1px solid var(--color-border-light); }
+  .faq-question { font-size: 1.0625rem; font-weight: 600; color: var(--color-text-light); margin-bottom: var(--space-3); }
+  .faq-answer { margin: 0; font-size: 0.9375rem; line-height: 1.7; }
+  .cta-block { text-align: center; padding: var(--space-10); background: var(--color-bg-light-muted); border-radius: var(--radius-xl); margin-top: var(--space-10); }
+  .cta-block h3 { font-size: 1.25rem; font-weight: 600; color: var(--color-text-light); margin-bottom: var(--space-3); }
+  .cta-block p { max-width: 40ch; margin: 0 auto var(--space-6); }
+  .cta-buttons { display: flex; gap: var(--space-4); justify-content: center; flex-wrap: wrap; }
+  .btn-primary { background: linear-gradient(135deg, var(--color-accent-blue), var(--color-accent-cyan)); color: white; padding: var(--space-3) var(--space-6); border-radius: var(--radius-md); font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: var(--space-2); transition: all var(--transition-fast); }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); color: white; }
+  .btn-subtext { font-size: 0.75rem; font-weight: 400; opacity: 0.9; background: rgba(255,255,255,0.15); padding: var(--space-1) var(--space-2); border-radius: var(--radius-sm); }
+  .btn-secondary-dark { background: transparent; color: var(--color-text-light); padding: var(--space-3) var(--space-6); border-radius: var(--radius-md); font-weight: 500; border: 1px solid var(--color-border-light); text-decoration: none; display: inline-flex; align-items: center; gap: var(--space-2); transition: all var(--transition-fast); }
+  .btn-secondary-dark:hover { border-color: var(--color-accent-blue); color: var(--color-accent-blue); }
+  @media (max-width: 640px) { .page-title { font-size: 1.75rem; } .link-cards { grid-template-columns: 1fr; } .cta-buttons { flex-direction: column; } .cta-buttons .btn { width: 100%; justify-content: center; } }
+</style>

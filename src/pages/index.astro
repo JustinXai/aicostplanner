@@ -1,0 +1,390 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+const siteUrl = 'https://aicostplanner.com';
+const currentDate = new Date().toISOString().split('T')[0];
+---
+
+<PageLayout
+  title="AI API Cost Planner for Coding Agents, Image Models and Video Generation"
+  description="Estimate API spend across coding agents, image generation, video jobs, realtime voice and failed retries before scaling."
+  type="website"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "AICostPlanner",
+      "url": siteUrl,
+      "description": "AI API Cost Planner for coding agents, image models, video generation, realtime voice and billing transparency.",
+      "publisher": {
+        "@type": "Organization",
+        "name": "AICostPlanner",
+        "url": siteUrl
+      }
+    })} />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "AICostPlanner",
+      "url": siteUrl,
+      "description": "Educational cost planning site for AI API usage",
+      "sameAs": []
+    })} />
+  </Fragment>
+
+  <Header />
+  
+  <main>
+    <section class="hero">
+      <div class="hero-grid-bg"></div>
+      <div class="hero-container">
+        <div class="hero-content">
+          <div class="hero-badge">
+            <span class="label-mono label-mono-cyan">Cost Intent</span>
+          </div>
+          <h1 class="hero-title">AI API Cost Planner for Coding Agents, Image Models and Video Generation</h1>
+          <p class="hero-subtitle">
+            Estimate API spend across coding agents, image generation, video jobs, realtime voice and failed retries before scaling.
+          </p>
+          <div class="hero-ctas">
+            <a href="https://app.rutaapi.com/register?lng=en" class="btn btn-primary" target="_blank" rel="noopener">
+              Create API Key
+              <span class="btn-subtext">$1 trial credit</span>
+            </a>
+            <a href="https://app.rutaapi.com/pricing" class="btn btn-secondary" target="_blank" rel="noopener">
+              Compare Model Pricing
+            </a>
+            <a href="https://app.rutaapi.com/register?lng=en" class="btn btn-tertiary" target="_blank" rel="noopener">
+              Start with a Small Prepaid Test
+            </a>
+          </div>
+        </div>
+        
+        <div class="hero-console">
+          <div class="console-header">
+            <div class="console-dots">
+              <span></span><span></span><span></span>
+            </div>
+            <span class="console-title">Budget Review</span>
+          </div>
+          <div class="console-body">
+            <div class="console-section">
+              <div class="console-label">request_id</div>
+              <div class="console-value">req_8f3k2m9n</div>
+            </div>
+            <div class="console-section">
+              <div class="console-label">model</div>
+              <div class="console-value">claude-3-5-sonnet</div>
+            </div>
+            <div class="console-section">
+              <div class="console-label">tokens_in</div>
+              <div class="console-value console-value-num">24,891</div>
+            </div>
+            <div class="console-section">
+              <div class="console-label">tokens_out</div>
+              <div class="console-value console-value-num">3,247</div>
+            </div>
+            <div class="console-section">
+              <div class="console-label">tool_calls</div>
+              <div class="console-value console-value-warn">12</div>
+            </div>
+            <div class="console-section">
+              <div class="console-label">retries</div>
+              <div class="console-value">1</div>
+            </div>
+            <div class="console-divider"></div>
+            <div class="console-section console-summary">
+              <div class="console-label">pricing_unit</div>
+              <div class="console-value">token + task</div>
+            </div>
+            <div class="console-section">
+              <div class="console-label">usage_review</div>
+              <div class="console-value">logs matched</div>
+            </div>
+            <div class="console-section">
+              <div class="console-label">dashboard_check</div>
+              <div class="console-value status-ok">reviewed</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-dark problems-section">
+      <div class="container">
+        <h2 class="section-title text-center">Why AI API Cost Planning Gets Tricky</h2>
+        <p class="section-desc text-center">
+          Coding agents, media generation, realtime voice, retries and provider billing rules can create spend patterns that are easy to underestimate.
+        </p>
+        <div class="problems-grid">
+          <div class="problem-card">
+            <div class="problem-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M12 2v20M2 12h20M7 7l10 10M17 7L7 17" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h3>Coding agent context compounds cost</h3>
+            <p>Tool calls, streaming output, long context windows and model choice can push coding agent cost above simple chat expectations.</p>
+          </div>
+          <div class="problem-card">
+            <div class="problem-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <path d="M9 9h6M9 12h6M9 15h4" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h3>OpenRouter credits can be confusing</h3>
+            <p>Balance, provider routing, request size, cached tokens and usage records may not match first-pass expectations unless you compare logs carefully.</p>
+          </div>
+          <div class="problem-card">
+            <div class="problem-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="12" cy="12" r="9"/>
+                <path d="M12 6v6l4 2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h3>Media pricing uses multiple units</h3>
+            <p>Image and video workflows may be billed by credits, generated images, video duration, resolution, seconds, async tasks or polling behavior.</p>
+          </div>
+          <div class="problem-card">
+            <div class="problem-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M12 9v4M12 17h.01"/>
+                <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+              </svg>
+            </div>
+            <h3>Failed jobs and timeouts complicate billing</h3>
+            <p>Retries, duplicate polling, empty responses, client timeouts and usage mismatch can distort cost review unless request IDs are tracked.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-dark cost-units-section">
+      <div class="container">
+        <h2 class="section-title text-center">Common Billing Units Across AI APIs</h2>
+        <p class="section-desc text-center">
+          Pricing can depend on model, provider, credits, seconds, generated images, video duration, audio, async jobs, retries and billing policy.
+        </p>
+        <div class="cost-units-grid">
+          <div class="unit-card"><span class="label-mono label-mono-cyan">token</span><p>Text and reasoning usage</p></div>
+          <div class="unit-card"><span class="label-mono label-mono-cyan">credit</span><p>Prepaid balance for models or generations</p></div>
+          <div class="unit-card"><span class="label-mono label-mono-cyan">second</span><p>Audio or video duration billing</p></div>
+          <div class="unit-card"><span class="label-mono label-mono-cyan">image</span><p>Generated images, edits and variations</p></div>
+          <div class="unit-card"><span class="label-mono label-mono-cyan">video</span><p>Duration, resolution and render settings</p></div>
+          <div class="unit-card"><span class="label-mono label-mono-cyan">task</span><p>Async jobs, polling and webhook flows</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-light pages-section">
+      <div class="container">
+        <h2 class="section-title text-center">Browse by Cost Category</h2>
+        <p class="section-desc text-center">
+          Explore coding agent spend, image workflows, video jobs, realtime voice sessions and billing transparency before production rollout.
+        </p>
+        <div class="pages-grid">
+          <a href="/claude-code-token-cost/" class="page-card">
+            <span class="label-mono label-mono-cyan">Coding Agent Cost</span>
+            <h3>Coding Agent Cost</h3>
+            <p>Claude Code cost, Cursor or Cline style workflows, tool calls, context length, streaming and model choice.</p>
+          </a>
+          <a href="/image-generation-api-cost/" class="page-card">
+            <span class="label-mono label-mono-cyan">Image API Cost</span>
+            <h3>Image API Cost</h3>
+            <p>GPT image pricing concepts, image editing, image-to-image workflows and product image generation review.</p>
+          </a>
+          <a href="/video-generation-api-cost/" class="page-card">
+            <span class="label-mono label-mono-cyan">Video API Cost</span>
+            <h3>Video API Cost</h3>
+            <p>Text-to-video, image-to-video, duration, resolution, polling, webhook handling and failed task review.</p>
+          </a>
+          <a href="/realtime-voice-api-cost/" class="page-card">
+            <span class="label-mono label-mono-cyan">Realtime Voice Cost</span>
+            <h3>Realtime Voice Cost</h3>
+            <p>STT + LLM + TTS session cost, latency trade-offs, interruptions and realtime usage planning.</p>
+          </a>
+          <a href="/billing-transparency/" class="page-card">
+            <span class="label-mono label-mono-cyan">Billing &amp; Failed Jobs</span>
+            <h3>Billing &amp; Failed Jobs</h3>
+            <p>Failed jobs, retries, timeout risk, cached tokens, usage mismatch and dashboard verification.</p>
+          </a>
+          <a href="/openrouter-credits/" class="page-card">
+            <span class="label-mono label-mono-cyan">Credits &amp; Usage</span>
+            <h3>Credits and Usage Records</h3>
+            <p>OpenRouter credits, OpenAI usage records and the provider dashboard checks needed before scaling.</p>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-light testing-section">
+      <div class="container container-narrow">
+        <h2 class="section-title text-center">Small Prepaid Testing Framework</h2>
+        <p class="section-desc text-center">
+          Run a small prepaid test before scaling coding agents, image generation, video jobs or realtime voice sessions.
+        </p>
+        <div class="testing-steps">
+          <div class="testing-step"><div class="step-number">01</div><div class="step-content"><h3>Check model availability</h3><p>Confirm the model, provider path and any rate limits before putting budget behind a workflow.</p></div></div>
+          <div class="testing-step"><div class="step-number">02</div><div class="step-content"><h3>Check pricing unit</h3><p>Understand whether cost depends on tokens, credits, generated images, seconds, video duration, audio or async tasks.</p></div></div>
+          <div class="testing-step"><div class="step-number">03</div><div class="step-content"><h3>Run one small request</h3><p>Start with a narrow test request so you can compare expected spend with actual billed usage.</p></div></div>
+          <div class="testing-step"><div class="step-number">04</div><div class="step-content"><h3>Check logs and request IDs</h3><p>Capture request_id, job_id, retries, tokens, duration and output settings in local logs.</p></div></div>
+          <div class="testing-step"><div class="step-number">05</div><div class="step-content"><h3>Compare dashboard usage</h3><p>Review provider dashboards for billing transparency, usage mismatch, cached tokens or failed task handling.</p></div></div>
+          <div class="testing-step"><div class="step-number">06</div><div class="step-content"><h3>Scale slowly</h3><p>Increase throughput only after you understand how failed jobs, retries, webhook or polling behavior affect spend.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-light ai-summary-section">
+      <div class="container container-narrow">
+        <div class="ai-summary-block">
+          <div class="ai-summary-label">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 16v-4M12 8h.01"/>
+            </svg>
+            AI Summary
+          </div>
+          <p class="ai-summary-text">
+            AICostPlanner helps developers estimate AI API spend across coding agents, image generation, video jobs, realtime voice sessions and billing transparency workflows before scaling. The site explains how cost can depend on model choice, provider policy, tokens, credits, generated images, video duration, resolution, audio, async jobs, retries, webhook behavior and failed tasks. This site is educational and does not replace official provider pricing documentation. Check live provider pricing before production use, and run a small prepaid test before scaling. Use request logs, request IDs and provider dashboards to confirm whether failed, timed-out or retried jobs were billed.
+          </p>
+          <div class="ai-summary-meta">Last updated: {currentDate}</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-light faq-section">
+      <div class="container container-narrow">
+        <h2 class="section-title text-center">Frequently Asked Questions</h2>
+        <div class="faq-list">
+          <div class="faq-item"><h3 class="faq-question">How do OpenRouter credits work?</h3><p class="faq-answer">OpenRouter credits are a prepaid balance used for inference across multiple providers. The amount deducted can depend on model, routing, token usage and current provider pricing policy.</p></div>
+          <div class="faq-item"><h3 class="faq-question">Why can coding agents cost more than chat?</h3><p class="faq-answer">Coding agents often add project context, file reads, tool calls, streaming output and retries. That makes token usage grow faster than a simple chat exchange.</p></div>
+          <div class="faq-item"><h3 class="faq-question">How is video generation API cost calculated?</h3><p class="faq-answer">Video pricing can depend on credits, generated seconds, duration, resolution, audio settings, async jobs, retries, failed tasks and provider billing policy.</p></div>
+          <div class="faq-item"><h3 class="faq-question">Do failed jobs always cost money?</h3><p class="faq-answer">Not always. Some providers charge when a task is created, while others charge only for successful output. Check logs and provider dashboards to confirm how failures are treated.</p></div>
+          <div class="faq-item"><h3 class="faq-question">Why should I start with a small prepaid test?</h3><p class="faq-answer">A small prepaid test helps you verify billing transparency, compare request logs against dashboard records and see how retries or timeouts affect real cost before scaling.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-light cta-section-final">
+      <div class="container">
+        <h2>Plan API Spend Before You Scale</h2>
+        <p>
+          Create an API key with $1 trial credit, compare model pricing and start with a small prepaid test before larger workloads.
+        </p>
+        <div class="cta-buttons">
+          <a href="https://app.rutaapi.com/register?lng=en" class="btn btn-primary" target="_blank" rel="noopener">
+            Create API Key
+            <span class="btn-subtext">$1 trial credit</span>
+          </a>
+          <a href="https://app.rutaapi.com/pricing" class="btn btn-secondary-dark" target="_blank" rel="noopener">
+            Compare Model Pricing
+          </a>
+          <a href="https://app.rutaapi.com/register?lng=en" class="btn btn-tertiary-light" target="_blank" rel="noopener">
+            Start with a Small Prepaid Test
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</PageLayout>
+
+<style>
+  .hero { position: relative; background: var(--color-bg-dark); padding: var(--space-16) 0; overflow: hidden; }
+  .hero-grid-bg { position: absolute; inset: 0; background-image: linear-gradient(rgba(30, 37, 53, 0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(30, 37, 53, 0.6) 1px, transparent 1px); background-size: 50px 50px; opacity: 0.5; }
+  .hero-container { position: relative; max-width: var(--container-max); margin: 0 auto; padding: 0 var(--space-6); display: grid; grid-template-columns: 1fr 400px; gap: var(--space-12); align-items: center; }
+  .hero-badge { display: inline-flex; margin-bottom: var(--space-4); }
+  .hero-title { font-size: 2.75rem; font-weight: 700; color: var(--color-text-dark); line-height: 1.1; margin-bottom: var(--space-5); letter-spacing: -0.03em; }
+  .hero-subtitle { font-size: 1.125rem; color: var(--color-text-dark-muted); line-height: 1.7; margin-bottom: var(--space-8); max-width: 55ch; }
+  .hero-ctas { display: flex; gap: var(--space-4); flex-wrap: wrap; }
+  .btn-primary { background: linear-gradient(135deg, var(--color-accent-blue), var(--color-accent-cyan)); color: white; padding: var(--space-4) var(--space-8); border-radius: var(--radius-md); font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: var(--space-3); transition: all var(--transition-fast); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3); color: white; }
+  .btn-subtext { font-size: 0.75rem; font-weight: 400; opacity: 0.9; background: rgba(255,255,255,0.15); padding: var(--space-1) var(--space-2); border-radius: var(--radius-sm); }
+  .btn-secondary { background: transparent; color: var(--color-text-dark); padding: var(--space-4) var(--space-8); border-radius: var(--radius-md); font-weight: 500; border: 1px solid var(--color-bg-dark-border); text-decoration: none; display: inline-flex; align-items: center; transition: all var(--transition-fast); }
+  .btn-secondary:hover { border-color: var(--color-accent-cyan); color: var(--color-accent-cyan); }
+  .btn-tertiary { background: rgba(34, 211, 238, 0.06); color: var(--color-text-dark-muted); padding: var(--space-4) var(--space-6); border-radius: var(--radius-md); font-weight: 500; border: 1px solid rgba(34, 211, 238, 0.15); text-decoration: none; display: inline-flex; align-items: center; transition: all var(--transition-fast); }
+  .btn-tertiary:hover { color: var(--color-accent-cyan); border-color: rgba(34, 211, 238, 0.35); }
+  .hero-console { background: var(--color-bg-dark-elevated); border: 1px solid var(--color-bg-dark-border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--glow-subtle); }
+  .console-header { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-4); background: var(--color-bg-dark-card); border-bottom: 1px solid var(--color-bg-dark-border); }
+  .console-dots { display: flex; gap: 6px; }
+  .console-dots span { width: 10px; height: 10px; border-radius: 50%; background: var(--color-bg-dark-border); }
+  .console-dots span:first-child { background: #ef4444; } .console-dots span:nth-child(2) { background: #f59e0b; } .console-dots span:last-child { background: #10b981; }
+  .console-title { font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-text-dark-subtle); }
+  .console-body { padding: var(--space-5); }
+  .console-section { display: grid; grid-template-columns: 140px 1fr; gap: var(--space-3); padding: var(--space-2) 0; }
+  .console-label { font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-accent-cyan); opacity: 0.8; }
+  .console-value { font-family: var(--font-mono); font-size: 0.8125rem; color: var(--color-text-dark); }
+  .console-value-num { color: var(--color-accent-green); }
+  .console-value-warn { color: var(--color-accent-yellow); }
+  .console-divider { height: 1px; background: var(--color-bg-dark-border); margin: var(--space-3) 0; }
+  .console-summary { margin-bottom: var(--space-2); }
+  .problems-section { padding: var(--space-16) 0; background: var(--color-bg-dark); }
+  .problems-section .section-title, .cost-units-section .section-title { color: var(--color-text-dark); margin-bottom: var(--space-4); }
+  .problems-section .section-desc, .cost-units-section .section-desc { color: var(--color-text-dark-muted); margin-bottom: var(--space-10); }
+  .problems-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-5); }
+  .problem-card { background: var(--color-bg-dark-card); border: 1px solid var(--color-bg-dark-border); border-radius: var(--radius-lg); padding: var(--space-6); }
+  .problem-icon { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: rgba(34, 211, 238, 0.1); border-radius: var(--radius-md); margin-bottom: var(--space-4); color: var(--color-accent-cyan); }
+  .problem-card h3 { font-size: 1rem; font-weight: 600; color: var(--color-text-dark); margin-bottom: var(--space-2); }
+  .problem-card p { font-size: 0.875rem; color: var(--color-text-dark-muted); line-height: 1.6; margin: 0; }
+  .cost-units-section { padding: var(--space-12) 0; background: var(--color-bg-dark); border-top: 1px solid var(--color-bg-dark-border); }
+  .cost-units-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--space-4); }
+  .unit-card { background: var(--color-bg-dark-card); border: 1px solid var(--color-bg-dark-border); border-radius: var(--radius-md); padding: var(--space-4); text-align: center; }
+  .unit-card .label-mono { display: block; margin-bottom: var(--space-2); }
+  .unit-card p { font-size: 0.75rem; color: var(--color-text-dark-muted); margin: 0; }
+  .pages-section, .testing-section, .ai-summary-section, .faq-section { padding: var(--space-16) 0; background: var(--color-bg-light); }
+  .testing-section { border-top: 1px solid var(--color-border-light-subtle); }
+  .pages-section .section-title, .testing-section .section-title, .faq-section .section-title { color: var(--color-text-light); margin-bottom: var(--space-4); }
+  .pages-section .section-desc, .testing-section .section-desc { color: var(--color-text-light-muted); margin-bottom: var(--space-10); }
+  .pages-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-5); }
+  .page-card { display: block; background: var(--color-bg-light-elevated); border: 1px solid var(--color-border-light); border-radius: var(--radius-lg); padding: var(--space-6); text-decoration: none; transition: all var(--transition-fast); }
+  .page-card:hover { border-color: var(--color-accent-blue); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06); }
+  .page-card .label-mono { display: block; margin-bottom: var(--space-3); }
+  .page-card h3 { font-size: 1.125rem; font-weight: 600; color: var(--color-text-light); margin-bottom: var(--space-2); }
+  .page-card p { font-size: 0.875rem; color: var(--color-text-light-muted); line-height: 1.6; margin: 0; }
+  .testing-steps { display: flex; flex-direction: column; gap: var(--space-6); }
+  .testing-step { display: grid; grid-template-columns: auto 1fr; gap: var(--space-6); align-items: start; }
+  .step-number { font-family: var(--font-mono); font-size: 0.875rem; font-weight: 600; color: var(--color-accent-blue); background: rgba(59, 130, 246, 0.1); padding: var(--space-2) var(--space-4); border-radius: var(--radius-sm); min-width: 48px; text-align: center; }
+  .step-content h3 { font-size: 1rem; font-weight: 600; color: var(--color-text-light); margin-bottom: var(--space-2); }
+  .step-content p { font-size: 0.9375rem; color: var(--color-text-light-muted); line-height: 1.6; margin: 0; }
+  .ai-summary-block { background: linear-gradient(135deg, rgba(34, 211, 238, 0.04), rgba(59, 130, 246, 0.04)); border: 1px solid rgba(34, 211, 238, 0.15); border-radius: var(--radius-xl); padding: var(--space-8); }
+  .ai-summary-label { display: flex; align-items: center; gap: var(--space-2); font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-accent-cyan); margin-bottom: var(--space-4); }
+  .ai-summary-text { font-size: 1rem; color: var(--color-text-light); line-height: 1.8; margin: 0; }
+  .ai-summary-meta { font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-text-light-subtle); margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--color-border-light-subtle); }
+  .faq-list { max-width: 65ch; margin: 0 auto; }
+  .faq-item { padding: var(--space-6) 0; border-bottom: 1px solid var(--color-border-light); }
+  .faq-item:first-child { border-top: 1px solid var(--color-border-light); }
+  .faq-question { font-size: 1.0625rem; font-weight: 600; color: var(--color-text-light); margin-bottom: var(--space-3); }
+  .faq-answer { font-size: 0.9375rem; color: var(--color-text-light-muted); line-height: 1.7; margin: 0; }
+  .cta-section-final { padding: var(--space-16) 0; background: var(--color-bg-light-muted); border-top: 1px solid var(--color-border-light); text-align: center; }
+  .cta-section-final h2 { font-size: 1.75rem; font-weight: 600; color: var(--color-text-light); margin-bottom: var(--space-4); }
+  .cta-section-final p { font-size: 1rem; color: var(--color-text-light-muted); margin-bottom: var(--space-8); max-width: 50ch; margin-left: auto; margin-right: auto; }
+  .cta-section-final .btn-secondary-dark { background: transparent; color: var(--color-text-light); padding: var(--space-4) var(--space-8); border-radius: var(--radius-md); font-weight: 500; border: 1px solid var(--color-border-light); text-decoration: none; display: inline-flex; align-items: center; gap: var(--space-2); transition: all var(--transition-fast); }
+  .cta-section-final .btn-secondary-dark:hover { border-color: var(--color-accent-blue); color: var(--color-accent-blue); }
+  .btn-tertiary-light { background: rgba(59, 130, 246, 0.06); color: var(--color-text-light); padding: var(--space-4) var(--space-6); border-radius: var(--radius-md); font-weight: 500; border: 1px solid var(--color-border-light); text-decoration: none; display: inline-flex; align-items: center; transition: all var(--transition-fast); }
+  .btn-tertiary-light:hover { border-color: var(--color-accent-blue); color: var(--color-accent-blue); }
+  @media (max-width: 1024px) {
+    .hero-container { grid-template-columns: 1fr; }
+    .hero-console { max-width: 480px; margin: 0 auto; }
+    .problems-grid { grid-template-columns: repeat(2, 1fr); }
+    .cost-units-grid { grid-template-columns: repeat(3, 1fr); }
+    .pages-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 640px) {
+    .hero { padding: var(--space-10) 0; }
+    .hero-title { font-size: 1.875rem; }
+    .hero-subtitle { font-size: 1rem; }
+    .hero-ctas { flex-direction: column; }
+    .hero-ctas .btn { width: 100%; justify-content: center; }
+    .problems-grid { grid-template-columns: 1fr; }
+    .cost-units-grid { grid-template-columns: repeat(2, 1fr); }
+    .pages-grid { grid-template-columns: 1fr; }
+    .testing-step { grid-template-columns: 1fr; gap: var(--space-3); }
+  }
+  .status-ok { color: var(--color-accent-green); }
+</style>
