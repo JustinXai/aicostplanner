@@ -17,6 +17,7 @@ const internalLinks = [
   { href: '/agent-token-usage/', label: 'Agent Token Usage' },
   { href: '/openai-api-usage/', label: 'OpenAI API Usage' },
   { href: '/api-billing-mismatch/', label: 'API Billing Mismatch' },
+  { href: '/billing-transparency/', label: 'Billing Transparency' },
   { href: '/image-generation-api-cost/', label: 'Image Generation API Cost' },
   { href: '/video-generation-api-cost/', label: 'Video Generation API Cost' },
 ];
@@ -232,6 +233,31 @@ const internalLinks = [
           </li>
         </ul>
 
+        <!-- New: Claude Code price changes and spend checks -->
+        <h2>Claude Code Price Changes and Spend Checks</h2>
+        <p>
+          Claude Code pricing and plan details can change. Model per-token rates, context window sizes,
+          and tool pricing may be updated by Anthropic at any time. Before scaling automated coding
+          workflows, review current pricing and your actual usage:
+        </p>
+        <ul>
+          <li>Check current Claude model pricing on the Anthropic or provider pricing page</li>
+          <li>Review token usage through your API provider's usage dashboard</li>
+          <li>Monitor spend limits and set alerts if your provider supports them</li>
+          <li>Factor in model choice, context window size and automation patterns when estimating cost</li>
+          <li>Test with a small balance before committing to a large automated workflow</li>
+        </ul>
+        <p>
+          Claude Code cost should be reviewed regularly as token counts, model choice,
+          context management and retry patterns all affect the final bill.
+          For a broader coding agent cost perspective, see
+          <a href="/coding-agent-cost/">Coding Agent Cost</a>.
+          For understanding agent-level token patterns, see
+          <a href="/agent-token-usage/">Agent Token Usage</a>.
+          For reconciling usage against billing records, see
+          <a href="/billing-transparency/">Billing Transparency</a>.
+        </p>
+
         <!-- Internal Links -->
         <h2>Related Guides</h2>
         <div class="link-cards">
@@ -262,12 +288,13 @@ const internalLinks = [
             AI Summary
           </div>
           <p>
-            Claude Code token cost is higher than simple chat because coding agents load project context, 
-            read files, and execute tool calls. Input tokens include prompts, file content, and conversation 
-            history. Output tokens include reasoning and responses. Model choice (Haiku, Sonnet, Opus) 
-            affects per-token pricing. Retries, tool calls, and multiple agent instances multiply cost. 
-            This guide is for educational purposes; check live provider pricing before scaling. Test with 
-            a small prepaid balance to verify actual cost behavior.
+            Claude Code token cost is higher than simple chat because coding agents load project context,
+            read files, and execute tool calls. Input tokens include prompts, file content, and conversation
+            history. Output tokens include reasoning and responses. Model choice (Haiku, Sonnet, Opus)
+            affects per-token pricing. Retries, tool calls, and multiple agent instances multiply cost.
+            Pricing and plan details can change—review current pricing and usage records regularly.
+            This guide is for educational purposes; check live provider pricing before scaling.
+            Test with a small prepaid balance to verify actual cost behavior.
           </p>
         </div>
 
@@ -301,9 +328,19 @@ const internalLinks = [
           <div class="faq-item">
             <h3 class="faq-question">How do I estimate Claude Code cost for a project?</h3>
             <p class="faq-answer">
-              Start by estimating input tokens (project size, conversation history) and output tokens 
-              (expected responses). Multiply by your model's per-token pricing. Test with a small 
+              Start by estimating input tokens (project size, conversation history) and output tokens
+              (expected responses). Multiply by your model's per-token pricing. Test with a small
               balance to verify estimates match reality.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">What should I check if Claude Code pricing changes?</h3>
+            <p class="faq-answer">
+              Review current per-token pricing for your model on the provider's pricing page.
+              Check your API usage dashboard for the period in question and compare against your
+              logs. Token counts, model choice, context window usage, tool calls and automation
+              patterns all affect cost. If cost increased unexpectedly, review whether model
+              selection or usage patterns changed before assuming a pricing update.
             </p>
           </div>
         </div>

@@ -17,7 +17,7 @@ const internalLinks = [
   { href: '/openai-api-billing/', label: 'OpenAI API Billing' },
   { href: '/openai-api-usage/', label: 'OpenAI API Usage' },
   { href: '/api-billing-mismatch/', label: 'API Billing Mismatch' },
-  { href: '/billing-transparency/', label: 'Billing Transparency' },
+  { href: '/small-prepaid-test/', label: 'Small Prepaid Test' },
 ];
 ---
 
@@ -32,7 +32,7 @@ const internalLinks = [
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "Article",
-      "headline": "OpenRouter Credits Explained: Usage, Balance and API Cost",
+      "headline": "OpenRouter Credits and Usage Guide",
       "description": "Understand OpenRouter credits, usage, balance checks and why model/provider pricing can make credit usage confusing.",
       "author": {
         "@type": "Organization",
@@ -91,13 +91,75 @@ const internalLinks = [
         <div class="quick-answer">
           <h2>Quick Answer</h2>
           <p>
-            OpenRouter credits are a prepaid balance used for API inference across multiple models 
-            and providers. Each request deducts from your balance based on the model's pricing. 
-            Credits can be confusing because different models charge differently, and usage may 
-            not always match expectations. Understanding how credits work helps you plan budgets 
-            and avoid unexpected charges.
+            OpenRouter credits are a prepaid balance used for API inference across multiple models and providers.
+            Usage depends on model choice, token count, provider routing, request type and retry behavior.
+            Credit deduction is not always predictable—different models charge differently, and per-request
+            or per-token billing adds complexity. Before scaling, review your dashboard, usage records
+            and billing history to understand what drives your credit consumption.
           </p>
         </div>
+
+        <!-- New: Do OpenRouter credits expire? -->
+        <h2>Do OpenRouter Credits Expire?</h2>
+        <p>
+          OpenRouter credit expiration and account balance policy can vary by account type, package purchased,
+          and platform terms. Policies may also change over time. Rather than assuming credits are
+          always valid or always expire, check the following directly:
+        </p>
+        <ul>
+          <li>Your current OpenRouter account billing page for balance validity</li>
+          <li>Account notices or emails about expiration dates</li>
+          <li>The official OpenRouter documentation for the credit package you purchased</li>
+          <li>Any auto-refill or subscription terms that may affect balance</li>
+        </ul>
+        <p>
+          If you are planning a large credit purchase or relying on a significant balance,
+          check these sources before committing. This helps you avoid unexpected balance loss
+          or service interruption.
+        </p>
+
+        <!-- New: Why credits may drop faster than expected -->
+        <h2>Why Credits May Drop Faster Than Expected</h2>
+        <p>
+          Several practical factors can cause OpenRouter credit usage to outpace initial estimates:
+        </p>
+        <ul>
+          <li><strong>Model choice</strong> — Different models have very different per-token or per-request costs. Switching models mid-workflow changes credit burn rate.</li>
+          <li><strong>Provider routing</strong> — OpenRouter may route requests to different underlying providers. Each provider sets its own pricing.</li>
+          <li><strong>Long context</strong> — Large input or output token counts multiply cost. Agents that load extensive conversation history or large file contents use more credits.</li>
+          <li><strong>Retries and failed requests</strong> — A failed or timed-out request may still consume credits depending on the provider's billing policy.</li>
+          <li><strong>Tool calls and agent workflows</strong> — Multi-step agent workflows that call multiple tools in one session accumulate token overhead quickly.</li>
+          <li><strong>Streaming or partial responses</strong> — Some billing models count streaming tokens as they are generated, which can feel like faster depletion.</li>
+          <li><strong>Multi-step or parallel agent sessions</strong> — Running several agent instances in parallel multiplies credit usage across all sessions.</li>
+        </ul>
+
+        <!-- New: Usage vs credits vs billing records -->
+        <h2>OpenRouter Usage vs Credits vs Billing Records</h2>
+        <p>
+          Understanding the difference between these three views helps you reconcile your balance:
+        </p>
+        <ul>
+          <li><strong>Credits</strong> — Your account balance. This is the prepaid amount available for API inference. Credits are deducted per request.</li>
+          <li><strong>Usage</strong> — Your API activity record. Shows per-request token counts, model used, provider, and credit deduction per call. This is your granular log.</li>
+          <li><strong>Billing records</strong> — The account-level view of what has been charged. This may include provider adjustments, refunds, or prorated credits not visible in per-request logs.</li>
+        </ul>
+        <p>
+          When usage and balance do not match expectations, check for:
+        </p>
+        <ul>
+          <li><span class="mono">request_id</span> timestamps that help identify which requests consumed credits</li>
+          <li>Provider-level adjustments not reflected in the per-request log</li>
+          <li>Failed or partial requests that were still billed</li>
+          <li>Auto-routing that sent a request to a more expensive provider than expected</li>
+        </ul>
+        <p>
+          For a focused reconciliation checklist, see the
+          <a href="/billing-transparency/">Billing Transparency guide</a>.
+          For understanding usage mismatches, see
+          <a href="/api-billing-mismatch/">API Billing Mismatch</a>.
+          For a safe pre-scaling test approach, see
+          <a href="/small-prepaid-test/">Small Prepaid API Test</a>.
+        </p>
 
         <!-- Who This Is For -->
         <h2>Who This Is For</h2>
@@ -272,13 +334,14 @@ const internalLinks = [
             AI Summary
           </div>
           <p>
-            OpenRouter credits are a prepaid balance used for API inference across multiple AI models. 
-            Each request deducts credits based on the model's pricing. Different models charge differently 
-            per token or per request. Usage tracking requires checking the OpenRouter dashboard, saving 
-            request IDs, and comparing logs against actual credit deduction. Common errors include 401 
-            (invalid key), 403 (insufficient credits), 404 (model not found), and 429 (rate limit). 
-            This guide is educational; check live OpenRouter pricing before scaling. Test with a small 
-            credit balance to verify cost expectations.
+            OpenRouter credits are a prepaid balance used for API inference across multiple models and providers.
+            Usage depends on model choice, token count, provider routing, request type and retry behavior.
+            Credit deduction is not always predictable. Before scaling, check your dashboard, usage records
+            and billing history. Common factors driving unexpected credit consumption include model switching,
+            long context, provider routing, retries and multi-step agent workflows. Credit expiration and
+            balance policy can vary—verify with the official OpenRouter billing page and docs before
+            making large purchases. Use request IDs and usage logs to reconcile discrepancies. This guide
+            is educational; check live OpenRouter pricing and your account before scaling.
           </p>
         </div>
 
@@ -286,37 +349,40 @@ const internalLinks = [
         <h2>Frequently Asked Questions</h2>
         <div class="faq-list">
           <div class="faq-item">
-            <h3 class="faq-question">How do OpenRouter credits work?</h3>
+            <h3 class="faq-question">Do OpenRouter credits expire?</h3>
             <p class="faq-answer">
-              OpenRouter credits are a prepaid balance purchased in packages. Each API request 
-              deducts from your balance based on the model's pricing. Different models have 
-              different per-request or per-token costs. Credits do not expire but cannot be 
-              refunded in most cases.
+              Credit expiration and account balance policy can vary by account type and package purchased.
+              Policies may also change over time. Check your OpenRouter billing page, account notices,
+              and official docs to confirm whether your credits are subject to an expiration date
+              before relying on a large balance.
             </p>
           </div>
           <div class="faq-item">
-            <h3 class="faq-question">Why is my credit usage higher than expected?</h3>
+            <h3 class="faq-question">Why did my OpenRouter credits drop faster than expected?</h3>
             <p class="faq-answer">
-              Several factors can cause this: actual token counts may differ from estimates, 
-              system prompts add hidden context, provider pricing may have changed, or failed 
-              requests may have been charged. Review your usage dashboard for a detailed 
-              breakdown by model.
+              Common causes include model switching to a more expensive option, long input or output
+              contexts, provider routing to a higher-cost underlying provider, retries or failed
+              requests that were still billed, and multi-step or parallel agent sessions.
+              Review your per-request usage log to identify which requests consumed the most credits.
             </p>
           </div>
           <div class="faq-item">
-            <h3 class="faq-question">How can I check my OpenRouter usage?</h3>
+            <h3 class="faq-question">How do I check OpenRouter usage before scaling?</h3>
             <p class="faq-answer">
-              Log into your OpenRouter account and navigate to the Usage or Credits section. 
-              You can see your current balance, recent transactions, and per-model breakdown. 
-              Some integrations may also support API-based usage queries.
+              Log into your OpenRouter account and navigate to the Usage or Credits section.
+              Review your current balance, recent transactions, and per-model breakdown.
+              Record request IDs for each API call so you can reconcile your local logs
+              against the dashboard. Test with a small prepaid balance before scaling.
             </p>
           </div>
           <div class="faq-item">
-            <h3 class="faq-question">What happens when I run out of credits?</h3>
+            <h3 class="faq-question">What should I compare if usage and balance do not match expectations?</h3>
             <p class="faq-answer">
-              When your balance is insufficient for a request, you'll receive a 403 Forbidden 
-              or insufficient credits error. Requests will not be processed until you purchase 
-              more credits. Consider setting up balance alerts to avoid interruptions.
+              Start with your per-request usage log. Compare request IDs and timestamps against
+              the credit deduction shown in your account. Look for failed or partial requests
+              that may have been billed, provider-level adjustments, or routing to a different
+              underlying provider than expected. If discrepancies persist, check the account-level
+              billing records and contact OpenRouter support if needed.
             </p>
           </div>
         </div>
