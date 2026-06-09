@@ -11,7 +11,10 @@ const currentDate = new Date().toISOString().split('T')[0];
 const breadcrumbs = [{ label: 'Kling API Pricing', href: '/kling-api-pricing/' }];
 const internalLinks = [
   { href: '/video-generation-api-pricing/', label: 'Video Generation API Pricing' },
-  { href: '/runway-api-pricing/', label: 'Runway API Pricing' },
+  { href: '/video-generation-api-cost/', label: 'Video Generation API Cost' },
+  { href: '/image-to-video-api-cost/', label: 'Image-to-Video API Cost' },
+  { href: '/failed-video-generation-cost/', label: 'Failed Video Generation Cost' },
+  { href: '/video-generation-webhook/', label: 'Video Generation Webhook' },
   { href: '/failed-generation-cost/', label: 'Failed Generation Cost' },
 ];
 ---
@@ -57,35 +60,83 @@ const internalLinks = [
         <div class="quick-answer">
           <h2>Quick Answer</h2>
           <p>
-            Kling video generation API uses credit-based pricing. Different video lengths and 
-            quality tiers consume different credit amounts. Understanding these patterns helps 
-            you plan budgets for Kling video generation.
+            Kling AI pricing questions should be evaluated through API cost units such as credits, generated duration,
+            resolution, image-to-video inputs, retries, failed tasks and provider billing policy.
+            Public app pricing and API pricing may not use the same billing basis.
+            Understanding how the provider meters these units helps you plan budgets before scaling.
           </p>
         </div>
 
-        <h2>Summary</h2>
+        <!-- New: Kling AI price vs API pricing -->
+        <h2>Kling AI Price vs API Pricing</h2>
         <p>
-          Kling is a video generation API that uses credits as the cost unit. This guide 
-          explains the pricing patterns and what to check before scaling.
+          Public app pricing and API pricing may not use the same billing units. API workflows
+          should be checked by request or job, model, duration, resolution, image-to-video input,
+          retry behavior and dashboard usage. Do not assume consumer app pricing equals API cost.
         </p>
-        <p class="scaffold-note"><strong>Scaffold content to expand later.</strong></p>
+        <p>
+          Do not claim RutaAPI supports Kling unless verified from RutaAPI live pricing.
+          Check the provider documentation for current API pricing units and compare against
+          any public-facing app pricing pages.
+        </p>
 
-        <h2>Credit-Based Pricing</h2>
+        <!-- New: Kling-style video cost risks -->
+        <h2>Kling-Style Video Cost Risks</h2>
+        <p>
+          Several factors can make Kling-style video generation cost higher than expected:
+        </p>
         <ul>
-          <li><strong>Credit bundles</strong> — Purchase credits in packages</li>
-          <li><strong>Video length</strong> — Longer videos consume more credits</li>
-          <li><strong>Quality tier</strong> — Higher quality may consume more credits</li>
-          <li><strong>Image-to-video</strong> — May have different credit costs</li>
+          <li><strong>Long generation time</strong> — Longer videos may consume more credits or incur higher provider charges</li>
+          <li><strong>Image-to-video input</strong> — Sending a reference image as input may add input-side charges</li>
+          <li><strong>Video duration</strong> — Beyond a base duration, longer outputs may cost incrementally more</li>
+          <li><strong>Resolution</strong> — Higher resolution tiers may carry a cost premium</li>
+          <li><strong>Async tasks</strong> — Polling for async job status may incur additional API calls</li>
+          <li><strong>Webhook vs polling</strong> — Webhook setup and event delivery may have different cost implications</li>
+          <li><strong>Retry after timeout</strong> — Retrying a timed-out job re-runs the generation and may re-charge</li>
+          <li><strong>Failed task billing policy</strong> — Depending on the provider, failed or moderation-filtered jobs may still be billed</li>
         </ul>
+        <p>
+          For a broader video API pricing overview, see
+          <a href="/video-generation-api-pricing/">Video Generation API Pricing</a>.
+          For cost patterns, see
+          <a href="/video-generation-api-cost/">Video Generation API Cost</a>.
+          For image-to-video specifics, see
+          <a href="/image-to-video-api-cost/">Image-to-Video API Cost</a>.
+          For failed video job billing, see
+          <a href="/failed-video-generation-cost/">Failed Video Generation Cost</a>.
+          For webhook cost management, see
+          <a href="/video-generation-webhook/">Video Generation Webhook</a>.
+        </p>
 
         <h2>What to Check</h2>
         <ul class="checklist">
-          <li><span class="checklist-icon">&#10003;</span><span>Credit cost per video length</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Quality tier differences</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Credit cost per video length and resolution tier</span></li>
           <li><span class="checklist-icon">&#10003;</span><span>Image-to-video credit requirements</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Credit expiration policy</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Retry credit consumption</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Retry credit consumption policy</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Failed or moderation-filtered job billing policy</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Async polling vs webhook cost implications</span></li>
         </ul>
+
+        <div class="ai-summary-block">
+          <div class="ai-summary-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg> AI Summary</div>
+          <p>Kling AI pricing should be evaluated through API cost units such as credits, generated duration, resolution, image-to-video inputs, retries and provider billing policy. Public app pricing and API pricing may not use the same billing basis. Factors that can increase cost include long generation time, image-to-video input, async polling, retry after timeout and failed task billing. Check live provider pricing before production use and test small before scaling video workflows.</p>
+        </div>
+
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-list">
+          <div class="faq-item">
+            <h3 class="faq-question">How should I estimate Kling AI API pricing?</h3>
+            <p class="faq-answer">Start with the provider's API documentation for the cost basis per video length, resolution and image-to-video input. Test one short video generation, record the request ID and compare the credit deduction against your estimate. Scale gradually while monitoring per-job cost against your initial calculation.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Is Kling AI app price the same as API pricing?</h3>
+            <p class="faq-answer">Not necessarily. Public app pricing and API pricing may use different billing units, rates or tiers. Always check the provider's API documentation and current pricing page rather than relying on public app pricing as an API cost reference.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Can failed Kling-style video jobs affect cost?</h3>
+            <p class="faq-answer">Depending on the provider's billing policy, yes. Failed jobs that are still processed, moderation-filtered outputs that trigger a retry, and timeout resubmissions can all contribute to billed usage even when no output is delivered. Check the provider's failed task billing policy before scaling.</p>
+          </div>
+        </div>
 
         <h2>Related Guides</h2>
         <div class="link-cards">
