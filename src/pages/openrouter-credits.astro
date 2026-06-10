@@ -17,6 +17,7 @@ const internalLinks = [
   { href: '/openai-api-billing/', label: 'OpenAI API Billing' },
   { href: '/openai-api-usage/', label: 'OpenAI API Usage' },
   { href: '/api-billing-mismatch/', label: 'API Billing Mismatch' },
+  { href: '/billing-transparency/', label: 'Billing Transparency' },
   { href: '/small-prepaid-test/', label: 'Small Prepaid Test' },
 ];
 ---
@@ -99,7 +100,69 @@ const internalLinks = [
           </p>
         </div>
 
-        <!-- New: Do OpenRouter credits expire? -->
+        <h2>OpenRouter Credits Quick Answers</h2>
+        <div class="quick-answers-grid">
+          <div class="quick-answer-item">
+            <h3>What are OpenRouter credits?</h3>
+            <p>Credits are your account balance for API usage. Requests deduct from that balance based on the model, provider route and request details.</p>
+          </div>
+          <div class="quick-answer-item">
+            <h3>How does OpenRouter handle credit?</h3>
+            <p>OpenRouter usually deducts credits per request according to the model, provider, token count, request type and routing behavior shown in your usage records.</p>
+          </div>
+          <div class="quick-answer-item">
+            <h3>Where can I check OpenRouter balance?</h3>
+            <p>Users usually check the account dashboard or credits/settings area, then compare current balance, dashboard notices and recent usage records.</p>
+          </div>
+          <div class="quick-answer-item">
+            <h3>Is OpenRouter pricing the same as credits?</h3>
+            <p>No. Credits are your balance. Pricing is the per-model or per-request cost basis that determines how fast credits are consumed.</p>
+          </div>
+          <div class="quick-answer-item">
+            <h3>Is an OpenRouter rate limit the same as no credits?</h3>
+            <p>No. A rate limit is a request-throttling or policy issue. No credits is a balance or account funding issue. Check the error response and dashboard records.</p>
+          </div>
+          <div class="quick-answer-item">
+            <h3>Do OpenRouter credits expire?</h3>
+            <p>Expiration policy can change. Check the current billing page, account notices and usage records instead of assuming credits always expire or never expire.</p>
+          </div>
+        </div>
+
+        <h2>How to Check OpenRouter Balance</h2>
+        <p>
+          OpenRouter users usually check balance from the account dashboard or credits/settings area.
+          If you are reconciling usage, also compare request time, model, API key, provider route and dashboard usage records.
+        </p>
+        <ul>
+          <li>Review the dashboard or account balance area first</li>
+          <li>Open the credits or settings page and compare current balance against recent usage</li>
+          <li>Check request timestamps to match requests against balance changes</li>
+          <li>Confirm the API key status for the requests you are troubleshooting</li>
+          <li>Look for account notices about billing, temporary restrictions or balance changes</li>
+          <li>Use recent usage records to verify whether the selected model or provider route consumed more credits than expected</li>
+        </ul>
+        <p>
+          A copied credits/settings URL or a typo in the path is usually not enough for troubleshooting.
+          Open the live account dashboard, verify the correct page, then compare balance and usage records directly.
+        </p>
+
+        <h2>OpenRouter Credits vs Pricing</h2>
+        <p>
+          Credits, pricing and usage are related but not the same thing:
+        </p>
+        <ul>
+          <li><strong>Credits</strong> — Your account balance available for API usage</li>
+          <li><strong>Pricing</strong> — The model, provider or request cost basis that determines how fast credits are consumed</li>
+          <li><strong>Usage</strong> — The requests, models and timestamps that show what actually consumed credits</li>
+        </ul>
+        <p>
+          Pricing can vary by model, provider, tokens, request type and routing. Check live pricing before production use,
+          and use a <a href="/small-prepaid-test/">small prepaid test</a> before scaling.
+          If you are reconciling credit burn against expected spend, compare against
+          <a href="/billing-transparency/">billing transparency</a> and
+          <a href="/api-billing-mismatch/">API billing mismatch</a> guidance.
+        </p>
+
         <h2>Do OpenRouter Credits Expire?</h2>
         <p>
           OpenRouter credit expiration and account balance policy can vary by account type, package purchased,
@@ -238,6 +301,20 @@ const internalLinks = [
         </ul>
 
         <!-- Error Cases -->
+        <h2>OpenRouter Rate Limit vs No Credits</h2>
+        <p>
+          Rate limit and no credits are different failure categories. A rate limit can relate to account,
+          API key, model, provider route, traffic level, temporary limits or policy. No credits usually relates
+          to balance, funding state or account-level credit availability.
+        </p>
+        <p>
+          Check the error response, <span class="mono">request_id</span>, timestamp, dashboard records and usage logs before deciding what happened.
+          Do not retry blindly—retries can create duplicate requests or make usage review harder.
+          Use <a href="/api-billing-mismatch/">API Billing Mismatch</a>,
+          <a href="/billing-transparency/">Billing Transparency</a> and
+          <a href="/small-prepaid-test/">Small Prepaid Test</a> as reference checklists.
+        </p>
+
         <h2>No Credits / Error Cases</h2>
         <p>
           Common error scenarios and their meanings:
@@ -246,8 +323,45 @@ const internalLinks = [
           <li><strong>401 Unauthorized</strong> — Invalid or expired API key</li>
           <li><strong>403 Forbidden</strong> — Insufficient credits or permissions</li>
           <li><strong>404 Model Not Found</strong> — Model unavailable or discontinued</li>
-          <li><strong>429 Rate Limited</strong> — Too many requests, wait and retry</li>
+          <li><strong>429 Rate Limited</strong> — Too many requests, wait and review the request context before retrying</li>
           <li><strong>Insufficient Credits</strong> — Balance too low for the request</li>
+        </ul>
+
+        <h2>OpenRouter Troubleshooting Checklist</h2>
+        <p>When credit balance, pricing or request failures do not match expectations:</p>
+        <ul class="checklist">
+          <li>
+            <span class="checklist-icon">&#10003;</span>
+            <span>Check current balance in the account dashboard or credits area</span>
+          </li>
+          <li>
+            <span class="checklist-icon">&#10003;</span>
+            <span>Check the selected model and provider route for the request</span>
+          </li>
+          <li>
+            <span class="checklist-icon">&#10003;</span>
+            <span>Check API key status for the affected request</span>
+          </li>
+          <li>
+            <span class="checklist-icon">&#10003;</span>
+            <span>Check <span class="mono">request_id</span> and timestamp</span>
+          </li>
+          <li>
+            <span class="checklist-icon">&#10003;</span>
+            <span>Compare usage records with expected request count</span>
+          </li>
+          <li>
+            <span class="checklist-icon">&#10003;</span>
+            <span>Check whether the error was no credits, rate limit, model not found, 401, 403 or timeout</span>
+          </li>
+          <li>
+            <span class="checklist-icon">&#10003;</span>
+            <span>Check whether retries created duplicate requests</span>
+          </li>
+          <li>
+            <span class="checklist-icon">&#10003;</span>
+            <span>Run one small test before scaling</span>
+          </li>
         </ul>
 
         <!-- Small Prepaid Test -->
@@ -337,13 +451,13 @@ const internalLinks = [
           </div>
           <p>
             OpenRouter credits are a prepaid balance used for API inference across multiple models and providers.
-            Usage depends on model choice, token count, provider routing, request type and retry behavior.
-            Credit deduction is not always predictable. Before scaling, check your dashboard, usage records
-            and billing history. Common factors driving unexpected credit consumption include model switching,
-            long context, provider routing, retries and multi-step agent workflows. Credit expiration and
-            balance policy can vary—verify with the official OpenRouter billing page and docs before
-            making large purchases. Use request IDs and usage logs to reconcile discrepancies. This guide
-            is educational; check live OpenRouter pricing and your account before scaling.
+            This page helps users understand credits, balance checks, usage records, pricing differences,
+            rate-limit questions and cautious expiry guidance. Credits are not the same as pricing: credits are your
+            balance, while pricing determines how model, provider, token, request type and routing choices consume that balance.
+            If you are troubleshooting OpenRouter, compare the dashboard, credits/settings area, request timestamps,
+            <span class="mono">request_id</span>, API key status and usage records before scaling. Rate limits and no credits are different
+            failure categories, so review the error response before retrying. Test with a small prepaid balance before scaling,
+            and use the RutaAPI CTA below only as a separate starting point for live model pricing and trial access.
           </p>
         </div>
 
@@ -360,31 +474,35 @@ const internalLinks = [
             </p>
           </div>
           <div class="faq-item">
-            <h3 class="faq-question">Why did my OpenRouter credits drop faster than expected?</h3>
+            <h3 class="faq-question">How do I check OpenRouter balance?</h3>
             <p class="faq-answer">
-              Common causes include model switching to a more expensive option, long input or output
-              contexts, provider routing to a higher-cost underlying provider, retries or failed
-              requests that were still billed, and multi-step or parallel agent sessions.
-              Review your per-request usage log to identify which requests consumed the most credits.
+              OpenRouter users usually check the account dashboard or credits/settings area first,
+              then compare current balance, request timestamps, API key status and recent usage records.
+              If you are troubleshooting credit deduction, use both the balance view and the per-request usage log.
             </p>
           </div>
           <div class="faq-item">
-            <h3 class="faq-question">How do I check OpenRouter usage before scaling?</h3>
+            <h3 class="faq-question">Is OpenRouter pricing the same as credits?</h3>
             <p class="faq-answer">
-              Log into your OpenRouter account and navigate to the Usage or Credits section.
-              Review your current balance, recent transactions, and per-model breakdown.
-              Record request IDs for each API call so you can reconcile your local logs
-              against the dashboard. Test with a small prepaid balance before scaling.
+              No. Credits are your account balance. Pricing is the cost basis per model, provider,
+              token pattern or request type that determines how quickly that balance is used.
+              The same balance can burn at different speeds depending on the route and request details.
             </p>
           </div>
           <div class="faq-item">
-            <h3 class="faq-question">What should I compare if usage and balance do not match expectations?</h3>
+            <h3 class="faq-question">Is an OpenRouter rate limit caused by no credits?</h3>
             <p class="faq-answer">
-              Start with your per-request usage log. Compare request IDs and timestamps against
-              the credit deduction shown in your account. Look for failed or partial requests
-              that may have been billed, provider-level adjustments, or routing to a different
-              underlying provider than expected. If discrepancies persist, check the account-level
-              billing records and contact OpenRouter support if needed.
+              Not necessarily. Rate limit issues and no-credit issues are different failure categories.
+              A rate limit can be caused by account, key, model, provider route, traffic or temporary policy constraints.
+              No credits usually points to balance or funding state. Check the error response, dashboard and usage records.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">What should I check if OpenRouter credits drop after retries?</h3>
+            <p class="faq-answer">
+              Compare request IDs, timestamps, retry count, selected model, provider route and per-request usage records.
+              Retries can create duplicate requests or repeat partial work, which makes credits drop faster than expected.
+              Review the dashboard and usage log before sending more traffic.
             </p>
           </div>
         </div>
@@ -500,6 +618,33 @@ const internalLinks = [
     border-radius: var(--radius-sm);
   }
   
+  .quick-answers-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
+  }
+
+  .quick-answer-item {
+    background: var(--color-bg-light-elevated);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+  }
+
+  .quick-answer-item h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin: 0 0 var(--space-2) 0;
+  }
+
+  .quick-answer-item p {
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.7;
+  }
+
   .checklist {
     list-style: none;
     padding: 0;
