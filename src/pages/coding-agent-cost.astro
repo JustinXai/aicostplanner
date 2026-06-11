@@ -64,10 +64,14 @@ const internalLinks = [
 
         <h2>Summary</h2>
         <p>
-          Coding agents are powerful but can accumulate significant API costs. Understanding 
+          Coding agents are powerful but can accumulate significant API costs. Understanding
           why they use more tokens helps you plan budgets and optimize usage.
         </p>
-        <p class="scaffold-note"><strong>Scaffold content to expand later.</strong></p>
+        <p>
+          Before scaling coding-agent sessions, estimate the cost impact of file reads,
+          tool calls, retries and long context windows. Then compare the estimate with
+          actual usage records for the same request or session.
+        </p>
 
         <h2>Why Coding Agents Use More Tokens</h2>
         <ul>
@@ -105,7 +109,7 @@ const internalLinks = [
 
         <div class="ai-summary-block">
           <div class="ai-summary-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg> AI Summary</div>
-          <p>Coding agent cost is higher than chat because agents load context, read files, execute tool calls, and maintain longer conversations. Cost multipliers include context window size, tool call frequency, retries, and parallel instances. Strategies to reduce cost include focused context, file read limits, summarization, and appropriate model selection. This is scaffold content for future expansion.</p>
+          <p>Coding agent cost is higher than chat because agents load context, read files, execute tool calls, and maintain longer conversations. Cost multipliers include context window size, tool call frequency, retries, and parallel instances. Strategies to reduce cost include focused context, file read limits, summarization, and appropriate model selection. Use a small prepaid test to verify how much context loading, file reads and retries affect the final bill before running longer automation workflows.</p>
         </div>
 
         <h2>Frequently Asked Questions</h2>
