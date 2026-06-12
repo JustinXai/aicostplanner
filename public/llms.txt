@@ -66,6 +66,10 @@ Summary: STT, LLM, TTS, session duration, latency, interruptions and retry behav
 URL: https://aicostplanner.com/billing-transparency/
 Summary: Usage logs, request IDs, dashboard verification, cached tokens, failed jobs and mismatch review.
 
+### Claude Fable 5 API Cost
+URL: https://aicostplanner.com/claude-fable-5-api-cost/
+Summary: Estimate Claude Fable 5 API cost by input, output and cached tokens. Includes token cost formulas, cache pricing, batch pricing, tool-call overhead, retries, example scenarios and a small prepaid testing checklist.
+
 ## Additional Pages
 
 ### OpenAI API Credits

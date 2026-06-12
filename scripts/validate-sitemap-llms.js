@@ -38,7 +38,8 @@ const REQUIRED_PAGES = [
   '/video-generation-timeout-cost/',
   '/product-video-api-cost/',
   '/realtime-voice-api-cost/',
-  '/billing-transparency/'
+  '/billing-transparency/',
+  '/claude-fable-5-api-cost/'
 ];
 
 let errors = [];
@@ -54,14 +55,14 @@ async function fileExists(path) {
 }
 
 async function validateSitemap() {
-  console.log('Checking sitemap.xml...\n');
+  console.log('Checking sitemap-list.xml...\n');
 
-  if (!await fileExists('./public/sitemap.xml')) {
-    errors.push('sitemap.xml not found in public/');
+  if (!await fileExists('./public/sitemap-list.xml')) {
+    errors.push('sitemap-list.xml not found in public/');
     return;
   }
 
-  const sitemap = await readFile('./public/sitemap.xml', 'utf-8');
+  const sitemap = await readFile('./public/sitemap-list.xml', 'utf-8');
 
   for (const page of REQUIRED_PAGES) {
     const loc = `<loc>${SITE_URL}${page}</loc>`;
