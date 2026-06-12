@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://aicostplanner.com/sitemap-index.xml
+Sitemap: https://aicostplanner.com/sitemap.xml
 
 # Crawl-delay (optional, be polite to servers)
 Crawl-delay: 1
