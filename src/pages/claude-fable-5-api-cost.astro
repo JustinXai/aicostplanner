@@ -124,14 +124,14 @@ const internalLinks = [
         </div>
         <p>For example:</p>
         <ul>
-          <li>10K input tokens, 5K output tokens: (10,000 &times; 0.00001) + (5,000 &times; 0.00005) = <strong>$0.00035</strong> per request</li>
+          <li>10K input tokens, 5K output tokens: (10,000 &times; $10 / 1,000,000) + (5,000 &times; $50 / 1,000,000) = $0.10 + $0.25 = <strong>$0.35</strong> per request</li>
           <li>200K input tokens, 50K output tokens: (200,000 &times; 0.00001) + (50,000 &times; 0.00005) = <strong>$4.50</strong> per request</li>
           <li>1M input tokens, 100K output tokens: (1,000,000 &times; 0.00001) + (100,000 &times; 0.00005) = <strong>$15.00</strong> per request</li>
         </ul>
         <div class="unit-note">
           <span class="label-mono label-mono-cyan">Context window</span>
           <p>
-            Claude Fable 5 supports a 200K token context window. Sending large context means
+            Claude Fable 5 supports a 1M token context window, with a 128K-token maximum output according to Anthropic's models overview. Sending large context means
             all tokens count as input, regardless of whether they were previously cached.
           </p>
         </div>
@@ -172,7 +172,7 @@ const internalLinks = [
 
         <h2>Context Window Impact</h2>
         <p>
-          Claude Fable 5's 200K token context window means high-context tasks accumulate significant input costs.
+          Claude Fable 5's 1M token context window means high-context tasks accumulate significant input costs.
           For coding agents, each file read, conversation turn and tool call result adds to the token count.
         </p>
         <p>Context window cost factors:</p>
