@@ -118,14 +118,29 @@ async function main() {
   const seenUrls = new Set();
 
   try {
-    const files = await readdir(DIST_DIR, { recursive: true, withFileTypes: true });
-    const htmlFiles = files
-      .filter(entry => entry.isFile() && entry.name.endsWith('.html'))
-      .map(entry => join(entry.path || DIST_DIR, entry.name));
+    const htmlFiles = [];
 
-    for (const filePath of htmlFiles) {
+    async function walk(dir) {
+      const entries = await readdir(dir, { withFileTypes: true });
+      for (const entry of entries) {
+        const fullPath = join(dir, entry.name);
+        if (entry.isDirectory()) {
+          await walk(fullPath);
+        } else if (entry.isFile() && entry.name.endsWith('.html')) {
+          htmlFiles.push(fullPath);
+        }
+      }
+    }
+
+    await walk(DIST_DIR);
+
+    const pageFiles = htmlFiles.filter(filePath => {
       const url = filePathToUrl(filePath);
-      if (url.startsWith('/404')) continue;
+      return !url.startsWith('/404');
+    });
+
+    for (const filePath of pageFiles) {
+      const url = filePathToUrl(filePath);
 
       if (seenUrls.has(url)) errors.push(`Duplicate route detected: ${url}`);
       seenUrls.add(url);

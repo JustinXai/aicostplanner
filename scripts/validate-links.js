@@ -60,6 +60,7 @@ function isAllowedUrl(url) {
         return true;
       }
     }
+
     
     // Check if it's an allowed CTA URL
     for (const allowed of ALLOWED_CTA_URLS) {
