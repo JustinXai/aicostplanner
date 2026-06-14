@@ -7,512 +7,410 @@ import '../styles/global.css';
 
 const siteUrl = 'https://aicostplanner.com';
 const currentDate = new Date().toISOString().split('T')[0];
+const route = '/openai-api-credits/';
+const lastReviewed = 'June 14, 2026';
 
-const breadcrumbs = [
-  { label: 'OpenAI API Credits', href: '/openai-api-credits/' },
-];
-
+const breadcrumbs = [{ label: 'OpenAI API Credits', href: route }];
 const internalLinks = [
-  { href: '/openai-api-billing/', label: 'OpenAI API Billing' },
-  { href: '/openai-api-usage/', label: 'OpenAI API Usage' },
   { href: '/api-billing-mismatch/', label: 'API Billing Mismatch' },
+  { href: '/small-prepaid-test/', label: 'Small Prepaid Test' },
+  { href: '/billing-transparency/', label: 'Billing Transparency' },
+  { href: '/agent-token-usage/', label: 'Agent Token Usage' },
   { href: '/openrouter-credits/', label: 'OpenRouter Credits' },
+  { href: '/image-generation-api-cost/', label: 'Image Generation API Cost' },
+  { href: '/failed-generation-cost/', label: 'Failed Generation Cost' },
 ];
 ---
 
 <PageLayout
-  title="OpenAI API Credits Guide"
-  description="Learn what API credits mean, how usage affects spend and what to check before scaling model requests."
-  canonical={`${siteUrl}/openai-api-credits/`}
+  title="OpenAI API Credits: Expiry, Prepaid Billing"
+  description="Learn when OpenAI API credits expire, how prepaid billing and auto recharge work, where to check credits, and why quota errors can occur."
+  canonical={`${siteUrl}${route}`}
   type="article"
   lastUpdated={currentDate}
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "Article",
-      "headline": "OpenAI API Credits Explained for Developers",
-      "description": "Learn what API credits mean, how usage affects spend and what to check before scaling model requests.",
-      "author": {
-        "@type": "Organization",
-        "name": "AICostPlanner"
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "AICostPlanner",
-        "url": siteUrl
-      },
-      "datePublished": currentDate,
-      "dateModified": currentDate,
-      "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": `${siteUrl}/openai-api-credits/`
-      }
+      "@context": "https://schema.org", "@type": "Article",
+      "headline": "OpenAI API Credits: Expiry, Balance and Prepaid Billing",
+      "description": "Learn when OpenAI API credits expire, how prepaid billing and auto recharge work, where to check credits, and why quota errors can occur.",
+      "author": { "@type": "Organization", "name": "AICostPlanner" },
+      "publisher": { "@type": "Organization", "name": "AICostPlanner", "url": siteUrl },
+      "datePublished": currentDate, "dateModified": currentDate,
+      "mainEntityOfPage": { "@type": "WebPage", "@id": `${siteUrl}${route}` }
     })} />
     <script type="application/ld+json" set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
+      "@context": "https://schema.org", "@type": "BreadcrumbList",
       "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": siteUrl
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "OpenAI API Credits",
-          "item": `${siteUrl}/openai-api-credits/`
-        }
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": siteUrl },
+        { "@type": "ListItem", "position": 2, "name": "OpenAI API Credits", "item": `${siteUrl}${route}` }
       ]
     })} />
   </Fragment>
 
   <Header />
-  
   <main>
     <section class="hero-dark">
       <div class="container">
         <Breadcrumb items={breadcrumbs} />
         <h1 class="page-title">OpenAI API Credits Explained</h1>
-        <p class="page-meta">
-          <span class="label-mono">Last updated: {currentDate}</span>
-        </p>
+        <p class="page-meta"><span class="label-mono">Last reviewed: {lastReviewed}</span></p>
       </div>
     </section>
 
     <section class="section-light content-section">
       <div class="container container-narrow">
+
         <div class="quick-answer">
           <h2>Quick Answer</h2>
           <p>
-            OpenAI API uses a pay-as-you-go model rather than traditional credits. You are billed 
-            based on token usage across your API requests. Understanding your usage patterns, 
-            setting spend limits, and monitoring your dashboard helps you control costs before scaling.
+            OpenAI's current API prepaid-billing documentation says purchased credits expire after one year
+            and are non-refundable. API usage is deducted from prepaid credits first, and additional usage
+            may be billed according to the account's billing setup. Check API credits and usage in the
+            organization Billing and Usage pages. A ChatGPT subscription does not provide API credits
+            because ChatGPT and the API Platform use separate billing systems.
           </p>
         </div>
 
-        <h2>Summary</h2>
+        <h2>What Are OpenAI API Credits?</h2>
         <p>
-          OpenAI API billing is based on actual usage—primarily token consumption for text models 
-          and generation counts for image models. This guide explains what to check, how to 
-          estimate costs, and what to verify in your dashboard.
+          OpenAI's current API billing setup uses a prepaid model. You purchase credits upfront, and
+          API usage is deducted from that balance. New accounts currently start on prepaid billing,
+          which means usage cannot exceed the purchased credit balance unless the account has been
+          approved for postpaid billing.
         </p>
-        <p class="scaffold-note">
-          <strong>Scaffold content to expand later.</strong> This page provides the framework. 
-          Full content will be added in a future update.
+        <p>
+          API credits are separate from a ChatGPT subscription. The API Platform and ChatGPT use
+          different billing systems and different account management interfaces.
         </p>
 
-        <!-- Cost Unit -->
-        <h2>What Cost Unit Matters</h2>
+        <h2>Do OpenAI API Credits Expire?</h2>
         <p>
-          OpenAI API charges primarily by <span class="mono">token</span> for text models and by 
-          <span class="mono">image</span> for image generation. Key points:
+          OpenAI's current prepaid-billing documentation states: purchased API credits expire after one
+          year and are non-refundable.
+        </p>
+        <p>
+          This policy applies to purchased prepaid credits specifically. Other credit types — such as
+          promotional credits, free grants, or credits associated with Enterprise agreements — may have
+          different expiry terms. Check the credit grant details in the organization Billing page for
+          the specific expiry terms of each credit type.
+        </p>
+        <p>
+          Do not assume all credit types in an OpenAI account follow the same expiry policy.
+        </p>
+
+        <h2>Purchased Credits vs Free or Promotional Credits</h2>
+        <p>
+          OpenAI API accounts can hold multiple credit types simultaneously:
         </p>
         <ul>
-          <li>Input and output tokens are charged at different rates</li>
-          <li>Different models have different per-token pricing</li>
-          <li>Image generation may be per-image or per-quality-tier</li>
-          <li>Fine-tuned models have separate pricing</li>
+          <li><strong>Purchased prepaid credits</strong> — bought with real funds; expire after one year; non-refundable</li>
+          <li><strong>Free or promotional credits</strong> — may be provided with a new account or a special offer; have their own expiry terms listed in the credit grant details</li>
+          <li><strong>Credit grants</strong> — associated with specific agreements; terms vary per grant</li>
+          <li><strong>Enterprise credits</strong> — governed by the order form; separate from prepaid billing</li>
         </ul>
-
-        <!-- Usage Patterns -->
-        <h2>Usage Patterns to Monitor</h2>
         <p>
-          Watch these patterns for unexpected costs:
+          OpenAI's prepaid-billing documentation says free credits, if present, are consumed before
+          purchased credits. Check the credit grant details to understand which credit type is being
+          used first.
+        </p>
+
+        <h2>How Prepaid Billing Works</h2>
+        <p>
+          OpenAI's current prepaid billing documentation describes this workflow:
         </p>
         <ul>
-          <li>High token usage from long context windows</li>
-          <li>Repeated requests that could be cached</li>
-          <li>Image generation at high quality tiers</li>
-          <li>Fine-tuning training costs</li>
-          <li>Batch API usage</li>
+          <li>You purchase credits before making API requests</li>
+          <li>API usage is deducted from the prepaid credit balance</li>
+          <li>If the balance is insufficient for a request, the API returns an <code>insufficient_quota</code> error</li>
+          <li>New accounts currently start on prepaid billing by default</li>
         </ul>
+        <p>
+          As of June 14, 2026, OpenAI's help article lists a $5 minimum purchase and a default
+          initial purchase amount of $10. The trust tier determines the maximum credit balance an
+          account can hold. Check the live billing page before purchasing because these amounts
+          and rules may change.
+        </p>
+        <p>
+          Do not treat these amounts as fixed recommendations. The billing screen always reflects
+          the current terms.
+        </p>
 
-        <!-- Dashboard -->
-        <h2>Dashboard Checklist</h2>
+        <h2>How Auto Recharge Works</h2>
+        <p>
+          OpenAI's prepaid-billing documentation describes auto recharge as follows:
+        </p>
+        <ul>
+          <li>Auto recharge is enabled by default when you set up prepaid billing</li>
+          <li>You can disable it before confirming the purchase</li>
+          <li>You can set the recharge amount, the threshold that triggers a recharge, and an optional monthly recharge limit</li>
+          <li>Manual credit purchases do not count toward the monthly auto-recharge limit</li>
+          <li>As of June 14, 2026, the auto recharge minimum is $5</li>
+          <li>The trust tier limits the maximum recharge amount</li>
+        </ul>
+        <p>
+          Auto recharge helps prevent interruptions but does not guarantee uninterrupted service.
+          Rate limits, API key restrictions and organizational spending limits operate independently
+          of the credit balance.
+        </p>
+
+        <h2>How to Check OpenAI API Credits</h2>
+        <p>
+          OpenAI's documentation identifies these places to check credits:
+        </p>
+        <ul>
+          <li>The organization <strong>Billing page</strong> in the API Platform — shows purchased credits, free credits and credit grants</li>
+          <li>The <strong>Credit grants details</strong> section — lists active grants and their expiry terms</li>
+          <li>The <strong>Usage Dashboard</strong> — shows usage over time; accessible only to Organization Owners and explicitly authorized users</li>
+          <li>The <strong>API Platform settings</strong> — for auto recharge configuration and credit purchase history</li>
+        </ul>
+        <p>
+          The Usage Dashboard uses UTC timestamps. The organization Billing page shows the current
+          credit balance. The UI paths may change; always use the current API Platform interface.
+        </p>
+
+        <h2>Billing Page vs Usage Dashboard</h2>
+        <p>
+          These two views serve different purposes:
+        </p>
+        <ul>
+          <li><strong>Billing page</strong> — shows the current credit balance, credit grants, purchase history and auto recharge settings</li>
+          <li><strong>Usage Dashboard</strong> — shows per-request usage, costs by model and time period; uses UTC; accessible by Organization Owners and authorized users</li>
+        </ul>
+        <p>
+          The Usage Dashboard may not automatically merge data across multiple organizations.
+          If your account has multiple organizations, select the correct one before reviewing usage.
+          Project-level filters in the Usage Dashboard can also narrow the displayed data.
+        </p>
+
+        <h2>Why Credits May Not Appear Immediately</h2>
+        <p>
+          OpenAI's help article notes that purchased credits may take a couple of minutes to appear
+          in the account balance.
+        </p>
+        <p>
+          If the balance still does not update after a short wait:
+        </p>
+        <ul>
+          <li>Verify the correct organization is selected</li>
+          <li>Check the payment result in your payment method's records</li>
+          <li>Confirm the Billing page is the API Platform billing page, not the ChatGPT billing page</li>
+          <li>Allow a brief additional delay before retrying requests</li>
+        </ul>
+        <p>
+          Do not regenerate an API key as a first step. Check the balance and organization first.
+        </p>
+
+        <h2>Negative Credit Balance Explained</h2>
+        <p>
+          OpenAI's prepaid-billing documentation acknowledges that billing-system delays can allow
+          API usage to continue briefly after the credit balance is consumed. This excess usage
+          may appear as a negative credit balance and may be deducted from the next credit purchase.
+        </p>
+        <p>
+          A negative balance does not mean the account is being penalized. It reflects the timing
+          gap between when usage occurred and when the billing system processed the deduction.
+        </p>
+        <p>
+          Not every account will experience a negative balance. It depends on the billing-system
+          processing state at the time the balance was consumed.
+        </p>
+
+        <h2>ChatGPT Plus/Pro vs API Credits</h2>
+        <p>
+          OpenAI documents ChatGPT and the API Platform as separate billing systems.
+        </p>
+        <p>
+          A ChatGPT Plus or ChatGPT Pro subscription does not include API Platform credits. Paying
+          for a ChatGPT subscription does not recharge your API Platform balance. The payment
+          methods, account structures and billing interfaces are different.
+        </p>
+        <p>
+          To check API credits, use the API Platform Billing page — not the ChatGPT billing page.
+          These are separate products with separate billing.
+        </p>
+
+        <h2>Insufficient Quota vs Rate Limit</h2>
+        <p>
+          OpenAI's error documentation distinguishes between two common HTTP 429 causes:
+        </p>
+        <ul>
+          <li><code>rate_limit_reached</code> — the organization has hit its RPM (requests per minute) or TPM (tokens per minute) limit; adding more credits does not resolve this</li>
+          <li><code>insufficient_quota</code> — the billing balance, quota or API key allocation does not cover the request; check credits and account setup</li>
+        </ul>
+        <p>
+          Do not diagnose every HTTP 429 as a credit-balance problem. Inspect the returned
+          <code>error.type</code>, <code>error.code</code> and the error message before deciding
+          whether to recharge or to wait for the rate limit window to reset.
+        </p>
+        <p>
+          For <code>rate_limit_reached</code>, exponential backoff is appropriate while waiting
+          for the rate limit window to reset. For <code>insufficient_quota</code>, exponential
+          backoff is not effective — add credits or check the account allocation.
+        </p>
+        <p>
+          When troubleshooting a 429, check: HTTP status, <code>error.type</code>, <code>error.code</code>,
+          error message, organization, project, API key scope, billing balance, usage limits, and
+          RPM / TPM limits.
+        </p>
+
+        <h2>Credit and Usage Reconciliation Checklist</h2>
         <ul class="checklist">
-          <li>
-            <span class="checklist-icon">&#10003;</span>
-            <span>Review usage by model in the OpenAI dashboard</span>
-          </li>
-          <li>
-            <span class="checklist-icon">&#10003;</span>
-            <span>Check token usage per request</span>
-          </li>
-          <li>
-            <span class="checklist-icon">&#10003;</span>
-            <span>Set spend limits if available</span>
-          </li>
-          <li>
-            <span class="checklist-icon">&#10003;</span>
-            <span>Enable usage alerts</span>
-          </li>
-          <li>
-            <span class="checklist-icon">&#10003;</span>
-            <span>Export usage data for analysis</span>
-          </li>
+          <li><span class="checklist-icon">&#10003;</span><span>Confirm you are viewing the API Platform Billing page, not ChatGPT billing</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Confirm the correct organization is selected</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Confirm the credit purchase payment succeeded</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Check purchased credits and credit grant expiry terms separately</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Check the Usage Dashboard in UTC for the relevant period</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Clear project filters or select the intended project to see all usage</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Check organizational usage limits and trust tier</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Inspect HTTP status and JSON error body for 429 responses</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Distinguish <code>rate_limit_reached</code> from <code>insufficient_quota</code></span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Allow a short balance-update delay after purchasing credits</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Check for a negative balance from billing-system processing delay</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Record <span class="mono">request_id</span> values before contacting OpenAI support</span></li>
         </ul>
 
-        <!-- Internal Links -->
+        <h2>Small Prepaid Test Checklist</h2>
+        <p>
+          Before scaling API usage, run a small controlled test:
+        </p>
+        <ul class="checklist">
+          <li><span class="checklist-icon">&#10003;</span><span>Define the test scope: model, expected input and output size, request count, concurrency</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Calculate estimated cost at the current per-token or per-operation rate</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Set a spending cap and a balance-monitoring stop trigger</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Record <span class="mono">request_id</span>, timestamp, model, <span class="mono">tokens_in</span>, <span class="mono">tokens_out</span>, and <span class="mono">usage.cost</span> for every request</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Compare local logs against the provider Usage Dashboard after the test</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Investigate any unexplained cost difference before scaling</span></li>
+        </ul>
+
+        <h2>Official Sources Reviewed</h2>
+        <p class="official-sources">
+          The information on this page is based on OpenAI's official documentation reviewed as of {lastReviewed}.
+          OpenAI's billing setup may change; always verify current terms on the API Platform Billing page.
+        </p>
+        <ul>
+          <li>OpenAI Help: How can I set up prepaid billing</li>
+          <li>OpenAI Help: What is prepaid billing</li>
+          <li>OpenAI Help: Managing billing settings</li>
+          <li>OpenAI Help: How can I solve 429 Too Many Requests errors</li>
+          <li>OpenAI Developers: API Error Codes</li>
+        </ul>
+
         <h2>Related Guides</h2>
         <div class="link-cards">
           {internalLinks.map(link => (
-            <a href={link.href} class="link-card">
-              <h4>{link.label}</h4>
-              <p>Learn more about this topic</p>
-            </a>
+            <a href={link.href} class="link-card"><h4>{link.label}</h4><p>Learn more about this topic</p></a>
           ))}
         </div>
 
-        <!-- AI Summary -->
         <div class="ai-summary-block">
-          <div class="ai-summary-label">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M12 16v-4M12 8h.01"/>
-            </svg>
-            AI Summary
-          </div>
+          <div class="ai-summary-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg> AI Summary</div>
           <p>
-            OpenAI API uses pay-as-you-go billing based on token usage for text models and per-image 
-            for image generation. This guide explains OpenAI API credits and billing concepts. 
-            Monitor usage in the OpenAI dashboard, set spend limits, and track token consumption 
-            per request. This page is scaffold content for future expansion. Check live OpenAI 
-            pricing documentation for current rates.
+            OpenAI's current API prepaid-billing documentation says purchased credits expire after one year
+            and are non-refundable, while free or promotional credits follow separate terms. API usage is
+            deducted from prepaid credits first. New accounts start on prepaid billing; a $5 minimum purchase
+            and $10 default initial amount are listed as of June 14, 2026. Auto recharge is available and
+            defaults to on, but does not override rate limits. A billing-system processing delay may briefly
+            allow usage after the balance is consumed, producing a negative balance that is deducted from the
+            next purchase. ChatGPT subscriptions and API Platform credits use separate billing systems. HTTP
+            429 errors require inspecting <code>error.code</code> to distinguish <code>rate_limit_reached</code>
+            from <code>insufficient_quota</code>. This page is educational, not financial or OpenAI-specific
+            guidance. AICostPlanner is an independent educational site and is not affiliated with OpenAI.
           </p>
         </div>
 
-        <!-- FAQ -->
         <h2>Frequently Asked Questions</h2>
         <div class="faq-list">
           <div class="faq-item">
-            <h3 class="faq-question">How does OpenAI API billing work?</h3>
-            <p class="faq-answer">
-              OpenAI API uses pay-as-you-go billing. You're charged based on token usage for text 
-              models and per-image for image generation. Each model has different per-token pricing.
-            </p>
+            <h3 class="faq-question">Do OpenAI API credits expire?</h3>
+            <p class="faq-answer">OpenAI's current prepaid-billing documentation says purchased API credits expire after one year and are non-refundable. Free or promotional credits have their own terms listed in the credit grant details. Check the credit grant details to see the expiry policy for each credit type in the account.</p>
           </div>
           <div class="faq-item">
-            <h3 class="faq-question">How can I reduce OpenAI API costs?</h3>
-            <p class="faq-answer">
-              Use smaller context windows when possible, implement response caching, choose 
-              appropriate model tiers for your use case, and monitor usage patterns in the dashboard.
-            </p>
+            <h3 class="faq-question">Does ChatGPT Plus include OpenAI API credits?</h3>
+            <p class="faq-answer">No. OpenAI documents ChatGPT and the API Platform as separate billing systems. A ChatGPT Plus or ChatGPT Pro subscription does not provide API Platform credits. The payment methods, account structures and billing interfaces are different products.</p>
           </div>
           <div class="faq-item">
-            <h3 class="faq-question">Does OpenAI offer free credits?</h3>
-            <p class="faq-answer">
-              New accounts typically receive some free credits. After those are exhausted, 
-              pay-as-you-go billing applies. Check OpenAI's current offers for promotional credits.
-            </p>
+            <h3 class="faq-question">What is the minimum OpenAI API credit purchase?</h3>
+            <p class="faq-answer">As of June 14, 2026, OpenAI's help article lists a $5 minimum purchase and a default initial purchase amount of $10. The trust tier determines the maximum credit balance. Check the live billing page before purchasing because these amounts and account rules may change.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">How long do credits take to appear after purchase?</h3>
+            <p class="faq-answer">OpenAI says there may be a couple of minutes of delay while systems update the credit balance. If the balance still does not update, verify the correct organization, confirm the payment result, and check the API Platform Billing page before retrying requests.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Why is my OpenAI API balance showing negative?</h3>
+            <p class="faq-answer">OpenAI's prepaid-billing documentation acknowledges that billing-system processing delays can allow usage to continue briefly after the credit balance is consumed, producing a negative balance. This excess usage may be deducted from the next credit purchase. Not every account experiences this. A negative balance reflects a processing timing gap, not a penalty.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Does HTTP 429 always mean I ran out of credits?</h3>
+            <p class="faq-answer">No. OpenAI's error documentation distinguishes between <code>rate_limit_reached</code>, which indicates RPM or TPM limits, and <code>insufficient_quota</code>, which points to billing, quota or account allocation. Inspect <code>error.type</code>, <code>error.code</code> and the error message before deciding whether to recharge or wait for a rate limit window to reset.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Where can I see my OpenAI API credits?</h3>
+            <p class="faq-answer">Check the organization Billing page on the API Platform for the current credit balance, purchased credits and credit grants. The Usage Dashboard shows per-request usage and is accessible to Organization Owners and explicitly authorized users. The API Platform Billing page and the ChatGPT billing page are different products — use the API Platform page for API credits.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Can expired OpenAI API credits be refunded?</h3>
+            <p class="faq-answer">OpenAI's current prepaid-billing documentation states that purchased credits are non-refundable. Promotional or grant credits may have different terms — check the credit grant details for each active grant.</p>
           </div>
         </div>
 
-        <!-- CTA -->
         <div class="cta-block">
-          <h3>Ready to start?</h3>
-          <p>Create an API key with $1 trial credit and explore live model pricing.</p>
+          <h3>Estimate before you scale</h3>
+          <p>Use a small prepaid test to measure real API cost before committing a larger budget.</p>
           <div class="cta-buttons">
-            <a href="https://app.rutaapi.com/register?lng=en" class="btn btn-primary" target="_blank" rel="noopener">
-              Create API Key
-              <span class="btn-subtext">$1 trial credit</span>
-            </a>
-            <a href="https://app.rutaapi.com/pricing" class="btn btn-secondary-dark" target="_blank" rel="noopener">
-              View Live Pricing
-            </a>
+            <a href="https://app.rutaapi.com/register?lng=en" class="btn btn-primary" target="_blank" rel="noopener">Create API Key</a>
+            <a href="https://app.rutaapi.com/pricing" class="btn btn-secondary-dark" target="_blank" rel="noopener">View Live Pricing</a>
+            <a href="https://app.rutaapi.com/register?lng=en" class="btn btn-secondary-dark" target="_blank" rel="noopener">Start with a Small Prepaid Test</a>
           </div>
         </div>
+
       </div>
     </section>
   </main>
-
   <Footer />
 </PageLayout>
 
 <style>
-  .hero-dark {
-    background: var(--color-bg-dark);
-    padding: var(--space-12) 0 var(--space-10);
-    border-bottom: 1px solid var(--color-bg-dark-border);
-  }
-  
-  .hero-dark :global(.breadcrumb) {
-    margin-bottom: var(--space-6);
-  }
-  
-  .page-title {
-    font-size: 2.25rem;
-    font-weight: 700;
-    color: var(--color-text-dark);
-    line-height: 1.15;
-    margin: 0 0 var(--space-4) 0;
-    letter-spacing: -0.02em;
-  }
-  
-  .page-meta {
-    margin: 0;
-  }
-  
-  .content-section {
-    padding: var(--space-12) 0 var(--space-16);
-    background: var(--color-bg-light);
-  }
-  
-  .quick-answer {
-    background: var(--color-bg-light-elevated);
-    border-left: 4px solid var(--color-accent-blue);
-    padding: var(--space-6);
-    border-radius: 0 var(--radius-md) var(--radius-md) 0;
-    margin-bottom: var(--space-10);
-  }
-  
-  .quick-answer h2 {
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: var(--color-text-light);
-    margin-bottom: var(--space-3);
-  }
-  
-  .quick-answer p {
-    margin: 0;
-    color: var(--color-text-light);
-    line-height: 1.7;
-  }
-  
-  h2 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: var(--color-text-light);
-    margin: var(--space-10) 0 var(--space-4);
-    padding-top: var(--space-6);
-    border-top: 1px solid var(--color-border-light);
-  }
-  
-  h2:first-of-type {
-    margin-top: 0;
-    padding-top: 0;
-    border-top: none;
-  }
-  
-  p {
-    color: var(--color-text-light-muted);
-    line-height: 1.75;
-    margin-bottom: var(--space-4);
-  }
-  
-  ul, ol {
-    color: var(--color-text-light-muted);
-    margin-bottom: var(--space-4);
-    padding-left: var(--space-6);
-  }
-  
-  li {
-    margin-bottom: var(--space-2);
-    line-height: 1.7;
-  }
-  
-  .mono {
-    font-family: var(--font-mono);
-    font-size: 0.875em;
-    background: var(--color-bg-light-muted);
-    padding: 0.125em 0.375em;
-    border-radius: var(--radius-sm);
-  }
-  
-  .scaffold-note {
-    background: rgba(59, 130, 246, 0.08);
-    border: 1px dashed var(--color-accent-blue);
-    border-radius: var(--radius-md);
-    padding: var(--space-4);
-    margin-top: var(--space-4);
-  }
-  
-  .checklist {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .checklist li {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--space-3);
-    padding: var(--space-3) 0;
-  }
-  
-  .checklist-icon {
-    color: var(--color-accent-green);
-    font-weight: bold;
-    flex-shrink: 0;
-  }
-  
-  .link-cards {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-4);
-    margin-bottom: var(--space-8);
-  }
-  
-  .link-card {
-    display: block;
-    padding: var(--space-5);
-    background: var(--color-bg-light-elevated);
-    border: 1px solid var(--color-border-light);
-    border-radius: var(--radius-md);
-    text-decoration: none;
-    transition: all var(--transition-fast);
-  }
-  
-  .link-card:hover {
-    border-color: var(--color-accent-blue);
-    transform: translateY(-2px);
-  }
-  
-  .link-card h4 {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--color-text-light);
-    margin: 0 0 var(--space-2) 0;
-  }
-  
-  .link-card p {
-    font-size: 0.875rem;
-    color: var(--color-text-light-muted);
-    margin: 0;
-  }
-  
-  .ai-summary-block {
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.04), rgba(59, 130, 246, 0.04));
-    border: 1px solid rgba(34, 211, 238, 0.15);
-    border-radius: var(--radius-xl);
-    padding: var(--space-6);
-    margin: var(--space-10) 0;
-  }
-  
-  .ai-summary-label {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--color-accent-cyan);
-    margin-bottom: var(--space-4);
-  }
-  
-  .ai-summary-block p {
-    margin: 0;
-    font-size: 0.9375rem;
-    line-height: 1.8;
-  }
-  
-  .faq-list {
-    margin-bottom: var(--space-10);
-  }
-  
-  .faq-item {
-    padding: var(--space-6) 0;
-    border-bottom: 1px solid var(--color-border-light);
-  }
-  
-  .faq-item:first-child {
-    border-top: 1px solid var(--color-border-light);
-  }
-  
-  .faq-question {
-    font-size: 1.0625rem;
-    font-weight: 600;
-    color: var(--color-text-light);
-    margin-bottom: var(--space-3);
-  }
-  
-  .faq-answer {
-    margin: 0;
-    font-size: 0.9375rem;
-    line-height: 1.7;
-  }
-  
-  .cta-block {
-    text-align: center;
-    padding: var(--space-10);
-    background: var(--color-bg-light-muted);
-    border-radius: var(--radius-xl);
-    margin-top: var(--space-10);
-  }
-  
-  .cta-block h3 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--color-text-light);
-    margin-bottom: var(--space-3);
-  }
-  
-  .cta-block p {
-    max-width: 40ch;
-    margin: 0 auto var(--space-6);
-  }
-  
-  .cta-buttons {
-    display: flex;
-    gap: var(--space-4);
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  
-  .btn-primary {
-    background: linear-gradient(135deg, var(--color-accent-blue), var(--color-accent-cyan));
-    color: white;
-    padding: var(--space-3) var(--space-6);
-    border-radius: var(--radius-md);
-    font-weight: 600;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    transition: all var(--transition-fast);
-  }
-  
-  .btn-primary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-    color: white;
-  }
-  
-  .btn-subtext {
-    font-size: 0.75rem;
-    font-weight: 400;
-    opacity: 0.9;
-    background: rgba(255,255,255,0.15);
-    padding: var(--space-1) var(--space-2);
-    border-radius: var(--radius-sm);
-  }
-  
-  .btn-secondary-dark {
-    background: transparent;
-    color: var(--color-text-light);
-    padding: var(--space-3) var(--space-6);
-    border-radius: var(--radius-md);
-    font-weight: 500;
-    border: 1px solid var(--color-border-light);
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    transition: all var(--transition-fast);
-  }
-  
-  .btn-secondary-dark:hover {
-    border-color: var(--color-accent-blue);
-    color: var(--color-accent-blue);
-  }
-  
-  @media (max-width: 640px) {
-    .page-title { font-size: 1.75rem; }
-    .link-cards { grid-template-columns: 1fr; }
-    .cta-buttons { flex-direction: column; }
-    .cta-buttons .btn { width: 100%; justify-content: center; }
-  }
+  .hero-dark { background: var(--color-bg-dark); padding: var(--space-12) 0 var(--space-10); border-bottom: 1px solid var(--color-bg-dark-border); }
+  .hero-dark :global(.breadcrumb) { margin-bottom: var(--space-6); }
+  .page-title { font-size: 2.25rem; font-weight: 700; color: var(--color-text-dark); line-height: 1.15; margin: 0 0 var(--space-4) 0; letter-spacing: -0.02em; }
+  .page-meta { margin: 0; }
+  .content-section { padding: var(--space-12) 0 var(--space-16); background: var(--color-bg-light); }
+  .quick-answer { background: var(--color-bg-light-elevated); border-left: 4px solid var(--color-accent-blue); padding: var(--space-6); border-radius: 0 var(--radius-md) var(--radius-md) 0; margin-bottom: var(--space-10); }
+  .quick-answer h2 { font-size: 1.125rem; font-weight: 600; color: var(--color-text-light); margin-bottom: var(--space-3); }
+  .quick-answer p { margin: 0; color: var(--color-text-light); line-height: 1.7; }
+  h2 { font-size: 1.5rem; font-weight: 600; color: var(--color-text-light); margin: var(--space-10) 0 var(--space-4); padding-top: var(--space-6); border-top: 1px solid var(--color-border-light); }
+  h2:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+  p { color: var(--color-text-light-muted); line-height: 1.75; margin-bottom: var(--space-4); }
+  ul, ol { color: var(--color-text-light-muted); margin-bottom: var(--space-4); padding-left: var(--space-6); }
+  li { margin-bottom: var(--space-2); line-height: 1.7; }
+  code { font-family: var(--font-mono); font-size: 0.875em; background: var(--color-bg-light-muted); padding: 0.125em 0.375em; border-radius: var(--radius-sm); }
+  .mono { font-family: var(--font-mono); font-size: 0.875em; background: var(--color-bg-light-muted); padding: 0.125em 0.375em; border-radius: var(--radius-sm); }
+  .official-sources { background: rgba(59, 130, 246, 0.06); border: 1px solid rgba(59, 130, 246, 0.15); border-radius: var(--radius-md); padding: var(--space-4); }
+  .checklist { list-style: none; padding: 0; }
+  .checklist li { display: flex; align-items: flex-start; gap: var(--space-3); padding: var(--space-3) 0; }
+  .checklist-icon { color: var(--color-accent-green); font-weight: bold; flex-shrink: 0; }
+  .link-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-4); margin-bottom: var(--space-8); }
+  .link-card { display: block; padding: var(--space-5); background: var(--color-bg-light-elevated); border: 1px solid var(--color-border-light); border-radius: var(--radius-md); text-decoration: none; transition: all var(--transition-fast); }
+  .link-card:hover { border-color: var(--color-accent-blue); transform: translateY(-2px); }
+  .link-card h4 { font-size: 1rem; font-weight: 600; color: var(--color-text-light); margin: 0 0 var(--space-2) 0; }
+  .link-card p { font-size: 0.875rem; color: var(--color-text-light-muted); margin: 0; }
+  .ai-summary-block { background: linear-gradient(135deg, rgba(34, 211, 238, 0.04), rgba(59, 130, 246, 0.04)); border: 1px solid rgba(34, 211, 238, 0.15); border-radius: var(--radius-xl); padding: var(--space-6); margin: var(--space-10) 0; }
+  .ai-summary-label { display: flex; align-items: center; gap: var(--space-2); font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-accent-cyan); margin-bottom: var(--space-4); }
+  .ai-summary-block p { margin: 0; font-size: 0.9375rem; line-height: 1.8; }
+  .faq-list { margin-bottom: var(--space-10); }
+  .faq-item { padding: var(--space-6) 0; border-bottom: 1px solid var(--color-border-light); }
+  .faq-item:first-child { border-top: 1px solid var(--color-border-light); }
+  .faq-question { font-size: 1.0625rem; font-weight: 600; color: var(--color-text-light); margin-bottom: var(--space-3); }
+  .faq-answer { margin: 0; font-size: 0.9375rem; line-height: 1.7; }
+  .cta-block { text-align: center; padding: var(--space-10); background: var(--color-bg-light-muted); border-radius: var(--radius-xl); margin-top: var(--space-10); }
+  .cta-block h3 { font-size: 1.25rem; font-weight: 600; color: var(--color-text-light); margin-bottom: var(--space-3); }
+  .cta-block p { max-width: 42ch; margin: 0 auto var(--space-6); }
+  .cta-buttons { display: flex; gap: var(--space-4); justify-content: center; flex-wrap: wrap; }
+  .btn-primary { background: linear-gradient(135deg, var(--color-accent-blue), var(--color-accent-cyan)); color: white; padding: var(--space-3) var(--space-6); border-radius: var(--radius-md); font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: var(--space-2); transition: all var(--transition-fast); }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); color: white; }
+  .btn-secondary-dark { background: transparent; color: var(--color-text-light); padding: var(--space-3) var(--space-6); border-radius: var(--radius-md); font-weight: 500; border: 1px solid var(--color-border-light); text-decoration: none; display: inline-flex; align-items: center; gap: var(--space-2); transition: all var(--transition-fast); }
+  .btn-secondary-dark:hover { border-color: var(--color-accent-blue); color: var(--color-accent-blue); }
+  @media (max-width: 640px) { .page-title { font-size: 1.75rem; } .link-cards { grid-template-columns: 1fr; } .cta-buttons { flex-direction: column; } .cta-buttons .btn { width: 100%; justify-content: center; } }
 </style>
