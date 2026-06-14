@@ -124,7 +124,7 @@ const internalLinks = [
           <li>The organization selector (top right) controls which organization's data is shown</li>
           <li>The project filter within the Usage page filters to a specific project; clearing it shows all projects in the selected organization</li>
           <li>These two selectors operate independently — a project selected in the Usage page does not change the top-right organization selector</li>
-          <li>Changing the top-right organization clears any project selection within the Usage page</li>
+          <li>After changing the selected organization, re-check the project filter within the Usage page before comparing totals.</li>
           <li>Usage data is scoped to a single organization and does not span organizations automatically</li>
         </ul>
 
@@ -236,8 +236,8 @@ const internalLinks = [
 
         <h2>Text and Completion Usage</h2>
         <p>
-          For text and completion models, usage is measured in tokens. A single model response
-          <code>usage</code> object may include:
+          For text and completion models, a model response may include input token, output token
+          and total token counts. The response-level <code>usage</code> object fields may include:
         </p>
         <ul>
           <li><code>input_tokens</code> — tokens consumed by the prompt and context</li>
@@ -245,8 +245,10 @@ const internalLinks = [
           <li><code>total_tokens</code> — sum of input and output tokens</li>
         </ul>
         <p>
-          These fields are returned per request in the model response and are also aggregated by the
-          organization Usage API.
+          The organization completions Usage endpoint separately aggregates fields such as
+          <code>input_tokens</code>, <code>output_tokens</code>, <code>input_cached_tokens</code>
+          and <code>num_model_requests</code>. Do not assume every response-level usage
+          field appears with the same name in the organization-level Usage API.
         </p>
 
         <h2>Cached and Reasoning Tokens</h2>
@@ -331,8 +333,7 @@ const internalLinks = [
           <li>Cached tokens — context caching may result in lower effective cost than raw token counts suggest</li>
           <li>Reasoning tokens — some models bill reasoning tokens as output tokens even if they are not visible in the response text</li>
           <li>Batch vs. standard pricing — batch-mode usage may have different rates than standard on-demand usage</li>
-          <li>Invoice adjustments — Enterprise contract pricing, credits and refunds may appear on an invoice but not in a list-price token estimate</li>
-          <li>Time boundary mismatch — local logs and the Usage Dashboard may use different UTC ranges, causing apparent differences at month boundaries</li>
+          <li>UTC boundary mismatch — local logs and the Usage Dashboard may use different UTC ranges, causing apparent differences at month boundaries</li>
           <li>Project or organization filter mismatch — different filter settings produce different totals</li>
           <li>Automatic retries — retries may generate additional usage not reflected in application-level logs</li>
           <li>Incomplete pagination — <code>next_page</code> tokens not followed result in partial totals</li>
@@ -439,7 +440,7 @@ const internalLinks = [
           </div>
           <div class="faq-item">
             <h3 class="faq-question">Does the Dashboard show all projects automatically?</h3>
-            <p class="faq-answer">No. The project selector within the Usage page is independent of the top-right organization/project selector. If no project is selected in the Usage page, the view shows all projects in the selected organization. Changing the top-right organization clears any project selection within the Usage page. The Usage Dashboard does not consolidate data across multiple organizations.</p>
+            <p class="faq-answer">No. The project selector within the Usage page is independent of the top-right organization/project selector. If no project is selected in the Usage page, the view shows all projects in the selected organization. After changing the selected organization, re-check the project filter within the Usage page before comparing totals. The Usage Dashboard does not consolidate data across multiple organizations.</p>
           </div>
           <div class="faq-item">
             <h3 class="faq-question">What is the difference between Activity and Cost exports?</h3>
@@ -447,7 +448,7 @@ const internalLinks = [
           </div>
           <div class="faq-item">
             <h3 class="faq-question">Does the Usage API return final billed cost?</h3>
-            <p class="faq-answer">No. The organization Usage endpoints return usage quantities (tokens, images, seconds, and so on), not monetary amounts. Use the Costs endpoint or the Costs tab in the Usage Dashboard for financial totals. Usage and spend may not reconcile perfectly due to cached tokens, reasoning tokens, batch pricing, invoice adjustments and other factors.</p>
+            <p class="faq-answer">No. The organization Usage endpoints return usage quantities (tokens, images, seconds, and so on), not monetary amounts. Use the Costs endpoint or the Costs tab in the Usage Dashboard for financial totals. Usage and spend may not reconcile perfectly due to cached tokens, reasoning tokens, batch pricing and other factors.</p>
           </div>
           <div class="faq-item">
             <h3 class="faq-question">Do I need an Admin API key for organization usage data?</h3>
@@ -455,7 +456,7 @@ const internalLinks = [
           </div>
           <div class="faq-item">
             <h3 class="faq-question">Why does local token usage differ from the Costs endpoint?</h3>
-            <p class="faq-answer">Differences can arise from cached tokens, reasoning tokens, batch vs. standard pricing, invoice adjustments, UTC boundary mismatches, project or organization filter mismatches, automatic retries not in local logs, and incomplete pagination. For financial reconciliation, use the Costs endpoint rather than token estimates.</p>
+            <p class="faq-answer">Differences can come from cached-token pricing, reasoning tokens, batch or service-tier pricing, UTC boundary mismatches, organization or project filter mismatches, incomplete pagination, or locally missing retry records. Usage and spend are recorded through different systems, so use the Costs endpoint or Cost export for financial totals.</p>
           </div>
           <div class="faq-item">
             <h3 class="faq-question">Can the Dashboard combine multiple organizations?</h3>
