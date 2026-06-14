@@ -7,37 +7,42 @@ import '../styles/global.css';
 
 const siteUrl = 'https://aicostplanner.com';
 const currentDate = new Date().toISOString().split('T')[0];
+const route = '/api-billing-mismatch/';
+const lastUpdated = 'June 14, 2026';
 
-const breadcrumbs = [{ label: 'API Billing Mismatch', href: '/api-billing-mismatch/' }];
+const breadcrumbs = [{ label: 'API Billing Mismatch', href: route }];
 const internalLinks = [
-  { href: '/openai-api-billing/', label: 'OpenAI API Billing' },
-  { href: '/openai-api-usage/', label: 'OpenAI API Usage' },
+  { href: '/small-prepaid-test/', label: 'Small Prepaid Test' },
+  { href: '/agent-token-usage/', label: 'Agent Token Usage' },
+  { href: '/openrouter-credits/', label: 'OpenRouter Credits' },
+  { href: '/image-generation-api-cost/', label: 'Image Generation API Cost' },
   { href: '/failed-generation-cost/', label: 'Failed Generation Cost' },
+  { href: '/billing-transparency/', label: 'Billing Transparency' },
 ];
 ---
 
 <PageLayout
-  title="API Billing Mismatch Checklist"
-  description="Troubleshoot billing mismatch by comparing request logs, usage records, retries, timeouts and provider dashboards."
-  canonical={`${siteUrl}/api-billing-mismatch/`}
+  title="API Billing Mismatch: Reconcile Charges"
+  description="Find why API charges differ from local estimates. Reconcile request IDs, tokens, retries, cached usage, model routes and provider records."
+  canonical={`${siteUrl}${route}`}
   type="article"
   lastUpdated={currentDate}
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org", "@type": "Article",
-      "headline": "API Billing Mismatch: Logs, Usage and Provider Dashboard Checks",
-      "description": "Troubleshoot billing mismatch by comparing request logs, usage records, retries, timeouts and provider dashboards.",
+      "headline": "API Billing Mismatch Checklist",
+      "description": "Find why API charges differ from local estimates. Reconcile request IDs, tokens, retries, cached usage, model routes and provider records.",
       "author": { "@type": "Organization", "name": "AICostPlanner" },
       "publisher": { "@type": "Organization", "name": "AICostPlanner", "url": siteUrl },
       "datePublished": currentDate, "dateModified": currentDate,
-      "mainEntityOfPage": { "@type": "WebPage", "@id": `${siteUrl}/api-billing-mismatch/` }
+      "mainEntityOfPage": { "@type": "WebPage", "@id": `${siteUrl}${route}` }
     })} />
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org", "@type": "BreadcrumbList",
       "itemListElement": [
         { "@type": "ListItem", "position": 1, "name": "Home", "item": siteUrl },
-        { "@type": "ListItem", "position": 2, "name": "API Billing Mismatch", "item": `${siteUrl}/api-billing-mismatch/` }
+        { "@type": "ListItem", "position": 2, "name": "API Billing Mismatch", "item": `${siteUrl}${route}` }
       ]
     })} />
   </Fragment>
@@ -48,55 +53,352 @@ const internalLinks = [
       <div class="container">
         <Breadcrumb items={breadcrumbs} />
         <h1 class="page-title">API Billing Mismatch Checklist</h1>
-        <p class="page-meta"><span class="label-mono">Last updated: {currentDate}</span></p>
+        <p class="page-meta"><span class="label-mono">Last updated: {lastUpdated}</span></p>
       </div>
     </section>
 
     <section class="section-light content-section">
       <div class="container container-narrow">
+
         <div class="quick-answer">
           <h2>Quick Answer</h2>
           <p>
-            Billing mismatches happen when local usage estimates don't match provider charges. 
-            Common causes include retries, caching, pricing changes, and missing cost factors. 
-            This checklist helps you investigate discrepancies.
+            API billing mismatches usually come from differences in request counts, billable units,
+            model routes, retries, cached usage, output size or the time window being compared.
+            Reconcile the bill request by request: normalize timestamps, match request IDs,
+            compare provider-reported usage with local logs, apply the rate that was active at the
+            time, and investigate only the remaining unexplained difference.
           </p>
         </div>
 
-        <h2>Summary</h2>
+        <h2>Define the Billing Mismatch</h2>
         <p>
-          When your API costs don't match expectations, systematically compare local logs, 
-          usage records, and provider dashboards to identify the cause.
+          Before investigating, identify which three numbers are in disagreement:
         </p>
-        <p class="scaffold-note"><strong>Scaffold content to expand later.</strong></p>
+        <ul>
+          <li><strong>Local estimated cost</strong> — your calculation based on local logs, token counts and known unit prices</li>
+          <li><strong>Provider-reported usage cost</strong> — the per-request or per-period cost shown in the API response, usage endpoint or activity dashboard</li>
+          <li><strong>Account or invoice total</strong> — the balance change, credit deduction or period invoice amount</li>
+        </ul>
+        <p>
+          Do not assume these three numbers should naturally match. They can differ because local
+          estimates use different rates, omit billable fields, or use a different time window.
+        </p>
+        <p class="formula">
+          <span class="mono">unexplained_difference = provider_reported_total - locally_reconstructed_total</span>
+        </p>
+        <p>
+          Use this remainder as the actual investigation target. A small unexplained difference is
+          normal; a large one warrants deeper review.
+        </p>
+
+        <h2>Gather Evidence Before Recalculating</h2>
+        <p>
+          Do not delete or overwrite logs during an investigation. Collect all of the following
+          before recalculating:
+        </p>
+        <ul class="checklist">
+          <li><span class="checklist-icon">&#10003;</span><span><span class="mono">request_id</span> for every API call</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span><span class="mono">session_id</span> or <span class="mono">job_id</span> if the platform uses them</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span><span class="mono">timestamp</span> in UTC with timezone offset</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Provider and model used</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Provider route, if visible in the response</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>HTTP status code and error body</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Success or failure state</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span><span class="mono">tokens_in</span> and <span class="mono">tokens_out</span></span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Cached input tokens, if reported</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Reasoning tokens, if applicable</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span><span class="mono">tool_calls</span> count and type</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>For image APIs: count, resolution and operation type</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>For video APIs: duration, resolution and frame rate</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span><span class="mono">retry_count</span> for the request</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Local estimated cost per request</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Provider-reported cost from the response or dashboard</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Dashboard or invoice record for the period</span></li>
+        </ul>
+
+        <h2>Normalize the Time Window and Time Zone</h2>
+        <p>
+          Before comparing any totals, convert both datasets to the same time zone and use the
+          same inclusive start and exclusive end timestamps.
+        </p>
+        <ul>
+          <li>Local logs may default to UTC; the provider dashboard may display account local time</li>
+          <li>Daily totals may be cut off at different hours depending on the provider's day boundary</li>
+          <li>Pending or batched usage may appear in the dashboard after the request completed</li>
+          <li>Credit purchase timestamps may be recorded in a different timezone than usage deductions</li>
+          <li>Export the exact start and end timestamps from both systems before summing</li>
+        </ul>
+        <p>
+          Do not compare a 24-hour local log against a calendar-day dashboard total without
+          verifying the time boundaries match.
+        </p>
+
+        <h2>Reconcile Request Counts</h2>
+        <p>
+          Count the following in both local logs and provider activity separately:
+        </p>
+        <ul>
+          <li>Local application request count</li>
+          <li>Provider activity request count</li>
+          <li>Successful request count (both sources)</li>
+          <li>Failed request count (both sources)</li>
+          <li>Automatic retry count</li>
+          <li>Duplicate request count</li>
+        </ul>
+        <p>
+          Sources of extra provider-side requests include:
+        </p>
+        <ul>
+          <li>SDK automatic retries</li>
+          <li>Proxy-layer retries</li>
+          <li>Application-level retries after a timeout</li>
+          <li>Webhook retries on delivery failure</li>
+          <li>Duplicate queue deliveries</li>
+          <li>Frontend double-submit on slow responses</li>
+          <li>Parallel workers that each sent the same prompt independently</li>
+          <li>Fallback attempts to an alternative model or provider</li>
+          <li>Retries after a rate-limit response</li>
+        </ul>
+        <p>
+          Retries and fallback attempts can change request counts, but their billing treatment
+          depends on the provider and response outcome. Inspect the actual usage record instead
+          of assuming every attempt was charged.
+        </p>
+
+        <h2>Reconcile Billable Units</h2>
+
+        <h3>Text and Agent Requests</h3>
+        <p>
+          Possible billable fields that may not all be in a local estimator:
+        </p>
+        <ul>
+          <li>Input tokens</li>
+          <li>Output tokens</li>
+          <li>Cached input tokens (discounted or free on some providers)</li>
+          <li>Cache write tokens</li>
+          <li>Reasoning tokens (charged on some reasoning models)</li>
+          <li>Repeated conversation history sent on each turn</li>
+          <li>Tool definitions and schema</li>
+          <li>Tool results returned to the model</li>
+          <li>Retrieved context from RAG or memory systems</li>
+        </ul>
+        <p>
+          Identify the specific token fields missing from your local estimator rather than using vague
+          labels. Look for the exact billable field name in the provider response and add it to
+          your calculation.
+        </p>
+
+        <h3>Image Requests</h3>
+        <ul>
+          <li>Input image count and resolution</li>
+          <li>Output image count</li>
+          <li>Resolution tier (some providers bill by megapixel bucket)</li>
+          <li>Editing, upscaling or variation operations</li>
+          <li>Per-image pricing vs. tokenized image pricing</li>
+        </ul>
+        <p>
+          Megapixels are an estimation input, not a universal billing unit. Check the provider's
+          actual billing unit.
+        </p>
+
+        <h3>Video Requests</h3>
+        <ul>
+          <li>Duration in seconds</li>
+          <li>Resolution tier</li>
+          <li>Frame rate</li>
+          <li>Number of outputs per request</li>
+          <li>Extension or upscaling operations</li>
+          <li>Successful vs. usable output count (failed generations may or may not be billed)</li>
+        </ul>
+
+        <h2>Check Model and Provider Routing</h2>
+        <p>
+          Your local estimate must match the model and provider that actually handled the request:
+        </p>
+        <ul>
+          <li>A model alias may resolve to a different model version with different pricing</li>
+          <li>A gateway or proxy may route to a different underlying provider</li>
+          <li>A fallback model may be charged at a different rate than the requested model</li>
+          <li>Some providers charge differently for the same model depending on the deployment type</li>
+        </ul>
+        <p>
+          Record these fields for each request to make routing comparison possible:
+        </p>
+        <ul>
+          <li><span class="mono">requested_model</span></li>
+          <li><span class="mono">resolved_model</span> — from the API response</li>
+          <li><span class="mono">provider_route</span> — if exposed in the response</li>
+          <li><span class="mono">pricing_snapshot_date</span> — when you recorded the rate used for local estimation</li>
+        </ul>
+        <p>
+          Do not assume a route change occurred without usage evidence. Some providers show the
+          resolved model in the response body or activity log.
+        </p>
+
+        <h2>Check Retries, Fallbacks and Duplicate Requests</h2>
+        <p>
+          Retries and fallback attempts affect cost in ways that simple request counting misses:
+        </p>
+        <ul>
+          <li>A retriable error may generate multiple provider-side requests for one application request</li>
+          <li>Each retry attempt may consume tokens and cost credit</li>
+          <li>A fallback to a cheaper model reduces per-request cost; a fallback to a more expensive one increases it</li>
+          <li>A timeout that triggers a client-side retry without a server-side attempt costs nothing</li>
+          <li>A failed streaming response that partially generated tokens may still report partial usage</li>
+        </ul>
+        <p>
+          For each request with a high retry_count, check whether the provider activity log
+          shows multiple entries with the same or similar prompt.
+        </p>
+
+        <h2>Check Cached, Reasoning and Tool-Use Tokens</h2>
+        <p>
+          Some providers report billable token categories that are not always captured in a basic
+          local estimator:
+        </p>
+        <ul>
+          <li><strong>Cached input</strong> — some providers bill cached input at a discount; others bill it at zero</li>
+          <li><strong>Cache writes</strong> — some providers charge for cache creation</li>
+          <li><strong>Reasoning tokens</strong> — some reasoning models charge reasoning separately from input/output</li>
+          <li><strong>Tool-call tokens</strong> — tool definitions and results can add significant input token overhead in agent workflows</li>
+        </ul>
+        <p>
+          Compare each reported token category from the provider against the fields your local
+          estimator uses. Look for categories in the response that are not in your calculation.
+        </p>
+
+        <h2>Check Image and Video Billing Units</h2>
+        <p>
+          Media APIs often use billing units that differ from per-token text pricing:
+        </p>
+        <ul>
+          <li>Billed per output image vs. per megapixel vs. per token — these give different totals</li>
+          <li>Number of images per generation call may differ from the number you counted</li>
+          <li>Video generation may bill per second or per frame, not per operation</li>
+          <li>Failed or timed-out generations may or may not appear in the usage log depending on the provider</li>
+          <li>Webhook delivery failures may trigger retries with additional cost</li>
+        </ul>
+
+        <h2>Verify the Price and Effective Date</h2>
+        <p>
+          Use the rate that was active at the time of the request, not today's rate:
+        </p>
+        <ul>
+          <li>Record the pricing snapshot date alongside each local estimate</li>
+          <li>Check whether the provider publishes historical pricing or only current pricing</li>
+          <li>Distinguish between input token, output token, cache, batch and media operation rates</li>
+          <li>Do not recalculate historical charges using a rate that changed after the billing period</li>
+          <li>Provider price changes may not be announced in advance — check the effective date in the activity log</li>
+        </ul>
+
+        <h2>Failed, Timed-Out and Partial Requests</h2>
+        <p>
+          Billing treatment for failed, timed-out, cancelled or partially streamed requests varies
+          by provider and failure stage. Check the HTTP response, returned usage data, request ID,
+          activity record and current provider documentation before counting or excluding the request.
+        </p>
+        <p>
+          Do not assume all failed requests are free, or that all are charged. The correct
+          approach is to inspect the specific response and activity log entry.
+        </p>
+
+        <h2>Prepaid Credits vs Usage Charges</h2>
+        <p>
+          In prepaid systems, several different balance movements can occur:
+        </p>
+        <ul>
+          <li><strong>Credit purchase</strong> — adds to the balance; not a usage charge</li>
+          <li><strong>Usage deduction</strong> — the cost of API calls; what you are investigating</li>
+          <li><strong>Bonus or promotional credit</strong> — may expire or have different terms</li>
+          <li><strong>Refund or adjustment</strong> — may appear separately from usage</li>
+          <li><strong>API-key spending limit</strong> — may cap usage independently of the account balance</li>
+        </ul>
+        <p>
+          Do not treat a credit purchase as a usage charge, or a balance change as equivalent to
+          a per-request billed cost. Check which transactions are usage and which are funding.
+        </p>
+
+        <h2>Worked Reconciliation Example</h2>
+        <p>
+          A real investigation typically follows this pattern:
+        </p>
+        <div class="formula">
+          <p><strong>Local request log summary:</strong></p>
+          <ul>
+            <li>100 application requests sent</li>
+            <li>92 returned successful</li>
+            <li>8 returned failed</li>
+            <li>4 automatic retries observed in SDK logs</li>
+            <li>96 provider activity records found</li>
+          </ul>
+          <p><strong>Token reconstruction (local):</strong></p>
+          <ul>
+            <li>Input usage: $8.40</li>
+            <li>Output usage: $5.60</li>
+            <li>Cached usage (discounted): $0.80</li>
+            <li>Locally reconstructed total: $14.80</li>
+          </ul>
+          <p><strong>Provider-reported total:</strong> $14.95</p>
+          <p><strong>Unexplained difference:</strong></p>
+          <p class="mono">$14.95 - $14.80 = $0.15</p>
+        </div>
+        <p>
+          Next steps for the remaining $0.15:
+        </p>
+        <ul>
+          <li>Check for rounding in per-request costs</li>
+          <li>Identify one unmatched request ID in the provider log</li>
+          <li>Check whether a cached token field was omitted from the local calculation</li>
+          <li>Verify no rate version mismatch occurred mid-batch</li>
+          <li>Confirm the 4 retries produced 4 extra provider records at $0.0375 each</li>
+        </ul>
+        <p>
+          Do not assume the unexplained remainder is always one specific cause. Use evidence
+          to narrow it down.
+        </p>
 
         <h2>Investigation Checklist</h2>
         <ul class="checklist">
-          <li><span class="checklist-icon">&#10003;</span><span>Compare total requests in logs vs. dashboard</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Check for duplicate requests or retries</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Verify token counts in logs vs. billed usage</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Check for pricing changes by provider</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Review failed requests and their billing treatment</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Check for cache hits that should reduce costs</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Verify spend limits didn't cause partial charges</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Freeze the investigation time range — note exact start and end timestamps</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Export all local request logs for the period</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Export provider usage records from the activity or billing dashboard</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Normalize timestamps to the same timezone in both datasets</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Match <span class="mono">request_id</span> values between local logs and provider records</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Compare request counts (local vs. provider activity log)</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Compare billable units per request (tokens, images, video duration)</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Identify retries, duplicates and fallback attempts</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Verify model and <span class="mono">provider_route</span> against local estimation rate</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Apply the correct historical rates for each request date</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Separate credit purchases and adjustments from usage charges</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Calculate the unexplained remainder</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Escalate to support only with evidence — do not send API keys</span></li>
         </ul>
 
-        <h2>Common Causes</h2>
+        <h2>Support Escalation Package</h2>
+        <p>
+          When escalating to provider support, include only the following:
+        </p>
         <ul>
-          <li><strong>Retries</strong> — Each retry may incur charges</li>
-          <li><strong>Hidden tokens</strong> — System prompts, context, or metadata</li>
-          <li><strong>Pricing updates</strong> — Provider changed rates mid-period</li>
-          <li><strong>Failed request billing</strong> — Some providers charge for failures</li>
-          <li><strong>Rate limit handling</strong> — Backoff retries add to usage</li>
+          <li>Account or organization ID (not a secret)</li>
+          <li><span class="mono">request_id</span> values for the affected calls</li>
+          <li>Timestamps and timezone used</li>
+          <li>Model and provider route for each affected request</li>
+          <li>HTTP status code and error code or type</li>
+          <li>Local usage calculation showing the per-request estimate</li>
+          <li>Provider usage record from the dashboard or API response</li>
+          <li>Dashboard screenshot with any sensitive data redacted</li>
+          <li>The exact unexplained amount and how it was calculated</li>
+          <li>Concise reproduction steps</li>
         </ul>
-
-        <h2>Request ID Tracking</h2>
-        <p>Always save these for every request:</p>
+        <p>
+          Do <strong>not</strong> send:
+        </p>
         <ul>
-          <li><span class="mono">request_id</span> — Unique request identifier</li>
-          <li><span class="mono">tokens_in</span> and <span class="mono">tokens_out</span></li>
-          <li><span class="mono">model</span> and <span class="mono">timestamp</span></li>
-          <li><span class="mono">estimated_cost</span> based on your calculations</li>
+          <li>API key or management key</li>
+          <li>Authorization header</li>
+          <li>Full logs containing secrets or other users' data</li>
+          <li>Customer private data unrelated to the billing question</li>
         </ul>
 
         <h2>Related Guides</h2>
@@ -108,29 +410,96 @@ const internalLinks = [
 
         <div class="ai-summary-block">
           <div class="ai-summary-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg> AI Summary</div>
-          <p>API billing mismatch occurs when local usage estimates don't match provider charges. Common causes include retries, hidden tokens, pricing changes, and failed request billing. Track request_id, tokens_in, tokens_out, and compare against the provider dashboard. This is scaffold content for future expansion.</p>
+          <p>
+            API billing mismatches arise from differences between locally estimated cost, provider-reported
+            usage and account-level totals. A systematic investigation normalizes time windows, matches
+            <span class="mono">request_id</span> values, compares billable units, checks for retries, duplicates,
+            model route changes and cached token fields, and calculates the unexplained remainder as the
+            actual investigation target. Billing treatment for failed, timed-out and partial requests
+            varies by provider and stage — inspect the actual usage record rather than applying a universal
+            rule. Escalate to provider support only with evidence, excluding any keys or secrets. This
+            page is educational, not financial or provider-specific guidance.
+          </p>
         </div>
 
         <h2>Frequently Asked Questions</h2>
         <div class="faq-list">
           <div class="faq-item">
-            <h3 class="faq-question">Why is my API bill higher than expected?</h3>
-            <p class="faq-answer">Possible causes include: more tokens than estimated, retries adding charges, pricing changes, failed requests being billed, or hidden context from system prompts.</p>
+            <h3 class="faq-question">Why is my API bill higher than my local estimate?</h3>
+            <p class="faq-answer">
+              Common causes include: missing billable token categories in the local estimator
+              (such as cache writes, reasoning tokens or tool-call overhead), a model route that
+              resolved to a different provider than estimated, retries creating extra provider-side
+              requests, output that was larger than expected, or pricing that changed after the
+              estimation was made. Compare request by request before assuming a single cause.
+            </p>
           </div>
           <div class="faq-item">
-            <h3 class="faq-question">How do I dispute a billing discrepancy?</h3>
-            <p class="faq-answer">Contact the provider support with your request_id, logs, and estimated costs. Provide evidence from your local tracking to support your case.</p>
+            <h3 class="faq-question">How do I match provider charges to request IDs?</h3>
+            <p class="faq-answer">
+              Export the provider activity log and match each <span class="mono">request_id</span>
+              to the local log. If an entry appears in the provider log but not locally, check
+              for proxy retries or SDK-initiated retries. If an entry appears locally but not in
+              the provider log, check whether the request reached the provider.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Do retries always increase API cost?</h3>
+            <p class="faq-answer">
+              Retries can increase cost if each retry attempt generates a new provider-side request
+              that is billed. However, the billing treatment depends on the provider, the type of
+              failure and the response outcome. Inspect the actual usage record to determine whether
+              a retry was charged.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Are failed API requests billed?</h3>
+            <p class="faq-answer">
+              Billing treatment for failed, timed-out, cancelled or partially streamed requests
+              varies by provider and failure stage. Do not apply a universal assumption. Check the
+              HTTP response, the returned usage data, the <span class="mono">request_id</span>
+              activity record and the current provider documentation.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Why do dashboard totals differ from daily logs?</h3>
+            <p class="faq-answer">
+              Dashboard totals and daily logs may use different time zones, different day-boundary
+              cutoffs, or different inclusion rules for pending usage. Batch usage may appear after
+              the request timestamp in the dashboard. Verify that both datasets use the same start
+              and end timestamps before comparing.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">How do cached tokens affect billing?</h3>
+            <p class="faq-answer">
+              Cached tokens are treated differently by different providers: some offer discounted
+              rates, some charge zero for cached input, and some bill cache writes separately.
+              Compare the cached token fields in the provider response against the fields your
+              local estimator uses.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">What evidence should I send to provider support?</h3>
+            <p class="faq-answer">
+              Include the account or organization ID (not a secret), <span class="mono">request_id</span>
+              values, timestamps, model and provider route, HTTP status and error code, your local
+              usage calculation, the provider usage record, and the exact unexplained amount. Do not
+              send API keys, management keys, authorization headers or logs containing other users' data.
+            </p>
           </div>
         </div>
 
         <div class="cta-block">
-          <h3>Ready to start?</h3>
-          <p>Create an API key with $1 trial credit and explore live model pricing.</p>
+          <h3>Estimate before you scale</h3>
+          <p>Use a small prepaid test to establish a real cost baseline before committing a larger budget.</p>
           <div class="cta-buttons">
-            <a href="https://app.rutaapi.com/register?lng=en" class="btn btn-primary" target="_blank" rel="noopener">Create API Key <span class="btn-subtext">$1 trial credit</span></a>
+            <a href="https://app.rutaapi.com/register?lng=en" class="btn btn-primary" target="_blank" rel="noopener">Create API Key</a>
             <a href="https://app.rutaapi.com/pricing" class="btn btn-secondary-dark" target="_blank" rel="noopener">View Live Pricing</a>
+            <a href="https://app.rutaapi.com/register?lng=en" class="btn btn-secondary-dark" target="_blank" rel="noopener">Start with a Small Prepaid Test</a>
           </div>
         </div>
+
       </div>
     </section>
   </main>
@@ -148,11 +517,14 @@ const internalLinks = [
   .quick-answer p { margin: 0; color: var(--color-text-light); line-height: 1.7; }
   h2 { font-size: 1.5rem; font-weight: 600; color: var(--color-text-light); margin: var(--space-10) 0 var(--space-4); padding-top: var(--space-6); border-top: 1px solid var(--color-border-light); }
   h2:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+  h3 { font-size: 1.125rem; font-weight: 600; color: var(--color-text-light); margin: var(--space-6) 0 var(--space-3); }
   p { color: var(--color-text-light-muted); line-height: 1.75; margin-bottom: var(--space-4); }
   ul, ol { color: var(--color-text-light-muted); margin-bottom: var(--space-4); padding-left: var(--space-6); }
   li { margin-bottom: var(--space-2); line-height: 1.7; }
   .mono { font-family: var(--font-mono); font-size: 0.875em; background: var(--color-bg-light-muted); padding: 0.125em 0.375em; border-radius: var(--radius-sm); }
-  .scaffold-note { background: rgba(59, 130, 246, 0.08); border: 1px dashed var(--color-accent-blue); border-radius: var(--radius-md); padding: var(--space-4); margin-top: var(--space-4); }
+  .formula { background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.18); border-radius: var(--radius-md); padding: var(--space-4); }
+  .formula p { margin-bottom: var(--space-2); }
+  .formula ul { margin-bottom: var(--space-2); }
   .checklist { list-style: none; padding: 0; }
   .checklist li { display: flex; align-items: flex-start; gap: var(--space-3); padding: var(--space-3) 0; }
   .checklist-icon { color: var(--color-accent-green); font-weight: bold; flex-shrink: 0; }
@@ -171,11 +543,10 @@ const internalLinks = [
   .faq-answer { margin: 0; font-size: 0.9375rem; line-height: 1.7; }
   .cta-block { text-align: center; padding: var(--space-10); background: var(--color-bg-light-muted); border-radius: var(--radius-xl); margin-top: var(--space-10); }
   .cta-block h3 { font-size: 1.25rem; font-weight: 600; color: var(--color-text-light); margin-bottom: var(--space-3); }
-  .cta-block p { max-width: 40ch; margin: 0 auto var(--space-6); }
+  .cta-block p { max-width: 42ch; margin: 0 auto var(--space-6); }
   .cta-buttons { display: flex; gap: var(--space-4); justify-content: center; flex-wrap: wrap; }
   .btn-primary { background: linear-gradient(135deg, var(--color-accent-blue), var(--color-accent-cyan)); color: white; padding: var(--space-3) var(--space-6); border-radius: var(--radius-md); font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: var(--space-2); transition: all var(--transition-fast); }
   .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); color: white; }
-  .btn-subtext { font-size: 0.75rem; font-weight: 400; opacity: 0.9; background: rgba(255,255,255,0.15); padding: var(--space-1) var(--space-2); border-radius: var(--radius-sm); }
   .btn-secondary-dark { background: transparent; color: var(--color-text-light); padding: var(--space-3) var(--space-6); border-radius: var(--radius-md); font-weight: 500; border: 1px solid var(--color-border-light); text-decoration: none; display: inline-flex; align-items: center; gap: var(--space-2); transition: all var(--transition-fast); }
   .btn-secondary-dark:hover { border-color: var(--color-accent-blue); color: var(--color-accent-blue); }
   @media (max-width: 640px) { .page-title { font-size: 1.75rem; } .link-cards { grid-template-columns: 1fr; } .cta-buttons { flex-direction: column; } .cta-buttons .btn { width: 100%; justify-content: center; } }
