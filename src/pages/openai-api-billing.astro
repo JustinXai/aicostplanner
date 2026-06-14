@@ -7,179 +7,402 @@ import '../styles/global.css';
 
 const siteUrl = 'https://aicostplanner.com';
 const currentDate = new Date().toISOString().split('T')[0];
+const route = '/openai-api-billing/';
+const lastReviewed = 'June 14, 2026';
 
-const breadcrumbs = [
-  { label: 'OpenAI API Billing', href: '/openai-api-billing/' },
-];
-
+const breadcrumbs = [{ label: 'OpenAI API Billing', href: route }];
 const internalLinks = [
   { href: '/openai-api-credits/', label: 'OpenAI API Credits' },
-  { href: '/openai-api-usage/', label: 'OpenAI API Usage' },
   { href: '/api-billing-mismatch/', label: 'API Billing Mismatch' },
+  { href: '/small-prepaid-test/', label: 'Small Prepaid Test' },
+  { href: '/billing-transparency/', label: 'Billing Transparency' },
+  { href: '/agent-token-usage/', label: 'Agent Token Usage' },
+  { href: '/image-generation-api-cost/', label: 'Image Generation API Cost' },
+  { href: '/failed-generation-cost/', label: 'Failed Generation Cost' },
 ];
 ---
 
 <PageLayout
-  title="OpenAI API Billing Checklist"
-  description="Review billing units, usage records, request IDs and dashboard checks before increasing API traffic."
-  canonical={`${siteUrl}/openai-api-billing/`}
+  title="OpenAI API Billing Guide"
+  description="Understand OpenAI API billing settings, project budgets, invoices, payment methods and monthly usage or cost exports."
+  canonical={`${siteUrl}${route}`}
   type="article"
   lastUpdated={currentDate}
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "Article",
-      "headline": "OpenAI API Billing: What Developers Should Check",
-      "description": "Review billing units, usage records, request IDs and dashboard checks before increasing API traffic.",
-      "author": {
-        "@type": "Organization",
-        "name": "AICostPlanner"
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "AICostPlanner",
-        "url": siteUrl
-      },
-      "datePublished": currentDate,
-      "dateModified": currentDate,
-      "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": `${siteUrl}/openai-api-billing/`
-      }
+      "@context": "https://schema.org", "@type": "Article",
+      "headline": "OpenAI API Billing Guide",
+      "description": "Understand OpenAI API billing settings, project budgets, invoices, payment methods and monthly usage or cost exports.",
+      "author": { "@type": "Organization", "name": "AICostPlanner" },
+      "publisher": { "@type": "Organization", "name": "AICostPlanner", "url": siteUrl },
+      "datePublished": currentDate, "dateModified": currentDate,
+      "mainEntityOfPage": { "@type": "WebPage", "@id": `${siteUrl}${route}` }
     })} />
     <script type="application/ld+json" set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
+      "@context": "https://schema.org", "@type": "BreadcrumbList",
       "itemListElement": [
         { "@type": "ListItem", "position": 1, "name": "Home", "item": siteUrl },
-        { "@type": "ListItem", "position": 2, "name": "OpenAI API Billing", "item": `${siteUrl}/openai-api-billing/` }
+        { "@type": "ListItem", "position": 2, "name": "OpenAI API Billing", "item": `${siteUrl}${route}` }
       ]
     })} />
   </Fragment>
 
   <Header />
-  
   <main>
     <section class="hero-dark">
       <div class="container">
         <Breadcrumb items={breadcrumbs} />
-        <h1 class="page-title">OpenAI API Billing Checklist</h1>
-        <p class="page-meta"><span class="label-mono">Last updated: {currentDate}</span></p>
+        <h1 class="page-title">OpenAI API Billing Explained</h1>
+        <p class="page-meta"><span class="label-mono">Last reviewed: {lastReviewed}</span></p>
       </div>
     </section>
 
     <section class="section-light content-section">
       <div class="container container-narrow">
+
         <div class="quick-answer">
           <h2>Quick Answer</h2>
           <p>
-            OpenAI API billing is based on token usage and model selection. Before scaling, review 
-            your usage patterns, set spend limits, and verify your billing records against your 
-            application logs.
+            OpenAI API billing depends on the organization, project, billing arrangement and payment setup.
+            Project budgets are monitoring thresholds, not hard spending caps, so requests can continue
+            after a budget alert. Use the organization Billing and Usage pages to review payment settings
+            and spend, and export Activity or Cost CSV data when you need detailed monthly reconciliation.
           </p>
         </div>
 
-        <h2>Summary</h2>
+        <h2>OpenAI API Billing vs ChatGPT Billing</h2>
         <p>
-          This checklist helps you audit your OpenAI API billing before increasing traffic. 
-          Verify your usage records, understand billing units, and set appropriate limits.
+          OpenAI maintains separate billing systems for the API Platform and for ChatGPT products.
+          API billing — including credits, invoices, project budgets and usage — is managed through
+          the API Platform interface. ChatGPT subscription billing is managed separately. Make sure
+          you are in the correct interface before reviewing or modifying billing settings.
         </p>
-        <p class="scaffold-note">
-          <strong>Scaffold content to expand later.</strong> Full billing guide content will be added.
+        <p>
+          This page covers API Platform billing administration. For credits expiry and prepaid billing,
+          see the <a href="/openai-api-credits/">OpenAI API Credits</a> guide.
         </p>
 
-        <h2>What Cost Unit Matters</h2>
-        <p>OpenAI API billing uses <span class="mono">token</span> as the primary unit:</p>
+        <h2>Organization Billing and Permissions</h2>
+        <p>
+          OpenAI API billing is organized at the organization level. Organization Owners have full
+          access to billing settings, payment methods, usage limits and member management.
+        </p>
+        <p>
+          Organization Owners can:
+        </p>
         <ul>
-          <li>Input tokens: prompts, context, system messages</li>
-          <li>Output tokens: model responses</li>
-          <li>Different rates for different models</li>
-          <li>Image generation: per-image or per-quality-tier</li>
+          <li>Add, update or remove payment methods</li>
+          <li>View and export billing history and invoices</li>
+          <li>Set and adjust project budgets</li>
+          <li>Manage organization usage limits and billing arrangements</li>
+          <li>Invite and assign roles to members</li>
         </ul>
+        <p>
+          Reader-level members and general project members may not have access to billing settings.
+          If billing data is not visible, verify the organization, project, role and active filters
+          in the current session before assuming there is a problem.
+        </p>
 
-        <h2>Before You Scale</h2>
-        <ul class="checklist">
-          <li><span class="checklist-icon">&#10003;</span><span>Review current usage in the OpenAI dashboard</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Check cost per 1K tokens for your models</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Calculate estimated cost for planned traffic increase</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Set spend limits if available</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Enable usage alerts</span></li>
-        </ul>
-
-        <h2>Request ID Tracking</h2>
-        <p>Save these for every API call:</p>
+        <h2>Prepaid vs Monthly Billing Arrangements</h2>
+        <p>
+          OpenAI's current prepaid-billing documentation describes the following arrangements:
+        </p>
         <ul>
-          <li><span class="mono">request_id</span> — Unique identifier for the request</li>
-          <li><span class="mono">tokens_in</span> — Input token count</li>
-          <li><span class="mono">tokens_out</span> — Output token count</li>
-          <li><span class="mono">model</span> — Model used for the request</li>
-          <li><span class="mono">timestamp</span> — When the request was made</li>
+          <li><strong>Prepaid billing</strong> — new accounts currently start on prepaid billing; credits are purchased upfront and usage is deducted from the balance; purchased credits expire after one year</li>
+          <li><strong>Monthly postpaid billing</strong> — available for eligible accounts after review; usage is billed at the end of the billing period</li>
+          <li><strong>Enterprise billing</strong> — governed by a separate contract with negotiated payment terms; invoices are issued separately from self-serve accounts</li>
+        </ul>
+        <p>
+          The billing arrangement determines whether an account uses prepaid credits or monthly invoicing.
+          Check the current billing arrangement in the organization Billing page.
+        </p>
+
+        <h2>Project Budgets Are Soft Thresholds</h2>
+        <p>
+          OpenAI's current API Platform documentation describes project budgets as soft spending thresholds
+          used for monitoring and alerting. API requests continue after the monthly project budget is
+          exceeded; the budget is not a hard spending cap that blocks requests automatically.
+        </p>
+        <p>
+          Key points about project budgets:
+        </p>
+        <ul>
+          <li>Project budgets are monitored per calendar month in UTC</li>
+          <li>Alerts can be set at configurable thresholds (e.g., 50%, 75%, 100%)</li>
+          <li>Budget alerts notify the configured recipients but do not stop API requests</li>
+          <li>Requests that continue after a budget alert generate charges against the account balance</li>
+          <li>Project budgets do not replace application-level spending controls</li>
+        </ul>
+        <p>
+          To prevent runaway spend, implement application-side controls: hard request limits per key,
+          key rotation procedures, queue-based throttling, and real-time cost monitoring.
+        </p>
+
+        <h2>Organization Limits vs Project Budgets</h2>
+        <p>
+          OpenAI accounts have several independent limits that are distinct from project budgets:
+        </p>
+        <ul>
+          <li><strong>Organization usage tier</strong> — determines the baseline rate limits and billing arrangement eligibility; affects approved credit ceiling and postpaid access</li>
+          <li><strong>Rate limits</strong> — RPM (requests per minute) and TPM (tokens per minute) enforced at the API layer; unrelated to spending</li>
+          <li><strong>Project monthly budget</strong> — soft monitoring threshold per project; alerts but does not block</li>
+          <li><strong>Prepaid credit balance</strong> — available credits for self-serve accounts; usage stops with an <code>insufficient_quota</code> error when exhausted</li>
+          <li><strong>Application-side spending boundary</strong> — developer-defined hard cap implemented in the calling code; the only guaranteed way to stop at a set budget</li>
+        </ul>
+        <p>
+          Do not treat these as interchangeable. Each limit controls a different dimension of usage.
+        </p>
+
+        <h2>Where to Manage Payment Methods</h2>
+        <p>
+          OpenAI's billing settings documentation describes the following for payment method management:
+        </p>
+        <ul>
+          <li>Payment methods are managed in the API Platform billing settings</li>
+          <li>An account must pass necessary verification before a payment method can be added or changed</li>
+          <li>An outstanding balance, past-due invoice or recent payment failure may prevent removal of the current payment method</li>
+          <li>Do not attempt to remove a payment method as a way to avoid an outstanding balance</li>
+          <li>The current active payment method is used for auto recharge, manual purchases or postpaid billing as applicable</li>
         </ul>
 
-        <h2>Dashboard Verification</h2>
+        <h2>Billing History, Receipts and Invoices</h2>
+        <p>
+          OpenAI's API Platform billing settings provide access to billing history and receipts.
+          The available documents depend on the account type:
+        </p>
+        <ul>
+          <li><strong>Prepaid accounts</strong> — purchase receipts are available for each credit purchase; invoices are not issued per request or per month</li>
+          <li><strong>Monthly postpaid accounts</strong> — monthly billing summaries are available; document types may vary by billing arrangement</li>
+          <li><strong>Enterprise accounts</strong> — formal invoices are issued according to the contract terms and payment schedule</li>
+        </ul>
+        <p>
+          The invoice total for a given period may not match a granular usage export because invoice
+          line items are grouped and may include adjustments, credits or contract-specific pricing.
+        </p>
+
+        <h2>Who Receives API Invoices</h2>
+        <p>
+          OpenAI's current documentation indicates that API invoices are issued for Enterprise
+          accounts under their contract terms. Self-serve accounts on prepaid or monthly billing
+          do not receive per-month invoices in the same format as Enterprise customers.
+        </p>
+        <p>
+          Do not assume that every API account receives monthly invoices. For detailed usage
+          records, use the Usage Dashboard export instead.
+        </p>
+
+        <h2>When Enterprise API Invoices Are Issued</h2>
+        <p>
+          For Enterprise accounts, OpenAI's current documentation indicates:
+        </p>
+        <ul>
+          <li>Invoices are issued according to the billing terms in the Enterprise order form</li>
+          <li>Billing periods typically follow the calendar month</li>
+          <li>Invoices are generally issued within a period after the billing month closes</li>
+          <li>Payment terms (e.g., net-30) are specified in the Enterprise agreement</li>
+        </ul>
+        <p>
+          For detailed monthly cost data, including line-item breakdowns, the Usage Dashboard
+          export serves as the granular record. OpenAI's documentation notes that for Enterprise
+          invoices issued from April 1, 2026 onward, detailed API cost breakdowns have moved to
+          the Usage Dashboard export process.
+        </p>
+
+        <h2>Exporting Monthly Usage and Cost Data</h2>
+        <p>
+          OpenAI's Usage Dashboard export documentation describes two export types:
+        </p>
+        <ul>
+          <li><strong>Cost export</strong> — provides aggregated spend data grouped by line item; available for full-month or month-to-date ranges; useful for spend reconciliation against invoice totals</li>
+          <li><strong>Activity export</strong> — provides granular usage data that can be filtered by project, user, API key, model, batch or service tier; useful for investigating usage patterns and debugging cost anomalies</li>
+        </ul>
+        <p>
+          The Usage Dashboard export is not a per-request-ID billing system. It provides
+          aggregated usage and spend data. Application-level request logs are needed for
+          individual request-level reconciliation.
+        </p>
+        <p>
+          To export:
+        </p>
+        <ul>
+          <li>Navigate to the Usage Dashboard in the API Platform</li>
+          <li>Select the target organization and project</li>
+          <li>Choose the calendar-month or custom UTC date range</li>
+          <li>Select Cost or Activity export format</li>
+          <li>Download the CSV and note the export timestamp</li>
+        </ul>
+
+        <h2>Invoice Total vs Detailed Cost Export</h2>
+        <p>
+          The invoice total and the Usage Dashboard Cost export may differ because:
+        </p>
+        <ul>
+          <li>Invoices apply contract pricing and may include volume discounts or adjustments not reflected in list-price exports</li>
+          <li>Enterprise invoice line items are grouped; the Cost export provides per-model or per-operation breakdown</li>
+          <li>Promotional credits, grants or refunds appear on invoices but may not appear as separate line items in the export</li>
+          <li>For Enterprise invoices from April 1, 2026 onward, detailed cost breakdowns are available through the Usage Dashboard export rather than the invoice itself</li>
+        </ul>
+        <p>
+          Use the Cost export as the granular record and the invoice as the formal billing document.
+          Compare the two by matching the billing period and noting any differences attributable to
+          pricing, credits or adjustments.
+        </p>
+
+        <h2>Updating Billing Information, Tax ID and VAT ID</h2>
+        <p>
+          OpenAI's billing information documentation describes how to update billing details:
+        </p>
+        <ul>
+          <li>Billing information, Tax ID and VAT ID can be updated in the API Platform billing settings</li>
+          <li>Updates typically apply to future invoices only; past invoices are not automatically revised</li>
+          <li>To request correction of a past invoice, contact OpenAI support with the invoice number and evidence</li>
+          <li>An invalid or unverifiable Tax ID may be removed, and applicable taxes may be applied</li>
+          <li>Always verify the current required fields in the billing settings before submitting</li>
+        </ul>
+
+        <h2>Payment Failure and Past-Due Checks</h2>
+        <p>
+          If a payment fails or an account becomes past due:
+        </p>
+        <ul>
+          <li>OpenAI may restrict API access until the outstanding balance is resolved</li>
+          <li>Auto recharge may be paused for failed payments; verify the payment method and retry</li>
+          <li>An outstanding balance may block the ability to remove or replace the current payment method</li>
+          <li>Contact OpenAI support with the organization ID and evidence to dispute or resolve a billing discrepancy</li>
+          <li>Never send API keys, full card numbers or CVV in a support ticket</li>
+        </ul>
+
+        <h2>Billing Reconciliation Checklist</h2>
         <ul class="checklist">
-          <li><span class="checklist-icon">&#10003;</span><span>Compare local logs against OpenAI usage dashboard</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Check for unexpected spikes in usage</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Verify billing by model breakdown</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Export CSV for detailed analysis</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Confirm you are in the API Platform billing interface, not ChatGPT billing</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Confirm the correct organization is selected</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Confirm the correct project and clear any active project filters</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Define the calendar-month or custom UTC range for the reconciliation period</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Export Cost data for spend reconciliation against the invoice total</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Export Activity data for usage investigation and anomaly detection</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Compare prepaid credit deductions with any additional billed usage</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Distinguish project budget alerts from actual charges — budget alerts do not block requests</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Check payment method status and verify no past-due balances</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Compare invoice totals with the matching monthly Cost export</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Save pricing documents and export timestamps for record keeping</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Escalate discrepancies with organization ID and evidence; never send API keys</span></li>
+        </ul>
+
+        <h2>Support Escalation Package</h2>
+        <p>
+          Before opening a support ticket for billing issues, prepare the following:
+        </p>
+        <ul>
+          <li>Organization ID</li>
+          <li>Project ID, if applicable</li>
+          <li>Billing month and UTC date range</li>
+          <li>Invoice number, if available</li>
+          <li>Cost export CSV for the disputed period</li>
+          <li>Activity export CSV for usage investigation</li>
+          <li>Payment transaction date and last four digits of the payment method only if strictly necessary</li>
+          <li>Exact disputed amount</li>
+          <li>Screenshots with secrets, full card numbers and authorization headers removed</li>
+        </ul>
+        <p>
+          Never include in a support request:
+        </p>
+        <ul>
+          <li>Full API key</li>
+          <li>Authorization header</li>
+          <li>Full card number or CVV</li>
+          <li>Unredacted billing records or customer data</li>
+        </ul>
+
+        <h2>Official Sources Reviewed</h2>
+        <p class="official-sources">
+          The information on this page is based on OpenAI's official documentation reviewed as of {lastReviewed}.
+          OpenAI's billing setup may change; always verify current terms in the API Platform billing settings.
+        </p>
+        <ul>
+          <li>OpenAI Help: Managing billing settings on ChatGPT Web and Platform</li>
+          <li>OpenAI Help: Managing your work in the API Platform with projects</li>
+          <li>OpenAI Help: When can I expect to receive my OpenAI API invoice</li>
+          <li>OpenAI Help: How do I export monthly usage details from the API Usage Dashboard</li>
+          <li>OpenAI Help: Updating billing information, Tax ID and VAT ID</li>
+          <li>OpenAI Help: How can I change the billing details on my invoice</li>
+          <li>OpenAI Help: How can I delete or remove my payment method</li>
+          <li>OpenAI Help: How do I add, change or remove members on my OpenAI API account</li>
+          <li>OpenAI Help: How can I set up prepaid billing</li>
         </ul>
 
         <h2>Related Guides</h2>
         <div class="link-cards">
           {internalLinks.map(link => (
-            <a href={link.href} class="link-card">
-              <h4>{link.label}</h4>
-              <p>Learn more about this topic</p>
-            </a>
+            <a href={link.href} class="link-card"><h4>{link.label}</h4><p>Learn more about this topic</p></a>
           ))}
         </div>
 
         <div class="ai-summary-block">
-          <div class="ai-summary-label">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
-            </svg>
-            AI Summary
-          </div>
+          <div class="ai-summary-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg> AI Summary</div>
           <p>
-            OpenAI API billing is based on token usage. Input and output tokens are charged at 
-            different rates per model. This checklist helps verify billing before scaling. Track 
-            request IDs, compare local logs against the dashboard, and set spend limits. 
-            This is scaffold content for future expansion.
+            OpenAI API billing is organized at the organization level and is separate from ChatGPT billing.
+            Project budgets are soft monitoring thresholds set per calendar month in UTC — they generate
+            alerts but do not block API requests. Organization Owners have full billing access; Reader-level
+            members may not see billing data. Prepaid accounts use credit purchases with purchased credits
+            expiring after one year; Enterprise accounts receive formal invoices under contract terms. The
+            Usage Dashboard supports Cost exports for spend reconciliation and Activity exports for usage
+            analysis. For Enterprise invoices from April 1, 2026 onward, detailed API cost breakdowns are
+            available through the Usage Dashboard export. Update Tax ID and VAT ID in billing settings;
+            changes apply to future invoices only. Before escalating, prepare the organization ID, billing
+            period, cost and activity exports, and redact all secrets from evidence. AICostPlanner is an
+            independent educational cost-planning site and is not affiliated with OpenAI.
           </p>
         </div>
 
         <h2>Frequently Asked Questions</h2>
         <div class="faq-list">
           <div class="faq-item">
-            <h3 class="faq-question">How is OpenAI API usage billed?</h3>
-            <p class="faq-answer">
-              OpenAI API is billed based on token usage. Each model has a price per 1K input 
-              tokens and per 1K output tokens. Image generation has separate pricing.
-            </p>
+            <h3 class="faq-question">Is an OpenAI project budget a hard spending cap?</h3>
+            <p class="faq-answer">No. OpenAI's current API Platform documentation describes project budgets as soft spending thresholds used for monitoring and alerting. API requests continue after the monthly project budget is exceeded. To enforce a hard spending limit, implement application-level controls such as request limits per key, queue throttling and real-time cost monitoring.</p>
           </div>
           <div class="faq-item">
-            <h3 class="faq-question">Can I set spending limits?</h3>
-            <p class="faq-answer">
-              Check your OpenAI account settings for spend limit options. Some account tiers 
-              may have configurable limits to prevent unexpected charges.
-            </p>
+            <h3 class="faq-question">Do all OpenAI API users receive invoices?</h3>
+            <p class="faq-answer">No. OpenAI's documentation indicates that API invoices are issued for Enterprise accounts under their contract terms. Self-serve accounts on prepaid or monthly billing do not receive per-month invoices in the same format. For detailed usage records, use the Usage Dashboard Cost export.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">When are Enterprise API invoices issued?</h3>
+            <p class="faq-answer">Enterprise API invoices are issued according to the billing terms in the Enterprise order form, typically following the calendar month and within a processing period after the billing month closes. Payment terms such as net-30 are specified in the Enterprise agreement. For Enterprise invoices from April 1, 2026 onward, detailed cost breakdowns are available through the Usage Dashboard export.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">How do I export detailed OpenAI API costs?</h3>
+            <p class="faq-answer">Navigate to the Usage Dashboard in the API Platform, select the organization and project, choose the calendar-month or custom UTC date range, and download the Cost export or Activity export CSV. The Cost export provides aggregated spend data grouped by line item. The Activity export provides granular usage data filtered by project, user, API key, model, batch or service tier.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Why does the Usage Dashboard differ from an invoice?</h3>
+            <p class="faq-answer">Invoice totals and the Cost export may differ because Enterprise invoices apply contract pricing, volume discounts and adjustments not reflected in list-price exports. Promotional credits, grants and refunds may appear on invoices but not as separate line items in the export. For Enterprise invoices from April 1, 2026 onward, detailed breakdowns are available through the Usage Dashboard export rather than the invoice itself.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Can I change billing details on a past invoice?</h3>
+            <p class="faq-answer">Billing information updates in the API Platform billing settings typically apply to future invoices only. To request correction of a past invoice, contact OpenAI support with the invoice number and evidence. An invalid Tax ID may be removed and applicable taxes applied.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Why cannot I remove my payment method?</h3>
+            <p class="faq-answer">An outstanding balance, past-due invoice or recent payment failure may prevent removal of the current payment method. Resolve any outstanding balance before attempting to change the payment method. Do not use payment method removal as a way to avoid an unpaid balance.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Who can view OpenAI API billing settings?</h3>
+            <p class="faq-answer">Organization Owners have full access to billing settings, payment methods, usage limits and member management. Reader-level members and general project members may not have access to billing data. If billing information is not visible, verify the organization, project, role and active filters in the current session before assuming there is a problem.</p>
           </div>
         </div>
 
         <div class="cta-block">
-          <h3>Ready to start?</h3>
-          <p>Create an API key with $1 trial credit and explore live model pricing.</p>
+          <h3>Estimate before you scale</h3>
+          <p>Use a small prepaid test to measure real API cost before committing a larger budget.</p>
           <div class="cta-buttons">
-            <a href="https://app.rutaapi.com/register?lng=en" class="btn btn-primary" target="_blank" rel="noopener">Create API Key <span class="btn-subtext">$1 trial credit</span></a>
+            <a href="https://app.rutaapi.com/register?lng=en" class="btn btn-primary" target="_blank" rel="noopener">Create API Key</a>
             <a href="https://app.rutaapi.com/pricing" class="btn btn-secondary-dark" target="_blank" rel="noopener">View Live Pricing</a>
           </div>
         </div>
+
       </div>
     </section>
   </main>
-
   <Footer />
 </PageLayout>
 
@@ -197,8 +420,10 @@ const internalLinks = [
   p { color: var(--color-text-light-muted); line-height: 1.75; margin-bottom: var(--space-4); }
   ul, ol { color: var(--color-text-light-muted); margin-bottom: var(--space-4); padding-left: var(--space-6); }
   li { margin-bottom: var(--space-2); line-height: 1.7; }
-  .mono { font-family: var(--font-mono); font-size: 0.875em; background: var(--color-bg-light-muted); padding: 0.125em 0.375em; border-radius: var(--radius-sm); }
-  .scaffold-note { background: rgba(59, 130, 246, 0.08); border: 1px dashed var(--color-accent-blue); border-radius: var(--radius-md); padding: var(--space-4); margin-top: var(--space-4); }
+  a { color: var(--color-accent-blue); text-decoration: underline; }
+  a:hover { color: var(--color-accent-cyan); }
+  code { font-family: var(--font-mono); font-size: 0.875em; background: var(--color-bg-light-muted); padding: 0.125em 0.375em; border-radius: var(--radius-sm); }
+  .official-sources { background: rgba(59, 130, 246, 0.06); border: 1px solid rgba(59, 130, 246, 0.15); border-radius: var(--radius-md); padding: var(--space-4); }
   .checklist { list-style: none; padding: 0; }
   .checklist li { display: flex; align-items: flex-start; gap: var(--space-3); padding: var(--space-3) 0; }
   .checklist-icon { color: var(--color-accent-green); font-weight: bold; flex-shrink: 0; }
@@ -217,11 +442,10 @@ const internalLinks = [
   .faq-answer { margin: 0; font-size: 0.9375rem; line-height: 1.7; }
   .cta-block { text-align: center; padding: var(--space-10); background: var(--color-bg-light-muted); border-radius: var(--radius-xl); margin-top: var(--space-10); }
   .cta-block h3 { font-size: 1.25rem; font-weight: 600; color: var(--color-text-light); margin-bottom: var(--space-3); }
-  .cta-block p { max-width: 40ch; margin: 0 auto var(--space-6); }
+  .cta-block p { max-width: 42ch; margin: 0 auto var(--space-6); }
   .cta-buttons { display: flex; gap: var(--space-4); justify-content: center; flex-wrap: wrap; }
   .btn-primary { background: linear-gradient(135deg, var(--color-accent-blue), var(--color-accent-cyan)); color: white; padding: var(--space-3) var(--space-6); border-radius: var(--radius-md); font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: var(--space-2); transition: all var(--transition-fast); }
   .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); color: white; }
-  .btn-subtext { font-size: 0.75rem; font-weight: 400; opacity: 0.9; background: rgba(255,255,255,0.15); padding: var(--space-1) var(--space-2); border-radius: var(--radius-sm); }
   .btn-secondary-dark { background: transparent; color: var(--color-text-light); padding: var(--space-3) var(--space-6); border-radius: var(--radius-md); font-weight: 500; border: 1px solid var(--color-border-light); text-decoration: none; display: inline-flex; align-items: center; gap: var(--space-2); transition: all var(--transition-fast); }
   .btn-secondary-dark:hover { border-color: var(--color-accent-blue); color: var(--color-accent-blue); }
   @media (max-width: 640px) { .page-title { font-size: 1.75rem; } .link-cards { grid-template-columns: 1fr; } .cta-buttons { flex-direction: column; } .cta-buttons .btn { width: 100%; justify-content: center; } }
