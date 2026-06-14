@@ -75,9 +75,10 @@ const internalLinks = [
         <h2>What Are OpenAI API Credits?</h2>
         <p>
           OpenAI's current API billing setup uses a prepaid model. You purchase credits upfront, and
-          API usage is deducted from that balance. New accounts currently start on prepaid billing,
-          which means usage cannot exceed the purchased credit balance unless the account has been
-          approved for postpaid billing.
+          API usage is deducted from that balance. New accounts currently start on prepaid billing.
+          OpenAI applies prepaid credits to API usage first. Depending on the account's billing setup,
+          usage beyond the prepaid balance may be billed separately or requests may stop with a
+          billing-quota error. Billing-processing delays can also briefly produce a negative balance.
         </p>
         <p>
           API credits are separate from a ChatGPT subscription. The API Platform and ChatGPT use
@@ -175,7 +176,7 @@ const internalLinks = [
         </p>
         <ul>
           <li><strong>Billing page</strong> — shows the current credit balance, credit grants, purchase history and auto recharge settings</li>
-          <li><strong>Usage Dashboard</strong> — shows per-request usage, costs by model and time period; uses UTC; accessible by Organization Owners and authorized users</li>
+          <li><strong>Usage Dashboard</strong> — shows aggregated usage and spend across selected time ranges, projects and models; uses UTC; accessible by Organization Owners and authorized users. It is not a substitute for application-level request logs.</li>
         </ul>
         <p>
           The Usage Dashboard may not automatically merge data across multiple organizations.
@@ -278,7 +279,7 @@ const internalLinks = [
           <li><span class="checklist-icon">&#10003;</span><span>Define the test scope: model, expected input and output size, request count, concurrency</span></li>
           <li><span class="checklist-icon">&#10003;</span><span>Calculate estimated cost at the current per-token or per-operation rate</span></li>
           <li><span class="checklist-icon">&#10003;</span><span>Set a spending cap and a balance-monitoring stop trigger</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Record <span class="mono">request_id</span>, timestamp, model, <span class="mono">tokens_in</span>, <span class="mono">tokens_out</span>, and <span class="mono">usage.cost</span> for every request</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Record <span class="mono">request_id</span>, timestamp, model, input tokens, output tokens and relevant cached or reasoning-token fields for each request. Reconstruct estimated cost using the applicable pricing, then compare it with the Usage Dashboard or organization cost records.</span></li>
           <li><span class="checklist-icon">&#10003;</span><span>Compare local logs against the provider Usage Dashboard after the test</span></li>
           <li><span class="checklist-icon">&#10003;</span><span>Investigate any unexplained cost difference before scaling</span></li>
         </ul>
@@ -347,7 +348,7 @@ const internalLinks = [
           </div>
           <div class="faq-item">
             <h3 class="faq-question">Where can I see my OpenAI API credits?</h3>
-            <p class="faq-answer">Check the organization Billing page on the API Platform for the current credit balance, purchased credits and credit grants. The Usage Dashboard shows per-request usage and is accessible to Organization Owners and explicitly authorized users. The API Platform Billing page and the ChatGPT billing page are different products — use the API Platform page for API credits.</p>
+            <p class="faq-answer">Check the organization Billing page on the API Platform for the current credit balance, purchased credits and credit grants. The Usage Dashboard shows aggregated usage and spend — it is not a substitute for application-level request logs. The API Platform Billing page and the ChatGPT billing page are different products — use the API Platform page for API credits.</p>
           </div>
           <div class="faq-item">
             <h3 class="faq-question">Can expired OpenAI API credits be refunded?</h3>
