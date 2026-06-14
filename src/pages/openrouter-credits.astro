@@ -7,850 +7,416 @@ import '../styles/global.css';
 
 const siteUrl = 'https://aicostplanner.com';
 const currentDate = new Date().toISOString().split('T')[0];
+const route = '/openrouter-credits/';
+const lastReviewed = 'June 14, 2026';
 
-const breadcrumbs = [
-  { label: 'OpenRouter Credits', href: '/openrouter-credits/' },
-];
-
+const breadcrumbs = [{ label: 'OpenRouter Credits', href: route }];
 const internalLinks = [
-  { href: '/openai-api-credits/', label: 'OpenAI API Credits' },
-  { href: '/openai-api-billing/', label: 'OpenAI API Billing' },
-  { href: '/openai-api-usage/', label: 'OpenAI API Usage' },
   { href: '/api-billing-mismatch/', label: 'API Billing Mismatch' },
   { href: '/billing-transparency/', label: 'Billing Transparency' },
+  { href: '/failed-generation-cost/', label: 'Failed Generation Cost' },
   { href: '/small-prepaid-test/', label: 'Small Prepaid Test' },
+  { href: '/agent-token-usage/', label: 'Agent Token Usage' },
 ];
 ---
 
 <PageLayout
-  title="OpenRouter Credits and Usage Guide"
-  description="Understand OpenRouter credits, usage, balance checks and why model/provider pricing can make credit usage confusing."
-  canonical={`${siteUrl}/openrouter-credits/`}
+  title="OpenRouter Credit Expiry and 402 Errors"
+  description="Learn when OpenRouter credits may expire, how to check balance and usage, and why insufficient-credit requests return HTTP 402."
+  canonical={`${siteUrl}${route}`}
   type="article"
   lastUpdated={currentDate}
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "Article",
-      "headline": "OpenRouter Credits and Usage Guide",
-      "description": "Understand OpenRouter credits, usage, balance checks and why model/provider pricing can make credit usage confusing.",
-      "author": {
-        "@type": "Organization",
-        "name": "AICostPlanner"
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "AICostPlanner",
-        "url": siteUrl
-      },
-      "datePublished": currentDate,
-      "dateModified": currentDate,
-      "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": `${siteUrl}/openrouter-credits/`
-      }
+      "@context": "https://schema.org", "@type": "Article",
+      "headline": "OpenRouter Credit Expiry and 402 Errors",
+      "description": "Learn when OpenRouter credits may expire, how to check purchased and used credits, and why insufficient-credit requests return HTTP 402.",
+      "author": { "@type": "Organization", "name": "AICostPlanner" },
+      "publisher": { "@type": "Organization", "name": "AICostPlanner", "url": siteUrl },
+      "datePublished": currentDate, "dateModified": currentDate,
+      "mainEntityOfPage": { "@type": "WebPage", "@id": `${siteUrl}${route}` }
     })} />
     <script type="application/ld+json" set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
+      "@context": "https://schema.org", "@type": "BreadcrumbList",
       "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": siteUrl
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "OpenRouter Credits",
-          "item": `${siteUrl}/openrouter-credits/`
-        }
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": siteUrl },
+        { "@type": "ListItem", "position": 2, "name": "OpenRouter Credits", "item": `${siteUrl}${route}` }
       ]
     })} />
   </Fragment>
 
   <Header />
-  
   <main>
-    <!-- Hero Section -->
     <section class="hero-dark">
       <div class="container">
         <Breadcrumb items={breadcrumbs} />
-        <h1 class="page-title">OpenRouter Credits Explained</h1>
-        <p class="page-meta">
-          <span class="label-mono">Last updated: {currentDate}</span>
-        </p>
+        <h1 class="page-title">OpenRouter Credits: Expiry, Balance and Insufficient Credits</h1>
+        <p class="page-meta"><span class="label-mono">Last reviewed: {lastReviewed}</span></p>
       </div>
     </section>
 
-    <!-- Content Section -->
     <section class="section-light content-section">
       <div class="container container-narrow">
-        <!-- Quick Answer -->
+
         <div class="quick-answer">
           <h2>Quick Answer</h2>
           <p>
-            OpenRouter credits are a prepaid balance used for API inference across multiple models and providers.
-            Usage depends on model choice, token count, provider routing, request type and retry behavior.
-            Credit deduction is not always predictable—different models charge differently, and per-request
-            or per-token billing adds complexity. Before scaling, review your dashboard, usage records
-            and billing history to understand what drives your credit consumption.
+            OpenRouter's current FAQ says it reserves the right to expire unused credits after one year
+            from purchase. If an account or API key lacks sufficient credits, OpenRouter documents the
+            request error as HTTP <span class="mono">402</span>; HTTP <span class="mono">403</span> is
+            used for permission, guardrail or moderation failures. Check the Activity page and, when
+            you have a management key, <span class="mono">GET /api/v1/credits</span> to compare
+            <span class="mono">total_credits</span> purchased with <span class="mono">total_usage</span>.
           </p>
         </div>
-
-        <h2>OpenRouter Credits Quick Answers</h2>
-        <div class="quick-answers-grid">
-          <div class="quick-answer-item">
-            <h3>What are OpenRouter credits?</h3>
-            <p>Credits are your account balance for API usage. Requests deduct from that balance based on the model, provider route and request details.</p>
-          </div>
-          <div class="quick-answer-item">
-            <h3>How does OpenRouter handle credit?</h3>
-            <p>OpenRouter usually deducts credits per request according to the model, provider, token count, request type and routing behavior shown in your usage records.</p>
-          </div>
-          <div class="quick-answer-item">
-            <h3>Where can I check OpenRouter balance?</h3>
-            <p>Users usually check the account dashboard or credits/settings area, then compare current balance, dashboard notices and recent usage records.</p>
-          </div>
-          <div class="quick-answer-item">
-            <h3>Is OpenRouter pricing the same as credits?</h3>
-            <p>No. Credits are your balance. Pricing is the per-model or per-request cost basis that determines how fast credits are consumed.</p>
-          </div>
-          <div class="quick-answer-item">
-            <h3>Is an OpenRouter rate limit the same as no credits?</h3>
-            <p>No. A rate limit is a request-throttling or policy issue. No credits is a balance or account funding issue. Check the error response and dashboard records.</p>
-          </div>
-          <div class="quick-answer-item">
-            <h3>Do OpenRouter credits expire?</h3>
-            <p>Expiration policy can change. Check the current billing page, account notices and usage records instead of assuming credits always expire or never expire.</p>
-          </div>
-        </div>
-
-        <h2>How to Check OpenRouter Balance</h2>
-        <p>
-          OpenRouter users usually check balance from the account dashboard or credits/settings area.
-          If you are reconciling usage, also compare request time, model, API key, provider route and dashboard usage records.
-        </p>
-        <ul>
-          <li>Review the dashboard or account balance area first</li>
-          <li>Open the credits or settings page and compare current balance against recent usage</li>
-          <li>Check request timestamps to match requests against balance changes</li>
-          <li>Confirm the API key status for the requests you are troubleshooting</li>
-          <li>Look for account notices about billing, temporary restrictions or balance changes</li>
-          <li>Use recent usage records to verify whether the selected model or provider route consumed more credits than expected</li>
-        </ul>
-        <p>
-          A copied credits/settings URL or a typo in the path is usually not enough for troubleshooting.
-          Open the live account dashboard, verify the correct page, then compare balance and usage records directly.
-        </p>
-
-        <h2>OpenRouter Credits vs Pricing</h2>
-        <p>
-          Credits, pricing and usage are related but not the same thing:
-        </p>
-        <ul>
-          <li><strong>Credits</strong> — Your account balance available for API usage</li>
-          <li><strong>Pricing</strong> — The model, provider or request cost basis that determines how fast credits are consumed</li>
-          <li><strong>Usage</strong> — The requests, models and timestamps that show what actually consumed credits</li>
-        </ul>
-        <p>
-          Pricing can vary by model, provider, tokens, request type and routing. Check live pricing before production use,
-          and use a <a href="/small-prepaid-test/">small prepaid test</a> before scaling.
-          If you are reconciling credit burn against expected spend, compare against
-          <a href="/billing-transparency/">billing transparency</a> and
-          <a href="/api-billing-mismatch/">API billing mismatch</a> guidance.
-        </p>
 
         <h2>Do OpenRouter Credits Expire?</h2>
         <p>
-          OpenRouter credit expiration and account balance policy can vary by account type, package purchased,
-          and platform terms. Policies may also change over time. Rather than assuming credits are
-          always valid or always expire, check the following directly:
+          OpenRouter's current FAQ (reviewed {lastReviewed}) states:
+        </p>
+        <p class="quote-block">
+          "OpenRouter reserves the right to expire unused credits after one year of purchase."
+        </p>
+        <p>
+          This means you should not assume a purchased credit balance remains valid indefinitely.
+          The official wording is "reserves the right" — it should not be rewritten as a guarantee
+          that every balance is automatically removed on an exact date. Before relying on an older
+          credit balance, check the current OpenRouter FAQ, account notices and purchase records.
+        </p>
+        <p>
+          Do not use phrases like "credits never expire" or "credits are permanently valid." These
+          contradict the official FAQ. If you see conflicting information elsewhere, treat the current
+          OpenRouter FAQ as the authoritative source.
+        </p>
+
+        <h2>What "After One Year" Actually Means</h2>
+        <ul>
+          <li>The one-year window starts from the purchase date of each credit package</li>
+          <li>Credits purchased at different times may have different expiry windows</li>
+          <li>Auto-refill or subscription credits may follow separate terms</li>
+          <li>OpenRouter reserves the right but does not guarantee that every unused credit is
+            automatically removed after exactly 365 days</li>
+          <li>Account notices, emails or dashboard banners may provide earlier warning</li>
+        </ul>
+
+        <h2>How to Check OpenRouter Credits</h2>
+        <p>Three views help you track your credit balance:</p>
+        <ul>
+          <li><strong>Account dashboard</strong> — the primary balance view, including purchase history</li>
+          <li><strong>Activity page</strong> — per-request usage records, timestamps and credit deductions</li>
+          <li><strong>Credits API</strong> — <span class="mono">GET /api/v1/credits</span> with a management key,
+            returning <span class="mono">total_credits</span> and <span class="mono">total_usage</span></li>
+        </ul>
+        <p>
+          Compare all three views when reconciling an unexpected balance change. No single view
+          tells the whole story on its own.
+        </p>
+
+        <h2>Credits API Example</h2>
+        <p>The documented endpoint:</p>
+        <p class="formula">
+          <span class="mono">GET https://openrouter.ai/api/v1/credits</span><br/>
+          <span class="mono">Authorization: Bearer &lt;management-key&gt;</span>
+        </p>
+        <p>Documented response fields:</p>
+        <ul>
+          <li><span class="mono">total_credits</span> — total purchased credit amount in USD</li>
+          <li><span class="mono">total_usage</span> — cumulative amount spent</li>
+        </ul>
+        <p>
+          Note: do not look for <span class="mono">balance</span>,
+          <span class="mono">remaining_balance</span> or
+          <span class="mono">remaining_credits</span> — these fields are not
+          documented in the official API reference.
+          <span class="mono">total_credits - total_usage</span> gives a rough
+          remaining estimate, but the Activity page and dashboard provide the authoritative balance.
+        </p>
+        <p class="quote-block">
+          Do not paste a management key into an untrusted browser tool, screenshot or support message.
+        </p>
+
+        <h2><span class="mono">total_credits</span> vs <span class="mono">total_usage</span></h2>
+        <p>
+          These two fields serve different reconciliation purposes:
         </p>
         <ul>
-          <li>Your current OpenRouter account billing page for balance validity</li>
-          <li>Account notices or emails about expiration dates</li>
-          <li>The official OpenRouter documentation for the credit package you purchased</li>
-          <li>Any auto-refill or subscription terms that may affect balance</li>
+          <li><span class="mono">total_credits</span> — cumulative credits purchased over the account lifetime</li>
+          <li><span class="mono">total_usage</span> — cumulative spend deducted from that balance</li>
         </ul>
         <p>
-          If you are planning a large credit purchase or relying on a significant balance,
-          check these sources before committing. This helps you avoid unexpected balance loss
-          or service interruption. Users often ask whether OpenRouter credits expire; because
-          account and billing policies can change, check the current OpenRouter billing page,
-          account notices and usage records before buying a large balance.
+          To estimate a rough remaining balance:
+          <span class="formula-inline">total_credits − total_usage</span>. This is an approximation
+          because it does not account for refunds, credits, promotional balances, or expiry of older
+          unused credits. Cross-reference with the Activity page for the authoritative per-request view.
         </p>
 
-        <!-- New: Why credits may drop faster than expected -->
-        <h2>Why Credits May Drop Faster Than Expected</h2>
-        <p>
-          Several practical factors can cause OpenRouter credit usage to outpace initial estimates:
-        </p>
-        <ul>
-          <li><strong>Model choice</strong> — Different models have very different per-token or per-request costs. Switching models mid-workflow changes credit burn rate.</li>
-          <li><strong>Provider routing</strong> — OpenRouter may route requests to different underlying providers. Each provider sets its own pricing.</li>
-          <li><strong>Long context</strong> — Large input or output token counts multiply cost. Agents that load extensive conversation history or large file contents use more credits.</li>
-          <li><strong>Retries and failed requests</strong> — A failed or timed-out request may still consume credits depending on the provider's billing policy.</li>
-          <li><strong>Tool calls and agent workflows</strong> — Multi-step agent workflows that call multiple tools in one session accumulate token overhead quickly.</li>
-          <li><strong>Streaming or partial responses</strong> — Some billing models count streaming tokens as they are generated, which can feel like faster depletion.</li>
-          <li><strong>Multi-step or parallel agent sessions</strong> — Running several agent instances in parallel multiplies credit usage across all sessions.</li>
-        </ul>
+        <h2>OpenRouter 402 vs 403 vs 429</h2>
+        <p>These three status codes are often confused. They mean different things:</p>
 
-        <!-- New: Usage vs credits vs billing records -->
-        <h2>OpenRouter Usage vs Credits vs Billing Records</h2>
-        <p>
-          Understanding the difference between these three views helps you reconcile your balance:
-        </p>
-        <ul>
-          <li><strong>Credits</strong> — Your account balance. This is the prepaid amount available for API inference. Credits are deducted per request.</li>
-          <li><strong>Usage</strong> — Your API activity record. Shows per-request token counts, model used, provider, and credit deduction per call. This is your granular log.</li>
-          <li><strong>Billing records</strong> — The account-level view of what has been charged. This may include provider adjustments, refunds, or prorated credits not visible in per-request logs.</li>
-        </ul>
-        <p>
-          When usage and balance do not match expectations, check for:
-        </p>
-        <ul>
-          <li><span class="mono">request_id</span> timestamps that help identify which requests consumed credits</li>
-          <li>Provider-level adjustments not reflected in the per-request log</li>
-          <li>Failed or partial requests that were still billed</li>
-          <li>Auto-routing that sent a request to a more expensive provider than expected</li>
-        </ul>
-        <p>
-          For a focused reconciliation checklist, see the
-          <a href="/billing-transparency/">Billing Transparency guide</a>.
-          For understanding usage mismatches, see
-          <a href="/api-billing-mismatch/">API Billing Mismatch</a>.
-          For a safe pre-scaling test approach, see
-          <a href="/small-prepaid-test/">Small Prepaid API Test</a>.
-        </p>
-
-        <!-- Who This Is For -->
-        <h2>Who This Is For</h2>
-        <p>
-          This guide is for developers using OpenRouter to access multiple AI models through a 
-          single API. If you're trying to understand why your credit balance changes unexpectedly, 
-          or if you want to plan costs across different models and providers, this guide will help.
-        </p>
-
-        <!-- Cost Unit -->
-        <h2>What Cost Unit Matters</h2>
-        <p>
-          OpenRouter uses <span class="mono">credit</span> as the primary cost unit. Credits are 
-          purchased in packages and deducted based on per-request pricing set by each model 
-          provider. Some key points:
-        </p>
-        <ul>
-          <li>Different models have different credit costs per request</li>
-          <li>Some providers charge per token, others per request</li>
-          <li>Longer contexts or larger outputs may cost more credits</li>
-          <li>Some models offer free tiers or trial credits</li>
-        </ul>
-
-        <!-- What Credits Mean -->
-        <h2>What Credits Mean</h2>
-        <p>
-          Credits on OpenRouter represent prepaid purchasing power for API inference. Unlike a 
-          monthly billing cycle, credits are deducted immediately when you make a request. 
-          The rate at which credits are deducted depends on:
-        </p>
-        <ul>
-          <li>The specific model being used</li>
-          <li>The input and output token count</li>
-          <li>Any provider-specific pricing adjustments</li>
-          <li>Whether the model has volume discounts</li>
-        </ul>
-
-        <!-- What Usage Means -->
-        <h2>What Usage Means</h2>
-        <p>
-          Usage refers to your API activity—each request you make. OpenRouter tracks:
-        </p>
-        <ul>
-          <li><span class="mono">Total requests</span> — Number of API calls made</li>
-          <li><span class="mono">Tokens used</span> — Input and output token counts</li>
-          <li><span class="mono">Credits spent</span> — Total credit deduction</li>
-          <li><span class="mono">Per-model breakdown</span> — Which models you're using most</li>
-        </ul>
-
-        <!-- Check Credits -->
-        <h2>How to Check Credits and Usage</h2>
-        <p>
-          To monitor your OpenRouter credits and usage:
-        </p>
-        <ol>
-          <li>Log into your OpenRouter account dashboard</li>
-          <li>Navigate to the Credits or Usage section</li>
-          <li>Review the current balance and recent transactions</li>
-          <li>Check per-model usage if available</li>
-          <li>Set up usage alerts if the platform supports it</li>
-        </ol>
-
-        <!-- Why Credits May Not Match -->
-        <h2>Why Credits May Not Match Expectations</h2>
-        <p>
-          Several factors can cause credit usage to differ from initial estimates:
-        </p>
-        <ul>
-          <li><strong>Provider pricing changes</strong> — Model providers may adjust pricing</li>
-          <li><strong>Token count differences</strong> — Actual tokens may differ from estimates</li>
-          <li><strong>System prompts</strong> — Some models include hidden context</li>
-          <li><strong>Caching behavior</strong> — Some requests may be cached, reducing costs</li>
-          <li><strong>Failed requests</strong> — Some providers may charge for failed requests</li>
-        </ul>
-
-        <!-- Error Cases -->
-        <h2>OpenRouter Rate Limit vs No Credits</h2>
-        <p>
-          Rate limit and no credits are different failure categories. A rate limit can relate to account,
-          API key, model, provider route, traffic level, temporary limits or policy. No credits usually relates
-          to balance, funding state or account-level credit availability.
-        </p>
-        <p>
-          Check the error response, <span class="mono">request_id</span>, timestamp, dashboard records and usage logs before deciding what happened.
-          Do not retry blindly—retries can create duplicate requests or make usage review harder.
-          Use <a href="/api-billing-mismatch/">API Billing Mismatch</a>,
-          <a href="/billing-transparency/">Billing Transparency</a> and
-          <a href="/small-prepaid-test/">Small Prepaid Test</a> as reference checklists.
-        </p>
-
-        <h2>No Credits / Error Cases</h2>
-        <p>
-          Common error scenarios and their meanings:
-        </p>
-        <ul>
-          <li><strong>401 Unauthorized</strong> — Invalid or expired API key</li>
-          <li><strong>403 Forbidden</strong> — Insufficient credits or permissions</li>
-          <li><strong>404 Model Not Found</strong> — Model unavailable or discontinued</li>
-          <li><strong>429 Rate Limited</strong> — Too many requests, wait and review the request context before retrying</li>
-          <li><strong>Insufficient Credits</strong> — Balance too low for the request</li>
-        </ul>
-
-        <h2>OpenRouter Troubleshooting Checklist</h2>
-        <p>When credit balance, pricing or request failures do not match expectations:</p>
-        <ul class="checklist">
-          <li>
-            <span class="checklist-icon">&#10003;</span>
-            <span>Check current balance in the account dashboard or credits area</span>
-          </li>
-          <li>
-            <span class="checklist-icon">&#10003;</span>
-            <span>Check the selected model and provider route for the request</span>
-          </li>
-          <li>
-            <span class="checklist-icon">&#10003;</span>
-            <span>Check API key status for the affected request</span>
-          </li>
-          <li>
-            <span class="checklist-icon">&#10003;</span>
-            <span>Check <span class="mono">request_id</span> and timestamp</span>
-          </li>
-          <li>
-            <span class="checklist-icon">&#10003;</span>
-            <span>Compare usage records with expected request count</span>
-          </li>
-          <li>
-            <span class="checklist-icon">&#10003;</span>
-            <span>Check whether the error was no credits, rate limit, model not found, 401, 403 or timeout</span>
-          </li>
-          <li>
-            <span class="checklist-icon">&#10003;</span>
-            <span>Check whether retries created duplicate requests</span>
-          </li>
-          <li>
-            <span class="checklist-icon">&#10003;</span>
-            <span>Run one small test before scaling</span>
-          </li>
-        </ul>
-
-        <!-- Small Prepaid Test -->
-        <h2>Small Prepaid Test Checklist</h2>
-        <p>Before scaling your OpenRouter usage:</p>
-        <ul class="checklist">
-          <li>
-            <span class="checklist-icon">&#10003;</span>
-            <span>Purchase a small credit package to start</span>
-          </li>
-          <li>
-            <span class="checklist-icon">&#10003;</span>
-            <span>Make a few test requests with different models</span>
-          </li>
-          <li>
-            <span class="checklist-icon">&#10003;</span>
-            <span>Record the <span class="mono">request_id</span> for each test</span>
-          </li>
-          <li>
-            <span class="checklist-icon">&#10003;</span>
-            <span>Compare actual credit deduction vs. estimated cost</span>
-          </li>
-          <li>
-            <span class="checklist-icon">&#10003;</span>
-            <span>Review the provider dashboard for usage details</span>
-          </li>
-          <li>
-            <span class="checklist-icon">&#10003;</span>
-            <span>Scale gradually while monitoring credit balance</span>
-          </li>
-        </ul>
-
-        <!-- Dashboard Checklist -->
-        <h2>Logs / Usage / Request ID Checklist</h2>
-        <p>When reviewing OpenRouter usage:</p>
-        <ul class="checklist">
-          <li>
-            <span class="checklist-icon">&#10003;</span>
-            <span>Save <span class="mono">request_id</span> for every API call</span>
-          </li>
-          <li>
-            <span class="checklist-icon">&#10003;</span>
-            <span>Check tokens_in and tokens_out per request</span>
-          </li>
-          <li>
-            <span class="checklist-icon">&#10003;</span>
-            <span>Review the OpenRouter usage dashboard regularly</span>
-          </li>
-          <li>
-            <span class="checklist-icon">&#10003;</span>
-            <span>Compare your local logs against the dashboard</span>
-          </li>
-          <li>
-            <span class="checklist-icon">&#10003;</span>
-            <span>Flag any discrepancies for investigation</span>
-          </li>
-        </ul>
-
-        <div class="unit-note">
-          <span class="label-mono label-mono-cyan">Billing transparency note</span>
-          <p>
-            OpenRouter credit usage can feel confusing when model routing, cached tokens, provider policy
-            or failed requests affect what you expected to see. Use the billing transparency guide if you
-            need a focused checklist for reconciling logs, request IDs and dashboard records.
-          </p>
+        <div class="error-table">
+          <div class="error-row error-header">
+            <span>Status</span><span>Meaning</span><span>First action</span>
+          </div>
+          <div class="error-row">
+            <span class="mono">401</span>
+            <span>Invalid or disabled credentials</span>
+            <span>Check the API key and Authorization header</span>
+          </div>
+          <div class="error-row">
+            <span class="mono">402</span>
+            <span>Account or API key has insufficient credits</span>
+            <span>Check credits, key limit and usage</span>
+          </div>
+          <div class="error-row">
+            <span class="mono">403</span>
+            <span>Permission, guardrail or moderation block</span>
+            <span>Inspect error message and metadata</span>
+          </div>
+          <div class="error-row">
+            <span class="mono">429</span>
+            <span>Rate limited</span>
+            <span>Honor Retry-After and reduce request rate</span>
+          </div>
+          <div class="error-row">
+            <span class="mono">502</span>
+            <span>Provider or model response problem</span>
+            <span>Check provider or model health before retrying</span>
+          </div>
+          <div class="error-row">
+            <span class="mono">503</span>
+            <span>No provider matches routing requirements</span>
+            <span>Review provider routing constraints</span>
+          </div>
         </div>
 
-        <!-- Internal Links -->
+        <p>
+          <strong>402 vs 403:</strong> do not write that insufficient credits return 403. The current
+          OpenRouter error documentation explicitly assigns insufficient credits to 402. HTTP 403
+          covers permission failures, guardrails and moderation blocks.
+        </p>
+        <p>
+          <strong>402 vs 429:</strong> a 429 response means you have sent too many requests in a
+          time window. It does not mean the account is out of credits. Check the
+          <span class="mono">Retry-After</span> header before resuming. A negative balance account
+          may see 402 on free models too — check the limits documentation.
+        </p>
+
+        <h2>"Your Prepayment Credits Are Depleted" Troubleshooting</h2>
+        <p>
+          If a client or SDK displays the message "your prepayment credits are depleted," treat it
+          as a balance-depletion signal. However:
+        </p>
+        <ul>
+          <li>Inspect the actual HTTP status code in the response</li>
+          <li>Read the JSON error body for the documented <span class="mono">error.code</span> or
+            <span class="mono">error.type</span></li>
+          <li>OpenRouter documents insufficient-credit failures as HTTP 402, not 403</li>
+          <li>Check whether the affected API key has a spending limit configured</li>
+          <li>Review the Activity page for unexpected large deductions</li>
+          <li>Do not assume every client or SDK surfaces the exact same error text</li>
+        </ul>
+
+        <h2>Usage, Activity Records and Reconciliation</h2>
+        <p>
+          OpenRouter automatically includes usage details in every API response: prompt tokens,
+          completion tokens, cost, reasoning tokens (if applicable), cached tokens and cache
+          write tokens. You do not need to add <span class="mono">usage: &#123; include: true &#125;</span>
+          or <span class="mono">stream_options: &#123; include_usage: true &#125;</span> — these are deprecated.
+        </p>
+        <p>Use this checklist when reconciling credit deductions:</p>
+        <ul class="checklist">
+          <li><span class="checklist-icon">&#10003;</span><span>Record <span class="mono">request_id</span> and timestamp for every API call</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Read the response <span class="mono">usage.cost</span> field for per-request credit deduction</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Compare prompt, completion, reasoning and cached-token fields across requests</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Check the selected model and provider route for each request</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Compare the Activity page against local request logs</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Check <span class="mono">total_credits</span> and <span class="mono">total_usage</span> via the credits API when you have a management key</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Review API key spending limits</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Identify retries, parallel jobs or duplicate requests</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Do not blindly retry 402 or 429 responses</span></li>
+        </ul>
+
+        <h2>Why Credits May Drop Faster Than Expected</h2>
+        <ul>
+          <li><strong>Model switching mid-workflow</strong> — different models have different per-token or per-request costs</li>
+          <li><strong>Provider routing</strong> — OpenRouter may route to different underlying providers with different pricing</li>
+          <li><strong>Long context</strong> — large input or output token counts multiply cost; agents replaying conversation history are especially affected</li>
+          <li><strong>Retries and failed requests</strong> — a failed or timed-out request may still be billed depending on the provider's policy</li>
+          <li><strong>Tool calls and agent workflows</strong> — multi-step workflows accumulate token overhead quickly</li>
+          <li><strong>Parallel sessions</strong> — running several agent instances simultaneously multiplies credit usage</li>
+          <li><strong>Hidden adjustments</strong> — provider-level adjustments or corrections may not be visible in per-request logs</li>
+        </ul>
+
+        <h2>Small Prepaid Test Checklist</h2>
+        <ul class="checklist">
+          <li><span class="checklist-icon">&#10003;</span><span>Start with a small credit package — do not scale on a large balance before testing</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Test with the specific model and provider you plan to use in production</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Record <span class="mono">request_id</span>, <span class="mono">usage.cost</span> and timestamp for each test request</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Compare actual credit deduction against the expected cost estimate</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Check the Activity page and compare against your local records</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Scale gradually while monitoring balance</span></li>
+        </ul>
+
+        <h2>Official Sources Reviewed</h2>
+        <p class="mono">Last reviewed: {lastReviewed}</p>
+        <ul>
+          <li>https://openrouter.ai/docs/faq</li>
+          <li>https://openrouter.ai/docs/api/reference/errors-and-debugging</li>
+          <li>https://openrouter.ai/docs/api/api-reference/credits/get-credits</li>
+          <li>https://openrouter.ai/docs/api/reference/limits</li>
+          <li>https://openrouter.ai/docs/cookbook/administration/usage-accounting</li>
+        </ul>
+        <p>
+          AICostPlanner is an independent educational cost-planning site and is not affiliated with OpenRouter.
+        </p>
+
         <h2>Related Guides</h2>
         <div class="link-cards">
           {internalLinks.map(link => (
-            <a href={link.href} class="link-card">
-              <h4>{link.label}</h4>
-              <p>Learn more about this topic</p>
-            </a>
+            <a href={link.href} class="link-card"><h4>{link.label}</h4><p>Learn more about this topic</p></a>
           ))}
         </div>
 
-        <!-- AI Summary -->
         <div class="ai-summary-block">
-          <div class="ai-summary-label">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M12 16v-4M12 8h.01"/>
-            </svg>
-            AI Summary
-          </div>
+          <div class="ai-summary-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg> AI Summary</div>
           <p>
-            OpenRouter credits are a prepaid balance used for API inference across multiple models and providers.
-            This page helps users understand credits, balance checks, usage records, pricing differences,
-            rate-limit questions and cautious expiry guidance. Credits are not the same as pricing: credits are your
-            balance, while pricing determines how model, provider, token, request type and routing choices consume that balance.
-            If you are troubleshooting OpenRouter, compare the dashboard, credits/settings area, request timestamps,
-            <span class="mono">request_id</span>, API key status and usage records before scaling. Rate limits and no credits are different
-            failure categories, so review the error response before retrying. Test with a small prepaid balance before scaling,
-            and use the RutaAPI CTA below only as a separate starting point for live model pricing and trial access.
+            OpenRouter credits are a prepaid balance. The official FAQ says OpenRouter reserves the right to
+            expire unused credits after one year — do not assume credits never expire. Insufficient-credit
+            failures are documented as HTTP 402, not 403; 403 covers permission, guardrail and moderation
+            blocks. Use <span class="mono">GET /api/v1/credits</span> with a management key to compare
+            <span class="mono">total_credits</span> and <span class="mono">total_usage</span>, but cross-reference
+            with the Activity page and per-request <span class="mono">usage.cost</span>. Do not blindly retry
+            402 or 429 responses; inspect the actual error code and body first. This page is educational, not
+            official OpenRouter documentation.
           </p>
         </div>
 
-        <!-- FAQ -->
         <h2>Frequently Asked Questions</h2>
         <div class="faq-list">
           <div class="faq-item">
             <h3 class="faq-question">Do OpenRouter credits expire?</h3>
             <p class="faq-answer">
-              Credit expiration and account balance policy can vary by account type and package purchased.
-              Policies may also change over time. Check your OpenRouter billing page, account notices,
-              and official docs to confirm whether your credits are subject to an expiration date
-              before relying on a large balance.
+              OpenRouter's current FAQ says it reserves the right to expire unused credits after one year
+              of purchase. Do not rewrite this as "credits always expire on day 365" or assume older
+              balances are automatically removed. Check the current OpenRouter FAQ, account notices and
+              purchase records before relying on an older balance.
             </p>
           </div>
           <div class="faq-item">
-            <h3 class="faq-question">How do I check OpenRouter balance?</h3>
+            <h3 class="faq-question">Does OpenRouter always expire credits exactly after one year?</h3>
             <p class="faq-answer">
-              OpenRouter users usually check the account dashboard or credits/settings area first,
-              then compare current balance, request timestamps, API key status and recent usage records.
-              If you are troubleshooting credit deduction, use both the balance view and the per-request usage log.
+              The official wording is "reserves the right to expire unused credits after one year."
+              This is not a guarantee that every balance is automatically removed on an exact date.
+              Treat the current OpenRouter FAQ as the authoritative source.
             </p>
           </div>
           <div class="faq-item">
-            <h3 class="faq-question">Is OpenRouter pricing the same as credits?</h3>
+            <h3 class="faq-question">What status code means insufficient OpenRouter credits?</h3>
             <p class="faq-answer">
-              No. Credits are your account balance. Pricing is the cost basis per model, provider,
-              token pattern or request type that determines how quickly that balance is used.
-              The same balance can burn at different speeds depending on the route and request details.
+              HTTP 402. The current OpenRouter error documentation assigns insufficient credits to 402
+              Payment Required. HTTP 403 is used for permission, guardrail and moderation failures.
             </p>
           </div>
           <div class="faq-item">
-            <h3 class="faq-question">Is an OpenRouter rate limit caused by no credits?</h3>
+            <h3 class="faq-question">Is OpenRouter 403 an insufficient-credit error?</h3>
             <p class="faq-answer">
-              Not necessarily. Rate limit issues and no-credit issues are different failure categories.
-              A rate limit can be caused by account, key, model, provider route, traffic or temporary policy constraints.
-              No credits usually points to balance or funding state. Check the error response, dashboard and usage records.
+              Not according to the current error documentation. HTTP 403 covers permission failures,
+              guardrails and moderation blocks. Insufficient credits are documented as HTTP 402.
             </p>
           </div>
           <div class="faq-item">
-            <h3 class="faq-question">What should I check if OpenRouter credits drop after retries?</h3>
+            <h3 class="faq-question">What does "your prepayment credits are depleted" mean?</h3>
             <p class="faq-answer">
-              Compare request IDs, timestamps, retry count, selected model, provider route and per-request usage records.
-              Retries can create duplicate requests or repeat partial work, which makes credits drop faster than expected.
-              Review the dashboard and usage log before sending more traffic.
+              It signals a balance-depletion issue. Inspect the actual HTTP status code and JSON
+              error body. OpenRouter documents insufficient-credit failures as HTTP 402. Also check
+              the API key spending limit and Activity page.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">How do I check my OpenRouter balance?</h3>
+            <p class="faq-answer">
+              Use the account dashboard for the primary balance view, the Activity page for per-request
+              usage records, and <span class="mono">GET /api/v1/credits</span> with a management key
+              to retrieve <span class="mono">total_credits</span> and <span class="mono">total_usage</span>.
+              Compare all three views when reconciling unexpected balance changes.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Why does OpenRouter return 429 when I still have credits?</h3>
+            <p class="faq-answer">
+              HTTP 429 means you have exceeded a rate limit in the time window — it is not a
+              balance issue. Check the <span class="mono">Retry-After</span> header and reduce your
+              request rate. 402 and 429 mean different things: 402 is insufficient credits,
+              429 is rate limiting.
             </p>
           </div>
         </div>
 
-        <!-- CTA -->
         <div class="cta-block">
-          <h3>Ready to start?</h3>
-          <p>Create an API key with $1 trial credit and explore live model pricing.</p>
+          <h3>Start with a small prepaid test</h3>
+          <p>Create an API key with $1 trial credit and compare live model pricing before scaling OpenRouter usage.</p>
           <div class="cta-buttons">
-            <a href="https://app.rutaapi.com/register?lng=en" class="btn btn-primary" target="_blank" rel="noopener">
-              Create API Key
-              <span class="btn-subtext">$1 trial credit</span>
-            </a>
-            <a href="https://app.rutaapi.com/pricing" class="btn btn-secondary-dark" target="_blank" rel="noopener">
-              View Live Pricing
-            </a>
+            <a href="https://app.rutaapi.com/register?lng=en" class="btn btn-primary" target="_blank" rel="noopener">Create API Key <span class="btn-subtext">$1 trial credit</span></a>
+            <a href="https://app.rutaapi.com/pricing" class="btn btn-secondary-dark" target="_blank" rel="noopener">Compare Model Pricing</a>
+            <a href="https://app.rutaapi.com/register?lng=en" class="btn btn-secondary-dark" target="_blank" rel="noopener">Start with a Small Prepaid Test</a>
           </div>
         </div>
+
       </div>
     </section>
   </main>
-
   <Footer />
 </PageLayout>
 
 <style>
-  .hero-dark {
-    background: var(--color-bg-dark);
-    padding: var(--space-12) 0 var(--space-10);
-    border-bottom: 1px solid var(--color-bg-dark-border);
-  }
-  
-  .hero-dark :global(.breadcrumb) {
-    margin-bottom: var(--space-6);
-  }
-  
-  .page-title {
-    font-size: 2.25rem;
-    font-weight: 700;
-    color: var(--color-text-dark);
-    line-height: 1.15;
-    margin: 0 0 var(--space-4) 0;
-    letter-spacing: -0.02em;
-  }
-  
-  .page-meta {
-    margin: 0;
-  }
-  
-  .content-section {
-    padding: var(--space-12) 0 var(--space-16);
-    background: var(--color-bg-light);
-  }
-  
-  .quick-answer {
-    background: var(--color-bg-light-elevated);
-    border-left: 4px solid var(--color-accent-blue);
-    padding: var(--space-6);
-    border-radius: 0 var(--radius-md) var(--radius-md) 0;
-    margin-bottom: var(--space-10);
-  }
-  
-  .quick-answer h2 {
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: var(--color-text-light);
-    margin-bottom: var(--space-3);
-  }
-  
-  .quick-answer p {
-    margin: 0;
-    color: var(--color-text-light);
-    line-height: 1.7;
-  }
-  
-  h2 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: var(--color-text-light);
-    margin: var(--space-10) 0 var(--space-4);
-    padding-top: var(--space-6);
-    border-top: 1px solid var(--color-border-light);
-  }
-  
-  h2:first-of-type {
-    margin-top: 0;
-    padding-top: 0;
-    border-top: none;
-  }
-  
-  p {
-    color: var(--color-text-light-muted);
-    line-height: 1.75;
-    margin-bottom: var(--space-4);
-  }
-  
-  ul, ol {
-    color: var(--color-text-light-muted);
-    margin-bottom: var(--space-4);
-    padding-left: var(--space-6);
-  }
-  
-  li {
-    margin-bottom: var(--space-2);
-    line-height: 1.7;
-  }
-  
-  .mono {
-    font-family: var(--font-mono);
-    font-size: 0.875em;
-    background: var(--color-bg-light-muted);
-    padding: 0.125em 0.375em;
-    border-radius: var(--radius-sm);
-  }
-  
-  .quick-answers-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-4);
-    margin-bottom: var(--space-8);
-  }
-
-  .quick-answer-item {
-    background: var(--color-bg-light-elevated);
-    border: 1px solid var(--color-border-light);
-    border-radius: var(--radius-md);
-    padding: var(--space-5);
-  }
-
-  .quick-answer-item h3 {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--color-text-light);
-    margin: 0 0 var(--space-2) 0;
-  }
-
-  .quick-answer-item p {
-    margin: 0;
-    font-size: 0.9375rem;
-    line-height: 1.7;
-  }
-
-  .checklist {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .checklist li {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--space-3);
-    padding: var(--space-3) 0;
-  }
-  
-  .checklist-icon {
-    color: var(--color-accent-green);
-    font-weight: bold;
-    flex-shrink: 0;
-  }
-  
-  .unit-note {
-    background: rgba(34, 211, 238, 0.04);
-    border: 1px solid rgba(34, 211, 238, 0.12);
-    border-radius: var(--radius-lg);
-    padding: var(--space-5);
-    margin: var(--space-6) 0 var(--space-10);
-  }
-  .unit-note p { margin: var(--space-3) 0 0; }
-
-  .link-cards {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-4);
-    margin-bottom: var(--space-8);
-  }
-  
-  .link-card {
-    display: block;
-    padding: var(--space-5);
-    background: var(--color-bg-light-elevated);
-    border: 1px solid var(--color-border-light);
-    border-radius: var(--radius-md);
-    text-decoration: none;
-    transition: all var(--transition-fast);
-  }
-  
-  .link-card:hover {
-    border-color: var(--color-accent-blue);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  }
-  
-  .link-card h4 {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--color-text-light);
-    margin: 0 0 var(--space-2) 0;
-  }
-  
-  .link-card p {
-    font-size: 0.875rem;
-    color: var(--color-text-light-muted);
-    margin: 0;
-  }
-  
-  .ai-summary-block {
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.04), rgba(59, 130, 246, 0.04));
-    border: 1px solid rgba(34, 211, 238, 0.15);
-    border-radius: var(--radius-xl);
-    padding: var(--space-6);
-    margin: var(--space-10) 0;
-  }
-  
-  .ai-summary-label {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--color-accent-cyan);
-    margin-bottom: var(--space-4);
-  }
-  
-  .ai-summary-block p {
-    margin: 0;
-    font-size: 0.9375rem;
-    line-height: 1.8;
-  }
-  
-  .faq-list {
-    margin-bottom: var(--space-10);
-  }
-  
-  .faq-item {
-    padding: var(--space-6) 0;
-    border-bottom: 1px solid var(--color-border-light);
-  }
-  
-  .faq-item:first-child {
-    border-top: 1px solid var(--color-border-light);
-  }
-  
-  .faq-question {
-    font-size: 1.0625rem;
-    font-weight: 600;
-    color: var(--color-text-light);
-    margin-bottom: var(--space-3);
-  }
-  
-  .faq-answer {
-    margin: 0;
-    font-size: 0.9375rem;
-    line-height: 1.7;
-  }
-  
-  .cta-block {
-    text-align: center;
-    padding: var(--space-10);
-    background: var(--color-bg-light-muted);
-    border-radius: var(--radius-xl);
-    margin-top: var(--space-10);
-  }
-  
-  .cta-block h3 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--color-text-light);
-    margin-bottom: var(--space-3);
-  }
-  
-  .cta-block p {
-    max-width: 40ch;
-    margin: 0 auto var(--space-6);
-  }
-  
-  .cta-buttons {
-    display: flex;
-    gap: var(--space-4);
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  
-  .btn-primary {
-    background: linear-gradient(135deg, var(--color-accent-blue), var(--color-accent-cyan));
-    color: white;
-    padding: var(--space-3) var(--space-6);
-    border-radius: var(--radius-md);
-    font-weight: 600;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    transition: all var(--transition-fast);
-  }
-  
-  .btn-primary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-    color: white;
-  }
-  
-  .btn-subtext {
-    font-size: 0.75rem;
-    font-weight: 400;
-    opacity: 0.9;
-    background: rgba(255,255,255,0.15);
-    padding: var(--space-1) var(--space-2);
-    border-radius: var(--radius-sm);
-  }
-  
-  .btn-secondary-dark {
-    background: transparent;
-    color: var(--color-text-light);
-    padding: var(--space-3) var(--space-6);
-    border-radius: var(--radius-md);
-    font-weight: 500;
-    border: 1px solid var(--color-border-light);
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    transition: all var(--transition-fast);
-  }
-  
-  .btn-secondary-dark:hover {
-    border-color: var(--color-accent-blue);
-    color: var(--color-accent-blue);
-  }
-  
-  @media (max-width: 640px) {
-    .page-title {
-      font-size: 1.75rem;
-    }
-    
-    .link-cards {
-      grid-template-columns: 1fr;
-    }
-    
-    .cta-buttons {
-      flex-direction: column;
-    }
-    
-    .cta-buttons .btn {
-      width: 100%;
-      justify-content: center;
-    }
-  }
+  .hero-dark { background: var(--color-bg-dark); padding: var(--space-12) 0 var(--space-10); border-bottom: 1px solid var(--color-bg-dark-border); }
+  .hero-dark :global(.breadcrumb) { margin-bottom: var(--space-6); }
+  .page-title { font-size: 2.25rem; font-weight: 700; color: var(--color-text-dark); line-height: 1.15; margin: 0 0 var(--space-4) 0; letter-spacing: -0.02em; }
+  .page-meta { margin: 0; }
+  .content-section { padding: var(--space-12) 0 var(--space-16); background: var(--color-bg-light); }
+  .quick-answer { background: var(--color-bg-light-elevated); border-left: 4px solid var(--color-accent-blue); padding: var(--space-6); border-radius: 0 var(--radius-md) var(--radius-md) 0; margin-bottom: var(--space-10); }
+  .quick-answer h2 { font-size: 1.125rem; font-weight: 600; color: var(--color-text-light); margin-bottom: var(--space-3); }
+  .quick-answer p { margin: 0; color: var(--color-text-light); line-height: 1.7; }
+  h2 { font-size: 1.5rem; font-weight: 600; color: var(--color-text-light); margin: var(--space-10) 0 var(--space-4); padding-top: var(--space-6); border-top: 1px solid var(--color-border-light); }
+  h2:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+  p { color: var(--color-text-light-muted); line-height: 1.75; margin-bottom: var(--space-4); }
+  ul, ol { color: var(--color-text-light-muted); margin-bottom: var(--space-4); padding-left: var(--space-6); }
+  li { margin-bottom: var(--space-2); line-height: 1.7; }
+  .mono { font-family: var(--font-mono); font-size: 0.875em; background: var(--color-bg-light-muted); padding: 0.125em 0.375em; border-radius: var(--radius-sm); }
+  .formula { background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.18); border-radius: var(--radius-md); padding: var(--space-4); }
+  .formula-inline { background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.18); border-radius: var(--radius-sm); padding: 0.125em 0.375em; font-family: var(--font-mono); font-size: 0.875em; }
+  .quote-block { background: rgba(59, 130, 246, 0.06); border-left: 3px solid rgba(59, 130, 246, 0.3); padding: var(--space-4) var(--space-6); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; font-style: italic; color: var(--color-text-light); }
+  .error-table { border: 1px solid var(--color-border-light); border-radius: var(--radius-md); overflow: hidden; margin: var(--space-4) 0 var(--space-8); }
+  .error-row { display: grid; grid-template-columns: 80px 1fr 1fr; gap: var(--space-4); padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-border-light); }
+  .error-row:last-child { border-bottom: none; }
+  .error-header { background: var(--color-bg-light-elevated); font-weight: 600; font-size: 0.875rem; color: var(--color-text-light); }
+  .error-row:not(.error-header) { font-size: 0.875rem; color: var(--color-text-light-muted); }
+  .error-row .mono { font-size: 0.875em; }
+  .checklist { list-style: none; padding: 0; }
+  .checklist li { display: flex; align-items: flex-start; gap: var(--space-3); padding: var(--space-3) 0; }
+  .checklist-icon { color: var(--color-accent-green); font-weight: bold; flex-shrink: 0; }
+  .link-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-4); margin-bottom: var(--space-8); }
+  .link-card { display: block; padding: var(--space-5); background: var(--color-bg-light-elevated); border: 1px solid var(--color-border-light); border-radius: var(--radius-md); text-decoration: none; transition: all var(--transition-fast); }
+  .link-card:hover { border-color: var(--color-accent-blue); transform: translateY(-2px); }
+  .link-card h4 { font-size: 1rem; font-weight: 600; color: var(--color-text-light); margin: 0 0 var(--space-2) 0; }
+  .link-card p { font-size: 0.875rem; color: var(--color-text-light-muted); margin: 0; }
+  .ai-summary-block { background: linear-gradient(135deg, rgba(34, 211, 238, 0.04), rgba(59, 130, 246, 0.04)); border: 1px solid rgba(34, 211, 238, 0.15); border-radius: var(--radius-xl); padding: var(--space-6); margin: var(--space-10) 0; }
+  .ai-summary-label { display: flex; align-items: center; gap: var(--space-2); font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-accent-cyan); margin-bottom: var(--space-4); }
+  .ai-summary-block p { margin: 0; font-size: 0.9375rem; line-height: 1.8; }
+  .faq-list { margin-bottom: var(--space-10); }
+  .faq-item { padding: var(--space-6) 0; border-bottom: 1px solid var(--color-border-light); }
+  .faq-item:first-child { border-top: 1px solid var(--color-border-light); }
+  .faq-question { font-size: 1.0625rem; font-weight: 600; color: var(--color-text-light); margin-bottom: var(--space-3); }
+  .faq-answer { margin: 0; font-size: 0.9375rem; line-height: 1.7; }
+  .cta-block { text-align: center; padding: var(--space-10); background: var(--color-bg-light-muted); border-radius: var(--radius-xl); margin-top: var(--space-10); }
+  .cta-block h3 { font-size: 1.25rem; font-weight: 600; color: var(--color-text-light); margin-bottom: var(--space-3); }
+  .cta-block p { max-width: 42ch; margin: 0 auto var(--space-6); }
+  .cta-buttons { display: flex; gap: var(--space-4); justify-content: center; flex-wrap: wrap; }
+  .btn-primary { background: linear-gradient(135deg, var(--color-accent-blue), var(--color-accent-cyan)); color: white; padding: var(--space-3) var(--space-6); border-radius: var(--radius-md); font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: var(--space-2); transition: all var(--transition-fast); }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); color: white; }
+  .btn-subtext { font-size: 0.75rem; font-weight: 400; opacity: 0.9; background: rgba(255,255,255,0.15); padding: var(--space-1) var(--space-2); border-radius: var(--radius-sm); }
+  .btn-secondary-dark { background: transparent; color: var(--color-text-light); padding: var(--space-3) var(--space-6); border-radius: var(--radius-md); font-weight: 500; border: 1px solid var(--color-border-light); text-decoration: none; display: inline-flex; align-items: center; gap: var(--space-2); transition: all var(--transition-fast); }
+  .btn-secondary-dark:hover { border-color: var(--color-accent-blue); color: var(--color-accent-blue); }
+  @media (max-width: 640px) { .page-title { font-size: 1.75rem; } .link-cards { grid-template-columns: 1fr; } .cta-buttons { flex-direction: column; } .error-table { font-size: 0.8rem; } }
 </style>
