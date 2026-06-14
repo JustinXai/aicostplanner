@@ -110,7 +110,7 @@ const internalLinks = [
         </p>
         <ul>
           <li><strong>Prepaid billing</strong> — new accounts currently start on prepaid billing; credits are purchased upfront and usage is deducted from the balance; purchased credits expire after one year</li>
-          <li><strong>Monthly postpaid billing</strong> — available for eligible accounts after review; usage is billed at the end of the billing period</li>
+          <li><strong>Monthly billing</strong> — some existing accounts may remain on a monthly billing arrangement and can also purchase prepaid credits. Check the organization Billing page for the account's current billing setup.</li>
           <li><strong>Enterprise billing</strong> — governed by a separate contract with negotiated payment terms; invoices are issued separately from self-serve accounts</li>
         </ul>
         <p>
@@ -144,7 +144,7 @@ const internalLinks = [
           OpenAI accounts have several independent limits that are distinct from project budgets:
         </p>
         <ul>
-          <li><strong>Organization usage tier</strong> — determines the baseline rate limits and billing arrangement eligibility; affects approved credit ceiling and postpaid access</li>
+          <li><strong>Organization limits and prepaid-credit ceilings</strong> — API rate limits and the maximum prepaid balance are separate from project budgets. Check the current organization Limits and Billing pages rather than assuming one limit controls the others.</li>
           <li><strong>Rate limits</strong> — RPM (requests per minute) and TPM (tokens per minute) enforced at the API layer; unrelated to spending</li>
           <li><strong>Project monthly budget</strong> — soft monitoring threshold per project; alerts but does not block</li>
           <li><strong>Prepaid credit balance</strong> — available credits for self-serve accounts; usage stops with an <code>insufficient_quota</code> error when exhausted</li>
@@ -199,7 +199,7 @@ const internalLinks = [
         <ul>
           <li>Invoices are issued according to the billing terms in the Enterprise order form</li>
           <li>Billing periods typically follow the calendar month</li>
-          <li>Invoices are generally issued within a period after the billing month closes</li>
+          <li>OpenAI says Enterprise API invoices are typically issued within two weeks after the billing cycle ends.</li>
           <li>Payment terms (e.g., net-30) are specified in the Enterprise agreement</li>
         </ul>
         <p>
@@ -235,14 +235,7 @@ const internalLinks = [
 
         <h2>Invoice Total vs Detailed Cost Export</h2>
         <p>
-          The invoice total and the Usage Dashboard Cost export may differ because:
-        </p>
-        <ul>
-          <li>Invoices apply contract pricing and may include volume discounts or adjustments not reflected in list-price exports</li>
-          <li>Enterprise invoice line items are grouped; the Cost export provides per-model or per-operation breakdown</li>
-          <li>Promotional credits, grants or refunds appear on invoices but may not appear as separate line items in the export</li>
-          <li>For Enterprise invoices from April 1, 2026 onward, detailed cost breakdowns are available through the Usage Dashboard export rather than the invoice itself</li>
-        </ul>
+          If an invoice total does not reconcile with a Cost export, first confirm that both records use the same organization, UTC calendar-month period, project scope and export settings. Use Cost data grouped by line item for monthly spend reconciliation. For Enterprise invoices issued from April 1, 2026 onward, detailed API cost breakdowns are provided through the Usage Dashboard export rather than the invoice itself.
         <p>
           Use the Cost export as the granular record and the invoice as the formal billing document.
           Compare the two by matching the billing period and noting any differences attributable to
@@ -375,7 +368,7 @@ const internalLinks = [
           </div>
           <div class="faq-item">
             <h3 class="faq-question">Why does the Usage Dashboard differ from an invoice?</h3>
-            <p class="faq-answer">Invoice totals and the Cost export may differ because Enterprise invoices apply contract pricing, volume discounts and adjustments not reflected in list-price exports. Promotional credits, grants and refunds may appear on invoices but not as separate line items in the export. For Enterprise invoices from April 1, 2026 onward, detailed breakdowns are available through the Usage Dashboard export rather than the invoice itself.</p>
+            <p class="faq-answer">If an invoice total does not reconcile with a Cost export, first confirm that both records use the same organization, UTC calendar-month period, project scope and export settings. Use Cost data grouped by line item for monthly spend reconciliation. For Enterprise invoices issued from April 1, 2026 onward, detailed cost breakdowns are provided through the Usage Dashboard export rather than the invoice itself.</p>
           </div>
           <div class="faq-item">
             <h3 class="faq-question">Can I change billing details on a past invoice?</h3>
