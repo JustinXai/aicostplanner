@@ -7,37 +7,42 @@ import '../styles/global.css';
 
 const siteUrl = 'https://aicostplanner.com';
 const currentDate = new Date().toISOString().split('T')[0];
+const route = '/small-prepaid-test/';
+const lastUpdated = 'June 14, 2026';
 
-const breadcrumbs = [{ label: 'Small Prepaid Test', href: '/small-prepaid-test/' }];
+const breadcrumbs = [{ label: 'Small Prepaid Test', href: route }];
 const internalLinks = [
-  { href: '/openai-api-credits/', label: 'OpenAI API Credits' },
-  { href: '/openrouter-credits/', label: 'OpenRouter Credits' },
   { href: '/api-billing-mismatch/', label: 'API Billing Mismatch' },
+  { href: '/failed-generation-cost/', label: 'Failed Generation Cost' },
+  { href: '/billing-transparency/', label: 'Billing Transparency' },
+  { href: '/agent-token-usage/', label: 'Agent Token Usage' },
+  { href: '/image-generation-api-cost/', label: 'Image Generation API Cost' },
+  { href: '/video-generation-api-pricing/', label: 'Video Generation API Pricing' },
 ];
 ---
 
 <PageLayout
-  title="Small Prepaid API Test Guide"
-  description="Learn how to run a small prepaid API test, compare logs and usage, then scale slowly."
-  canonical={`${siteUrl}/small-prepaid-test/`}
+  title="Small Prepaid API Test Checklist"
+  description="Test an AI API with a small prepaid balance before scaling. Verify usage, retries, limits, billing records and actual cost per successful result."
+  canonical={`${siteUrl}${route}`}
   type="article"
   lastUpdated={currentDate}
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org", "@type": "Article",
-      "headline": "Small Prepaid API Test: Check Cost Before Scaling",
-      "description": "Learn how to run a small prepaid API test, compare logs and usage, then scale slowly.",
+      "headline": "Small Prepaid API Test Checklist",
+      "description": "Test an AI API with a small prepaid balance before scaling. Verify usage, retries, limits, billing records and actual cost per successful result.",
       "author": { "@type": "Organization", "name": "AICostPlanner" },
       "publisher": { "@type": "Organization", "name": "AICostPlanner", "url": siteUrl },
       "datePublished": currentDate, "dateModified": currentDate,
-      "mainEntityOfPage": { "@type": "WebPage", "@id": `${siteUrl}/small-prepaid-test/` }
+      "mainEntityOfPage": { "@type": "WebPage", "@id": `${siteUrl}${route}` }
     })} />
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org", "@type": "BreadcrumbList",
       "itemListElement": [
         { "@type": "ListItem", "position": 1, "name": "Home", "item": siteUrl },
-        { "@type": "ListItem", "position": 2, "name": "Small Prepaid Test", "item": `${siteUrl}/small-prepaid-test/` }
+        { "@type": "ListItem", "position": 2, "name": "Small Prepaid Test", "item": `${siteUrl}${route}` }
       ]
     })} />
   </Fragment>
@@ -47,90 +52,229 @@ const internalLinks = [
     <section class="hero-dark">
       <div class="container">
         <Breadcrumb items={breadcrumbs} />
-        <h1 class="page-title">Small Prepaid API Test Framework</h1>
-        <p class="page-meta"><span class="label-mono">Last updated: {currentDate}</span></p>
+        <h1 class="page-title">Small Prepaid API Test Checklist</h1>
+        <p class="page-meta"><span class="label-mono">Last updated: {lastUpdated}</span></p>
       </div>
     </section>
 
     <section class="section-light content-section">
       <div class="container container-narrow">
+
         <div class="quick-answer">
           <h2>Quick Answer</h2>
           <p>
-            Before scaling API usage, run small tests to verify cost behavior. This framework 
-            helps you check model availability, understand pricing units, run test requests, 
-            compare logs, and scale gradually.
+            A small prepaid API test helps you measure real cost before scaling. Fund only enough for a
+            controlled test, send a few representative requests, record request IDs and usage, inspect
+            retries and failed attempts, then compare local logs with the provider dashboard. Do not
+            estimate production cost from advertised unit prices alone.
           </p>
         </div>
 
-        <h2>Summary</h2>
+        <h2>Why Use a Small Prepaid Test</h2>
         <p>
-          Testing with a small balance before committing larger budgets reduces the risk of 
-          unexpected charges. This framework guides you through the verification steps.
+          Advertised unit prices are estimates based on typical request sizes. Actual cost depends on
+          input length, output length, provider route, retries, failed attempts, tool calls, concurrency
+          and model pricing tier. A small test lets you measure what actually happens before committing
+          a larger budget.
         </p>
-        <p class="scaffold-note"><strong>Scaffold content to expand later.</strong></p>
+        <p>
+          Without a controlled test, you risk discovering unexpected costs only after scaling. With a
+          test, you have actual data to calibrate estimates and decide whether to proceed, adjust, or stop.
+        </p>
 
-        <h2>The Framework</h2>
-        <div class="testing-steps">
-          <div class="testing-step">
-            <div class="step-number">01</div>
-            <div class="step-content">
-              <h3>Check Model Availability</h3>
-              <p>Verify the model is available through your provider. Note any rate limits or access restrictions.</p>
-            </div>
-          </div>
-          <div class="testing-step">
-            <div class="step-number">02</div>
-            <div class="step-content">
-              <h3>Check Pricing Unit</h3>
-              <p>Confirm whether you're charged per token, credit, second, image, or task.</p>
-            </div>
-          </div>
-          <div class="testing-step">
-            <div class="step-number">03</div>
-            <div class="step-content">
-              <h3>Run One Small Request</h3>
-              <p>Send a minimal request to observe actual usage and cost behavior.</p>
-            </div>
-          </div>
-          <div class="testing-step">
-            <div class="step-number">04</div>
-            <div class="step-content">
-              <h3>Check Logs and Request ID</h3>
-              <p>Record the <span class="mono">request_id</span>, <span class="mono">tokens_in</span>, <span class="mono">tokens_out</span>, and any tool_calls.</p>
-            </div>
-          </div>
-          <div class="testing-step">
-            <div class="step-number">05</div>
-            <div class="step-content">
-              <h3>Compare Dashboard Usage</h3>
-              <p>Match your local logs against the provider dashboard to verify billing.</p>
-            </div>
-          </div>
-          <div class="testing-step">
-            <div class="step-number">06</div>
-            <div class="step-content">
-              <h3>Scale Slowly</h3>
-              <p>Increase workload only after confirming cost estimates match reality.</p>
-            </div>
-          </div>
-        </div>
+        <h2>What to Decide Before Funding</h2>
+        <p>Before adding any prepaid balance, define the test scope:</p>
+        <ul>
+          <li>Which provider and model you plan to use in production</li>
+          <li>Current unit price for the selected model</li>
+          <li>Expected input size in tokens, characters or file size</li>
+          <li>Expected output size in tokens, characters or media duration</li>
+          <li>For image or video APIs: resolution, format and duration</li>
+          <li>Planned request count for the test phase</li>
+          <li>Hard concurrency and retry limits</li>
+          <li>Hard stop condition — at what balance or failure rate you will halt</li>
+        </ul>
+        <p>
+          Do not use a fixed global amount such as "always deposit $5" or "$1 is enough." Choose a
+          test balance based on the factors above. The goal is to cap exposure, not to assume one
+          amount fits every API.
+        </p>
 
-        <h2>What to Record</h2>
-        <ul class="checklist">
-          <li><span class="checklist-icon">&#10003;</span><span><span class="mono">request_id</span> for every test request</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span><span class="mono">tokens_in</span> and <span class="mono">tokens_out</span></span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Estimated cost based on provider pricing</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Actual cost from provider dashboard</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Any errors or retries encountered</span></li>
+        <h2>Define a Controlled Test Case</h2>
+        <p>
+          A representative test case reflects real production usage as closely as possible. If you plan
+          to send 2,000-token inputs, do not test with 100-token inputs.
+        </p>
+        <ul>
+          <li>Match the input size you expect in production</li>
+          <li>Use the same model and provider route you plan to use</li>
+          <li>For image or video: use the same resolution and duration</li>
+          <li>For agents: include the same tool calls and context you expect to use</li>
+          <li>Run the same number of concurrent requests you anticipate</li>
         </ul>
 
-        <h2>Warning Signs</h2>
+        <h2>Set a Spending Boundary</h2>
+        <p>
+          Define a maximum budget for the test before funding. This is not a guarantee — it is a
+          personal spending limit you set based on the factors above.
+        </p>
         <ul>
-          <li>Actual cost significantly higher than estimate</li>
-          <li>Usage not matching expected patterns</li>
-          <li>Failed requests being charged</li>
-          <li>Hidden context adding unexpected tokens</li>
+          <li>Calculate the cost of one representative request at current pricing</li>
+          <li>Multiply by the number of test requests you need</li>
+          <li>Add a buffer for retries, but set an explicit cap</li>
+          <li>Set a monitoring check: if balance drops by more than X in Y minutes, stop and investigate</li>
+        </ul>
+
+        <h2>Record Request and Usage Data</h2>
+        <p>For every test request, record these fields in a log or spreadsheet:</p>
+        <ul class="checklist">
+          <li><span class="checklist-icon">&#10003;</span><span><span class="mono">request_id</span> — unique identifier for this request</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span><span class="mono">timestamp</span> — when the request was sent</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Model and provider route used</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span><span class="mono">tokens_in</span> — input token count</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span><span class="mono">tokens_out</span> — output token count</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Cached tokens, if reported</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>For image APIs: count and resolution</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>For video APIs: duration and format</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span><span class="mono">tool_calls</span> — number of tool calls made</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span><span class="mono">retry_count</span> — retries this request triggered</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Reported <span class="mono">usage.cost</span> from the response</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Success or failure state</span></li>
+        </ul>
+
+        <h2>Test Success, Failure and Retry Paths</h2>
+        <p>
+          A complete test covers not only successful requests but also failure and retry behavior.
+        </p>
+        <ul>
+          <li><strong>Success path</strong> — normal request, record cost and output quality</li>
+          <li><strong>Retry path</strong> — trigger a retriable failure, observe how many retries occur and whether each attempt is billed</li>
+          <li><strong>Rate limit path</strong> — test what happens at the concurrency or rate limit, record the HTTP 429 response and <span class="mono">Retry-After</span> header</li>
+          <li><strong>Balance depletion path</strong> — observe the exact error code and message when balance runs low</li>
+          <li><strong>Invalid request path</strong> — send a malformed request, check that it returns the correct error code and does not consume budget</li>
+        </ul>
+
+        <h2>Compare Local Logs With Provider Records</h2>
+        <p>
+          After running the test, reconcile your local records against the provider dashboard:
+        </p>
+        <ul>
+          <li>Match each <span class="mono">request_id</span> to the Activity or usage log</li>
+          <li>Compare <span class="mono">tokens_in</span> and <span class="mono">tokens_out</span> against the dashboard values</li>
+          <li>Verify <span class="mono">usage.cost</span> per request against the dashboard deduction</li>
+          <li>Check whether retries produced duplicate entries in the Activity log</li>
+          <li>Identify any requests that were billed but returned unusable output</li>
+          <li>For providers that bill at different rates for input and output, verify both separately</li>
+        </ul>
+        <p>
+          Discrepancies do not always mean billing is wrong — some providers apply routing adjustments,
+          cached-token discounts or provider-level corrections. Log evidence before drawing conclusions.
+        </p>
+
+        <h2>Calculate Cost per Successful Result</h2>
+        <p>
+          Do not estimate production cost from a single request or from advertised unit prices alone.
+          Use this formula for a more accurate estimate:
+        </p>
+        <p class="formula">
+          <span class="mono">cost_per_successful_result = total_test_cost / number_of_usable_successful_outputs</span>
+        </p>
+        <p>The denominator is not the total number of requests. Reduce it when:</p>
+        <ul>
+          <li>Retries consumed budget without producing output</li>
+          <li>Failed or timed-out requests were still billed</li>
+          <li>Outputs were discarded as unusable or low quality</li>
+          <li>Parallel jobs ran simultaneously, multiplying cost</li>
+          <li>Tool calls accumulated overhead beyond the visible output</li>
+          <li>Duplicated requests sent the same prompt more than once</li>
+          <li>Outputs were larger than expected, consuming more tokens or operations</li>
+        </ul>
+
+        <h2>Check Rate Limits and Concurrency</h2>
+        <p>
+          Before scaling, understand the rate limits that apply to your account or API key:
+        </p>
+        <ul>
+          <li>Requests per minute or per day</li>
+          <li>Tokens per minute, if enforced</li>
+          <li>Concurrent request limits</li>
+          <li>Whether rate limits apply per API key or per account</li>
+        </ul>
+        <p>
+          A rate limit error (HTTP 429) is different from an insufficient balance error (HTTP 402 for
+          OpenRouter). Do not assume that adding more credits resolves a 429. Reduce request rate or
+          wait for the window to reset.
+        </p>
+
+        <h2>Image and Video Generation Checks</h2>
+        <p>
+          Image and video generation APIs introduce additional cost variables:
+        </p>
+        <ul>
+          <li>Resolution and aspect ratio affect per-image cost</li>
+          <li>Number of images per request multiplies cost</li>
+          <li>Video duration and frame rate affect per-second cost</li>
+          <li>Seed values can produce different outputs — record the seed used</li>
+          <li>Generation time may have a separate cost component</li>
+          <li>Failed or timed-out generations may or may not be billed — check the provider documentation</li>
+          <li>Webhook delivery failures may incur retry costs</li>
+        </ul>
+
+        <h2>Agent and Tool-Call Checks</h2>
+        <p>
+          Agent workflows and multi-step tool-call sequences add cost layers beyond a single API call:
+        </p>
+        <ul>
+          <li>Each tool call sends context back to the model, accumulating <span class="mono">tokens_in</span></li>
+          <li>File reads, command output and retrieved context all add to the next request payload</li>
+          <li>Parallel agent sessions multiply token cost linearly</li>
+          <li>Memory or RAG retrieval can send large context chunks on each turn</li>
+          <li>Retry loops within an agent session can escalate cost rapidly</li>
+        </ul>
+        <p>
+          For agent workflows, track <span class="mono">tokens_in</span>,
+          <span class="mono">tokens_out</span>,
+          <span class="mono">tool_calls</span> and
+          <span class="mono">retry_count</span> per session turn.
+        </p>
+
+        <h2>Stop Conditions</h2>
+        <p>Define explicit stop conditions before the test. Halt and investigate if any of these occur:</p>
+        <ul class="checklist">
+          <li><span class="checklist-icon">&#10003;</span><span>Balance drops faster than expected based on your cost estimate</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Usage records do not match your local logs by more than a small margin</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>A retry loop continues beyond your defined retry limit</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Duplicate requests appear in your Activity log</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Output quality is unusable for the intended purpose</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Rate limits prevent representative testing at the intended concurrency</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Provider routing changes unexpectedly mid-test</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Request IDs or cost records cannot be reconciled with your local data</span></li>
+        </ul>
+
+        <h2>After the Test: Scale, Adjust or Stop</h2>
+        <p>
+          Use the data collected during the test to make an informed decision:
+        </p>
+        <ul>
+          <li>If cost per successful result is within your budget and output quality meets requirements, plan a gradual scale-up</li>
+          <li>If costs exceed expectations, investigate the specific cause — it may be addressable through input trimming, model switching or retry limit tuning</li>
+          <li>If billing records do not match your logs, use the <a href="/api-billing-mismatch/">API Billing Mismatch guide</a> before scaling</li>
+          <li>If rate limits prevent representative testing, consider whether the provider's limit is compatible with your use case</li>
+          <li>If the provider route is unstable or unpredictable, factor this into your production risk assessment</li>
+        </ul>
+
+        <h2>Small Prepaid Test Checklist</h2>
+        <ul class="checklist">
+          <li><span class="checklist-icon">&#10003;</span><span>Define the test scope: model, provider, input size, output size, request count, concurrency, retry limit</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Calculate an estimated cost based on current unit pricing</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Set an explicit spending cap and a balance-monitoring stop trigger</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Fund only the test budget — do not fund a full production budget before testing</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Record <span class="mono">request_id</span>, timestamp, model, <span class="mono">tokens_in</span>, <span class="mono">tokens_out</span>, <span class="mono">usage.cost</span> and state for every request</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Test success, retry, rate limit and balance depletion paths</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Compare Activity or usage log against local records after the test</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Calculate cost per usable successful output — not cost per request</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Investigate any stop condition before proceeding to scale</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Use actual test data to calibrate production estimates</span></li>
         </ul>
 
         <h2>Related Guides</h2>
@@ -142,29 +286,61 @@ const internalLinks = [
 
         <div class="ai-summary-block">
           <div class="ai-summary-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg> AI Summary</div>
-          <p>Small prepaid testing helps verify cost behavior before scaling. Steps include: check model availability, check pricing unit, run small request, record request_id and tokens, compare against dashboard, then scale gradually. This is scaffold content for future expansion.</p>
+          <p>
+            A small prepaid API test measures actual cost before scaling by funding only a controlled
+            budget, sending representative requests, and recording <span class="mono">request_id</span>,
+            <span class="mono">tokens_in</span>, <span class="mono">tokens_out</span>,
+            <span class="mono">usage.cost</span>, <span class="mono">tool_calls</span> and
+            <span class="mono">retry_count</span> for every call. Compare local logs with the provider
+            Activity log, test retry and failure paths, and calculate cost per usable successful output
+            rather than cost per request. A small test does not guarantee production costs will match
+            exactly, but it provides the evidence needed to calibrate estimates and decide whether to
+            scale, adjust or stop. This page is educational, not financial or provider-specific guidance.
+          </p>
         </div>
 
         <h2>Frequently Asked Questions</h2>
         <div class="faq-list">
           <div class="faq-item">
-            <h3 class="faq-question">Why should I test with a small balance?</h3>
-            <p class="faq-answer">Testing reveals actual cost behavior, verifies billing accuracy, and helps calibrate estimates before committing larger budgets.</p>
+            <h3 class="faq-question">How much should I prepay for an API test?</h3>
+            <p class="faq-answer">Choose a test balance based on the model, modality, expected output size and current unit pricing. Calculate the cost of one representative request, multiply by the number of test requests you need, and add a buffer for retries — then set an explicit cap. Do not use a fixed global amount such as "always deposit $5" or "$1 is enough."</p>
           </div>
           <div class="faq-item">
-            <h3 class="faq-question">How much should I start with?</h3>
-            <p class="faq-answer">Start with enough for 10-20 test requests. This gives you room to test different scenarios while limiting risk.</p>
+            <h3 class="faq-question">How many requests should a small test include?</h3>
+            <p class="faq-answer">Include enough requests to cover the range of scenarios you expect in production: typical success cases, edge cases, and retry or failure conditions. A test of 5 to 20 requests can be enough to calibrate estimates if each request is representative of real usage.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Should I test failed requests and retries?</h3>
+            <p class="faq-answer">Yes. Observe how many retries a retriable failure triggers, whether each retry attempt is billed, and what the final outcome is. Also test the rate limit response and the balance depletion error to understand the full failure surface before scaling.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">How do I calculate cost per successful result?</h3>
+            <p class="faq-answer">Use the formula: cost per successful result equals total test cost divided by the number of usable successful outputs. The denominator excludes retries, failed attempts, unusable outputs and duplicates. This gives a more accurate production estimate than cost per request alone.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">What should I log during an API test?</h3>
+            <p class="faq-answer">Log <span class="mono">request_id</span>, timestamp, model, provider route, <span class="mono">tokens_in</span>, <span class="mono">tokens_out</span>, cached tokens, <span class="mono">tool_calls</span>, <span class="mono">retry_count</span>, <span class="mono">usage.cost</span> and success or failure state for every request. For media APIs, also log resolution, duration and count.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">When should I stop the test?</h3>
+            <p class="faq-answer">Stop and investigate when balance drops faster than expected, when usage records diverge from your logs, when a retry loop continues beyond your limit, when duplicate requests appear, when output quality is unusable, when rate limits prevent representative testing, or when you cannot reconcile request IDs or cost records.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Can a small test predict full production cost?</h3>
+            <p class="faq-answer">A small test provides a more accurate estimate than advertised unit prices alone, but it does not guarantee that production costs will match exactly. Production usage patterns, concurrency, retry behavior and output variability can all shift the actual cost per result. Use test data to calibrate estimates and build in a safety margin.</p>
           </div>
         </div>
 
         <div class="cta-block">
-          <h3>Ready to start?</h3>
-          <p>Create an API key with $1 trial credit and explore live model pricing.</p>
+          <h3>Start with a small prepaid test</h3>
+          <p>Create an API key with $1 trial credit and test live model pricing before committing a larger budget.</p>
           <div class="cta-buttons">
             <a href="https://app.rutaapi.com/register?lng=en" class="btn btn-primary" target="_blank" rel="noopener">Create API Key <span class="btn-subtext">$1 trial credit</span></a>
-            <a href="https://app.rutaapi.com/pricing" class="btn btn-secondary-dark" target="_blank" rel="noopener">View Live Pricing</a>
+            <a href="https://app.rutaapi.com/pricing" class="btn btn-secondary-dark" target="_blank" rel="noopener">Compare Model Pricing</a>
+            <a href="https://app.rutaapi.com/register?lng=en" class="btn btn-secondary-dark" target="_blank" rel="noopener">Start with a Small Prepaid Test</a>
           </div>
         </div>
+
       </div>
     </section>
   </main>
@@ -186,12 +362,7 @@ const internalLinks = [
   ul, ol { color: var(--color-text-light-muted); margin-bottom: var(--space-4); padding-left: var(--space-6); }
   li { margin-bottom: var(--space-2); line-height: 1.7; }
   .mono { font-family: var(--font-mono); font-size: 0.875em; background: var(--color-bg-light-muted); padding: 0.125em 0.375em; border-radius: var(--radius-sm); }
-  .scaffold-note { background: rgba(59, 130, 246, 0.08); border: 1px dashed var(--color-accent-blue); border-radius: var(--radius-md); padding: var(--space-4); margin-top: var(--space-4); }
-  .testing-steps { display: flex; flex-direction: column; gap: var(--space-6); margin-bottom: var(--space-8); }
-  .testing-step { display: grid; grid-template-columns: auto 1fr; gap: var(--space-6); align-items: start; }
-  .step-number { font-family: var(--font-mono); font-size: 0.875rem; font-weight: 600; color: var(--color-accent-blue); background: rgba(59, 130, 246, 0.1); padding: var(--space-2) var(--space-4); border-radius: var(--radius-sm); min-width: 48px; text-align: center; }
-  .step-content h3 { font-size: 1rem; font-weight: 600; color: var(--color-text-light); margin-bottom: var(--space-2); }
-  .step-content p { font-size: 0.9375rem; color: var(--color-text-light-muted); margin: 0; }
+  .formula { background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.18); border-radius: var(--radius-md); padding: var(--space-4); }
   .checklist { list-style: none; padding: 0; }
   .checklist li { display: flex; align-items: flex-start; gap: var(--space-3); padding: var(--space-3) 0; }
   .checklist-icon { color: var(--color-accent-green); font-weight: bold; flex-shrink: 0; }
@@ -210,12 +381,12 @@ const internalLinks = [
   .faq-answer { margin: 0; font-size: 0.9375rem; line-height: 1.7; }
   .cta-block { text-align: center; padding: var(--space-10); background: var(--color-bg-light-muted); border-radius: var(--radius-xl); margin-top: var(--space-10); }
   .cta-block h3 { font-size: 1.25rem; font-weight: 600; color: var(--color-text-light); margin-bottom: var(--space-3); }
-  .cta-block p { max-width: 40ch; margin: 0 auto var(--space-6); }
+  .cta-block p { max-width: 42ch; margin: 0 auto var(--space-6); }
   .cta-buttons { display: flex; gap: var(--space-4); justify-content: center; flex-wrap: wrap; }
   .btn-primary { background: linear-gradient(135deg, var(--color-accent-blue), var(--color-accent-cyan)); color: white; padding: var(--space-3) var(--space-6); border-radius: var(--radius-md); font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: var(--space-2); transition: all var(--transition-fast); }
   .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); color: white; }
   .btn-subtext { font-size: 0.75rem; font-weight: 400; opacity: 0.9; background: rgba(255,255,255,0.15); padding: var(--space-1) var(--space-2); border-radius: var(--radius-sm); }
   .btn-secondary-dark { background: transparent; color: var(--color-text-light); padding: var(--space-3) var(--space-6); border-radius: var(--radius-md); font-weight: 500; border: 1px solid var(--color-border-light); text-decoration: none; display: inline-flex; align-items: center; gap: var(--space-2); transition: all var(--transition-fast); }
   .btn-secondary-dark:hover { border-color: var(--color-accent-blue); color: var(--color-accent-blue); }
-  @media (max-width: 640px) { .page-title { font-size: 1.75rem; } .testing-step { grid-template-columns: 1fr; gap: var(--space-3); } .link-cards { grid-template-columns: 1fr; } .cta-buttons { flex-direction: column; } .cta-buttons .btn { width: 100%; justify-content: center; } }
+  @media (max-width: 640px) { .page-title { font-size: 1.75rem; } .link-cards { grid-template-columns: 1fr; } .cta-buttons { flex-direction: column; } .cta-buttons .btn { width: 100%; justify-content: center; } }
 </style>
