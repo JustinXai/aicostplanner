@@ -7,19 +7,23 @@ import '../styles/global.css';
 
 const siteUrl = 'https://aicostplanner.com';
 const currentDate = new Date().toISOString().split('T')[0];
+const route = '/agent-token-usage/';
+const lastChecked = '2026-06-14';
 
-const breadcrumbs = [{ label: 'Agent Token Usage', href: '/agent-token-usage/' }];
+const breadcrumbs = [{ label: 'Agent Token Usage', href: route }];
 const internalLinks = [
   { href: '/coding-agent-cost/', label: 'Coding Agent Cost' },
   { href: '/claude-code-token-cost/', label: 'Claude Code Token Cost' },
+  { href: '/claude-fable-5-api-cost/', label: 'Claude Fable 5 API Cost' },
   { href: '/api-billing-mismatch/', label: 'API Billing Mismatch' },
+  { href: '/small-prepaid-test/', label: 'Small Prepaid Test' },
 ];
 ---
 
 <PageLayout
   title="Agent Token Usage Guide"
-  description="Understand token usage patterns in agent workflows, including long context, memory, tool calls and retries."
-  canonical={`${siteUrl}/agent-token-usage/`}
+  description="Understand token usage patterns in agent workflows, including context accumulation, tool calls, retries and cost estimation."
+  canonical={`${siteUrl}${route}`}
   type="article"
   lastUpdated={currentDate}
 >
@@ -27,17 +31,17 @@ const internalLinks = [
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org", "@type": "Article",
       "headline": "Agent Token Usage: Why Workflows Consume More Than Chat",
-      "description": "Understand token usage patterns in agent workflows, including long context, memory, tool calls and retries.",
+      "description": "Understand token usage patterns in agent workflows, including context accumulation, tool calls, retries and cost estimation.",
       "author": { "@type": "Organization", "name": "AICostPlanner" },
       "publisher": { "@type": "Organization", "name": "AICostPlanner", "url": siteUrl },
       "datePublished": currentDate, "dateModified": currentDate,
-      "mainEntityOfPage": { "@type": "WebPage", "@id": `${siteUrl}/agent-token-usage/` }
+      "mainEntityOfPage": { "@type": "WebPage", "@id": `${siteUrl}${route}` }
     })} />
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org", "@type": "BreadcrumbList",
       "itemListElement": [
         { "@type": "ListItem", "position": 1, "name": "Home", "item": siteUrl },
-        { "@type": "ListItem", "position": 2, "name": "Agent Token Usage", "item": `${siteUrl}/agent-token-usage/` }
+        { "@type": "ListItem", "position": 2, "name": "Agent Token Usage", "item": `${siteUrl}${route}` }
       ]
     })} />
   </Fragment>
@@ -54,38 +58,162 @@ const internalLinks = [
 
     <section class="section-light content-section">
       <div class="container container-narrow">
+
         <div class="quick-answer">
           <h2>Quick Answer</h2>
           <p>
-            Agent workflows consume more tokens than simple chat because they maintain context, 
-            use tool calls, and often run for extended periods. Understanding these patterns 
-            helps you estimate and control costs.
+            Agent workflows usually consume more tokens than a single chat request because each turn can
+            include conversation history, tool definitions, tool results, retrieved context, memory and
+            retries. Track <span class="mono">tokens_in</span>, <span class="mono">tokens_out</span>,
+            <span class="mono">tool_calls</span> and retry count per request instead of estimating cost
+            from the final answer alone.
           </p>
         </div>
 
-        <h2>Summary</h2>
+        <h2>Why Agent Workflows Use More Tokens</h2>
         <p>
-          Agent token usage differs from chat in several ways. This guide explains the patterns 
-          that increase token consumption in agent workflows.
+          A simple chat request sends your current prompt. An agent request sends a composite payload that
+          typically includes several components beyond the visible user message.
         </p>
-        <p class="scaffold-note"><strong>Scaffold content to expand later.</strong></p>
+        <p>The same prompt that costs $0.001 in a chat interface may cost $0.05 as an agent request.</p>
 
-        <h2>Token Usage Patterns in Agents</h2>
+        <h2>What Makes Up an Agent Request</h2>
+        <p>An agent request is usually composed of these layers:</p>
         <ul>
-          <li><strong>Context accumulation</strong> — History grows with each turn</li>
-          <li><strong>Tool results</strong> — File reads, command output add tokens</li>
-          <li><strong>Memory systems</strong> — Explicit memory adds to context</li>
-          <li><strong>Planning loops</strong> — Reasoning steps add output tokens</li>
-          <li><strong>Parallel agents</strong> — Multiple contexts simultaneously</li>
+          <li><strong>System prompt</strong> — Instructions, persona, capability definitions</li>
+          <li><strong>Conversation history</strong> — All prior turns replayed each request</li>
+          <li><strong>Tool definitions</strong> — OpenAPI specs, function schemas per tool</li>
+          <li><strong>Tool call arguments</strong> — The parameters passed to each tool</li>
+          <li><strong>Tool results</strong> — File contents, command output, search results</li>
+          <li><strong>Retrieved context</strong> — Retrieved documents, memory chunks</li>
+          <li><strong>User message</strong> — The current request</li>
+          <li><strong>Agent output</strong> — Planning steps, tool calls, final response</li>
         </ul>
 
-        <h2>What to Track</h2>
+        <h2>Input Tokens vs Output Tokens</h2>
+        <p>
+          Each component above contributes to <span class="mono">tokens_in</span>. Only the agent's
+          response and tool-call planning contribute to <span class="mono">tokens_out</span>. Input
+          tokens typically dominate agent cost because tool results, retrieved documents and long history
+          can far exceed the visible output.
+        </p>
+
+        <h2>Context Accumulation Across Turns</h2>
+        <p>
+          Most agents replay the full conversation on every request. If a session has 20 prior turns,
+          all 20 are sent again on the 21st request. A 1,000-token-per-turn history becomes a
+          20,000-token payload before adding the new request.
+        </p>
+        <p>
+          High-context sessions are common in coding agents, where each turn may include file reads,
+          command output and reasoning steps.
+        </p>
+
+        <h2>Tool Calls and Tool Result Overhead</h2>
+        <p>
+          A tool call adds tokens in both directions: the call itself (arguments and tool name) and the
+          result (file contents, command stdout, query results). A file read that returns 50 lines of
+          code may add hundreds of tokens to the next request's input.
+        </p>
+        <p>
+          Some providers bill tool-result tokens at the same rate as input tokens. Check whether
+          your provider counts tool results toward <span class="mono">tokens_in</span>.
+        </p>
+
+        <h2>File Reads and Command Output</h2>
+        <p>
+          Coding agents read source files, output from <span class="mono">grep</span>,
+          <span class="mono">ls</span>, build logs and linter results. These are often included
+          verbatim in the next request payload. Large files or verbose output can multiply input
+          token cost rapidly.
+        </p>
+
+        <h2>Memory and Retrieved Context</h2>
+        <p>
+          Agents that use memory or retrieval-augmented generation (RAG) send previously stored
+          context alongside each request. If memory chunks are large or retrieval returns irrelevant
+          content, token usage grows without proportional value.
+        </p>
+
+        <h2>Planning Loops and Retries</h2>
+        <p>
+          Agents that plan before acting may make multiple internal reasoning steps before calling a
+          tool. Each planning step produces output tokens. Retries—re-sending a request after a
+          failure—replay the full context again, doubling or tripling token usage for that turn.
+        </p>
+
+        <h2>Parallel Agent Cost Multiplication</h2>
+        <p>
+          Running multiple agents simultaneously multiplies token cost linearly. If one agent session
+          uses 50,000 input tokens per turn, five parallel sessions use 250,000 input tokens per turn.
+          Each session also pays its own output token cost.
+        </p>
+        <p>
+          Parallelism is valuable for throughput but scales cost directly. Test single-agent
+          behavior before parallelizing.
+        </p>
+
+        <h2>How to Estimate Agent Token Usage</h2>
+        <p>Use this formula to account for all components:</p>
+        <p class="formula">
+          <span class="mono">tokens_in = initial_context + repeated_history + tool_definitions + tool_results + retrieved_context + retry_context</span>
+        </p>
+        <p>Then convert to cost:</p>
+        <p class="formula">
+          <span class="mono">estimated_cost = (tokens_in × current_input_rate) + (tokens_out × current_output_rate)</span>
+        </p>
+        <p>
+          Check live provider pricing before converting token totals into currency. Rates vary by
+          model, context window size and whether cached tokens are discounted.
+        </p>
+
+        <h2>Worked Example</h2>
+        <p>
+          A five-turn agent session may repeatedly send the same 20,000-token project context. If each
+          turn also adds 5,000 tokens of new tool output, total input usage grows much faster than the
+          visible conversation suggests.
+        </p>
+        <p>Here is a simplified breakdown for one turn:</p>
+        <ul>
+          <li>System prompt + tool definitions: 3,000 tokens</li>
+          <li>Conversation history (4 prior turns): 20,000 tokens</li>
+          <li>Tool results from previous turn: 5,000 tokens</li>
+          <li>Current user message: 200 tokens</li>
+          <li><strong>Total tokens_in for this turn: 28,200</strong></li>
+        </ul>
+        <p>
+          At a hypothetical rate of $3.00 per million input tokens, this single turn costs
+          approximately $0.0846 in input tokens alone—before counting output.
+        </p>
+
+        <h2>What to Log</h2>
+        <p>
+          Record these fields for every agent request to reconcile against provider billing:
+        </p>
         <ul class="checklist">
-          <li><span class="checklist-icon">&#10003;</span><span>tokens_in per request</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>tokens_out per request</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>tool_calls count</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Conversation turns</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Context window utilization</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span><span class="mono">request_id</span> — unique per request</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span><span class="mono">session_id</span> — groups related requests</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span><span class="mono">model</span> — model name and version used</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span><span class="mono">tokens_in</span> — input token count for this request</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span><span class="mono">tokens_out</span> — output token count for this request</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span><span class="mono">cached_tokens</span> — cached context discount, if supported</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span><span class="mono">tool_calls</span> — number of tool calls in this request</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span><span class="mono">retry_count</span> — retries this request triggered</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span><span class="mono">context_size</span> — tokens sent in this request payload</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span><span class="mono">latency</span> — request duration in milliseconds</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span><span class="mono">provider_usage_record</span> — the raw usage record from the provider dashboard</span></li>
+        </ul>
+
+        <h2>Cost Reduction Checklist</h2>
+        <ul class="checklist">
+          <li><span class="checklist-icon">&#10003;</span><span>Limit unnecessary file reads — send only relevant sections</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Summarize long conversation history before resuming</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Avoid returning huge command outputs verbatim</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Cache reusable context when the provider supports it</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Use focused retrieval — send only relevant memory chunks</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Set retry limits to prevent unbounded re-sends</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Test one agent session before parallel scaling</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Compare local logs with the provider dashboard before scaling</span></li>
         </ul>
 
         <h2>Related Guides</h2>
@@ -97,29 +225,50 @@ const internalLinks = [
 
         <div class="ai-summary-block">
           <div class="ai-summary-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg> AI Summary</div>
-          <p>Agent workflows consume more tokens than chat due to context accumulation, tool calls, memory systems, planning loops, and parallel execution. Track tokens_in, tokens_out, tool_calls, and context window utilization. This is scaffold content for future expansion.</p>
+          <p>
+            Agent workflows consume more tokens than chat because each request is a composite of system
+            prompts, conversation history, tool definitions, tool results, retrieved context and retry
+            overhead. Track tokens_in, tokens_out, tool_calls and retry_count per request, and compare
+            local logs against the provider dashboard before scaling. Use the cost estimation formula
+            with live provider rates to convert token totals into currency. This page is educational,
+            not official provider documentation.
+          </p>
         </div>
 
         <h2>Frequently Asked Questions</h2>
         <div class="faq-list">
           <div class="faq-item">
-            <h3 class="faq-question">Why do agent workflows use more tokens?</h3>
-            <p class="faq-answer">Agents maintain context, execute tool calls, and often run longer than simple chat sessions. Each of these patterns adds token overhead.</p>
+            <h3 class="faq-question">Why do AI agents use more tokens than chat?</h3>
+            <p class="faq-answer">Each agent request sends a composite payload: system prompt, full conversation history, tool definitions, tool results and retrieved context. A chat request only sends the current message. The accumulation effect compounds as sessions grow longer.</p>
           </div>
           <div class="faq-item">
-            <h3 class="faq-question">How do I reduce agent token usage?</h3>
-            <p class="faq-answer">Limit context window, reduce tool calls, summarize history, and use appropriate model tiers for each task complexity.</p>
+            <h3 class="faq-question">Do tool calls count toward token usage?</h3>
+            <p class="faq-answer">Yes. The tool name, arguments and the result returned by the tool all add to tokens_in on the next request. Some providers also count tool-call planning toward tokens_out. Check your provider's documentation for the exact counting policy.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Does conversation history get billed again on every turn?</h3>
+            <p class="faq-answer">In most agent implementations, yes. The full history is replayed each turn. Some providers offer context caching or summarization to reduce this overhead, but by default, every turn re-sends the full history.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">How do parallel agents multiply cost?</h3>
+            <p class="faq-answer">Each parallel agent session runs independently and pays its own tokens_in and tokens_out. Five simultaneous sessions use roughly five times the token volume of one. Throughput gains must be weighed against the linear cost increase.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">How can I reduce agent token usage?</h3>
+            <p class="faq-answer">Send only relevant file sections, summarize long history, filter command output, use focused memory retrieval, set retry limits, and test single-agent behavior before parallelizing. Always compare your own token count against the provider dashboard.</p>
           </div>
         </div>
 
         <div class="cta-block">
-          <h3>Ready to start?</h3>
-          <p>Create an API key with $1 trial credit and explore live model pricing.</p>
+          <h3>Start with a small prepaid test</h3>
+          <p>Create an API key with $1 trial credit and estimate agent cost with live provider rates before scaling.</p>
           <div class="cta-buttons">
             <a href="https://app.rutaapi.com/register?lng=en" class="btn btn-primary" target="_blank" rel="noopener">Create API Key <span class="btn-subtext">$1 trial credit</span></a>
-            <a href="https://app.rutaapi.com/pricing" class="btn btn-secondary-dark" target="_blank" rel="noopener">View Live Pricing</a>
+            <a href="https://app.rutaapi.com/pricing" class="btn btn-secondary-dark" target="_blank" rel="noopener">Compare Model Pricing</a>
+            <a href="https://app.rutaapi.com/register?lng=en" class="btn btn-secondary-dark" target="_blank" rel="noopener">Start with a Small Prepaid Test</a>
           </div>
         </div>
+
       </div>
     </section>
   </main>
@@ -141,7 +290,7 @@ const internalLinks = [
   ul, ol { color: var(--color-text-light-muted); margin-bottom: var(--space-4); padding-left: var(--space-6); }
   li { margin-bottom: var(--space-2); line-height: 1.7; }
   .mono { font-family: var(--font-mono); font-size: 0.875em; background: var(--color-bg-light-muted); padding: 0.125em 0.375em; border-radius: var(--radius-sm); }
-  .scaffold-note { background: rgba(59, 130, 246, 0.08); border: 1px dashed var(--color-accent-blue); border-radius: var(--radius-md); padding: var(--space-4); margin-top: var(--space-4); }
+  .formula { background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.18); border-radius: var(--radius-md); padding: var(--space-4); }
   .checklist { list-style: none; padding: 0; }
   .checklist li { display: flex; align-items: flex-start; gap: var(--space-3); padding: var(--space-3) 0; }
   .checklist-icon { color: var(--color-accent-green); font-weight: bold; flex-shrink: 0; }
@@ -160,7 +309,7 @@ const internalLinks = [
   .faq-answer { margin: 0; font-size: 0.9375rem; line-height: 1.7; }
   .cta-block { text-align: center; padding: var(--space-10); background: var(--color-bg-light-muted); border-radius: var(--radius-xl); margin-top: var(--space-10); }
   .cta-block h3 { font-size: 1.25rem; font-weight: 600; color: var(--color-text-light); margin-bottom: var(--space-3); }
-  .cta-block p { max-width: 40ch; margin: 0 auto var(--space-6); }
+  .cta-block p { max-width: 42ch; margin: 0 auto var(--space-6); }
   .cta-buttons { display: flex; gap: var(--space-4); justify-content: center; flex-wrap: wrap; }
   .btn-primary { background: linear-gradient(135deg, var(--color-accent-blue), var(--color-accent-cyan)); color: white; padding: var(--space-3) var(--space-6); border-radius: var(--radius-md); font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: var(--space-2); transition: all var(--transition-fast); }
   .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); color: white; }

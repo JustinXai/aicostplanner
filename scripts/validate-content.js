@@ -106,6 +106,22 @@ async function validatePage(filePath, url) {
     if (html.includes(token)) pageErrors.push(`Generated HTML contains banned residue: ${token}`);
   }
 
+  const scaffoldMarkers = [
+    'Scaffold content to expand later',
+    'This is scaffold content for future expansion',
+    'scaffold content for future expansion',
+    'TODO',
+    'TBD',
+    'placeholder',
+    'coming soon',
+  ];
+  for (const marker of scaffoldMarkers) {
+    if (html.includes(marker)) {
+      pageErrors.push(`Scaffold/placeholder content found: "${marker}"`);
+      break;
+    }
+  }
+
   return { url, title, metaDesc, h1, errors: pageErrors };
 }
 
