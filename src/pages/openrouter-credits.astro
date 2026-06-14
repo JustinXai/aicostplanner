@@ -91,14 +91,12 @@ const internalLinks = [
         </p>
 
         <h2>What "After One Year" Actually Means</h2>
-        <ul>
-          <li>The one-year window starts from the purchase date of each credit package</li>
-          <li>Credits purchased at different times may have different expiry windows</li>
-          <li>Auto-refill or subscription credits may follow separate terms</li>
-          <li>OpenRouter reserves the right but does not guarantee that every unused credit is
-            automatically removed after exactly 365 days</li>
-          <li>Account notices, emails or dashboard banners may provide earlier warning</li>
-        </ul>
+        <p>
+          OpenRouter's FAQ says it reserves the right to expire unused credits after one year of
+          purchase. The documentation does not promise that every balance expires automatically on an
+          exact date, nor does it document a detailed package-by-package expiry schedule on the FAQ
+          page. Check the current FAQ, Terms and account balance before relying on old credits.
+        </p>
 
         <h2>How to Check OpenRouter Credits</h2>
         <p>Three views help you track your credit balance:</p>
@@ -242,10 +240,9 @@ const internalLinks = [
           <li><strong>Model switching mid-workflow</strong> — different models have different per-token or per-request costs</li>
           <li><strong>Provider routing</strong> — OpenRouter may route to different underlying providers with different pricing</li>
           <li><strong>Long context</strong> — large input or output token counts multiply cost; agents replaying conversation history are especially affected</li>
-          <li><strong>Retries and failed requests</strong> — a failed or timed-out request may still be billed depending on the provider's policy</li>
+          <li><strong>Retries and failed requests</strong> — OpenRouter's current pricing FAQ says failed or fallback attempts are not billed and that routing or fallback charges apply only to successful model runs. For an ambiguous partial or streaming response, inspect usage.cost and the Activity record rather than assuming a charge.</li>
           <li><strong>Tool calls and agent workflows</strong> — multi-step workflows accumulate token overhead quickly</li>
           <li><strong>Parallel sessions</strong> — running several agent instances simultaneously multiplies credit usage</li>
-          <li><strong>Hidden adjustments</strong> — provider-level adjustments or corrections may not be visible in per-request logs</li>
         </ul>
 
         <h2>Small Prepaid Test Checklist</h2>
