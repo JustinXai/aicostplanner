@@ -114,7 +114,7 @@ const internalLinks = [
               <tr><td><code>act_two</code></td><td>5</td><td>Character animation</td></tr>
               <tr><td><code>seedance2</code> 480p/720p</td><td>36</td><td>Standard quality</td></tr>
               <tr><td><code>seedance2</code> 1080p</td><td>40</td><td>High quality</td></tr>
-              <tr><td><code>seedance2_fast</code></td><td>29</td><td>Fast mode, any resolution</td></tr>
+              <tr><td><code>seedance2_fast</code></td><td>29</td><td>Fast mode, 480p/720p</td></tr>
               <tr><td><code>veo3</code></td><td>40</td><td></td></tr>
               <tr><td><code>veo3.1</code> with audio</td><td>40</td><td></td></tr>
               <tr><td><code>veo3.1</code> without audio</td><td>20</td><td></td></tr>
@@ -148,9 +148,7 @@ const internalLinks = [
           <li>1-second calculated cost: 28 &times; 1 = 28 credits &rarr; billable = 56 credits minimum</li>
         </ul>
         <p>
-          These examples estimate cost from credits per second. They do not cover additional
-          per-output charges, multimodal features or post-processing steps. Always cross-reference
-          the official pricing page and the specific endpoint schema for the model in use.
+          These examples apply the listed credits-per-second rate to the generated duration. If a workflow invokes separate image, audio, upscale or additional generation operations, calculate those operations separately using their own official rates.
         </p>
 
         <h2>Web App Credits vs Developer API Credits</h2>
@@ -189,11 +187,10 @@ const internalLinks = [
           Runway API usage tiers control multiple dimensions:
         </p>
         <ul>
-          <li>Maximum concurrency — number of tasks that can be queued or processing simultaneously</li>
-          <li>Maximum generations per day</li>
-          <li>Maximum monthly spend</li>
+          <li>Maximum concurrency</li>
+          <li>Maximum generations in a rolling 24-hour window</li>
+          <li>Maximum credit purchases in a rolling 30-day window</li>
           <li>Per-model or per-modality restrictions</li>
-          <li>Credit balance minimums</li>
         </ul>
         <p>
           When the concurrency limit is reached, tasks may be marked <code>THROTTLED</code>. A
@@ -203,7 +200,7 @@ const internalLinks = [
         </p>
         <p>
           Runway does not publish a universal maximum requests-per-minute cap. However, tier limits
-          on concurrency, daily generations and monthly spend still apply. Do not characterize
+          on concurrency, rolling 24-hour generations and rolling 30-day credit purchases still apply. Do not characterize
           the API as having unrestricted parallel task capacity or no workload constraints.
         </p>
 
@@ -218,21 +215,21 @@ const internalLinks = [
               <tr><th>failureCode</th><th>Credit behavior</th><th>Recommended action</th></tr>
             </thead>
             <tbody>
-              <tr><td><code>SAFETY.INPUT.*</code></td><td>Credits not refunded</td><td>Do not retry</td></tr>
-              <tr><td><code>SAFETY.OUTPUT.*</code></td><td>Refunded per policy</td><td>Record and review; retry only if warranted</td></tr>
-              <tr><td><code>INPUT_PREPROCESSING.SAFETY.TEXT</code></td><td>Credits not refunded</td><td>Do not retry</td></tr>
-              <tr><td><code>INPUT_PREPROCESSING.INTERNAL</code></td><td>May be refunded</td><td>Wait, then retry</td></tr>
-              <tr><td><code>ASSET.INVALID</code></td><td>May be refunded</td><td>Fix input; do not retry unchanged</td></tr>
-              <tr><td><code>THIRD_PARTY.UNAVAILABLE</code></td><td>May be refunded</td><td>Wait, then retry</td></tr>
-              <tr><td><code>INTERNAL</code> or <code>null</code></td><td>May be refunded</td><td>Wait, then retry</td></tr>
+              <tr><td><code>SAFETY.INPUT.*</code></td><td>Credits are not refunded</td><td>Do not retry</td></tr>
+              <tr><td><code>SAFETY.OUTPUT.*</code></td><td>Credits are refunded</td><td>Review output failure; retry only when appropriate</td></tr>
+              <tr><td><code>INTERNAL.BAD_OUTPUT.*</code></td><td>Credits are refunded</td><td>Correct prompt or input where possible, then retry</td></tr>
+              <tr><td><code>INPUT_PREPROCESSING.SAFETY.TEXT</code></td><td>Credits are refunded</td><td>Do not retry unchanged</td></tr>
+              <tr><td><code>INPUT_PREPROCESSING.INTERNAL</code></td><td>Credits are refunded</td><td>Wait, then retry</td></tr>
+              <tr><td><code>ASSET.INVALID</code></td><td>Credits are refunded</td><td>Correct the input; do not retry unchanged</td></tr>
+              <tr><td><code>THIRD_PARTY.UNAVAILABLE</code></td><td>Credits are refunded</td><td>Wait before retrying</td></tr>
+              <tr><td><code>INTERNAL</code> or <code>null</code></td><td>Credits are refunded</td><td>Wait, then retry</td></tr>
             </tbody>
           </table>
         </div>
         <p>
-          Runway explicitly states that credits are not refunded for <code>SAFETY.INPUT.*</code>
-          failures. Do not assume all failed tasks are billed, or that all failures are
-          refunded, or that every failure should be retried. Match the action to the
-          <code>failureCode</code>.
+          Runway's current task-failure documentation says <code>SAFETY.INPUT.*</code> failures
+          are not refunded, unlike other task failures. Always inspect the returned
+          <code>failureCode</code> before deciding whether to retry.
         </p>
 
         <h2>What to Log</h2>
@@ -317,7 +314,7 @@ Estimated API cost:  12,000 × $0.01 = $120</code></pre>
           <li><span class="checklist-icon">&#10003;</span><span>Retry only when the <code>failureCode</code> allows it; never retry <code>SAFETY.INPUT.*</code></span></li>
           <li><span class="checklist-icon">&#10003;</span><span>Monitor credit balance and pause work when it falls below a safe threshold</span></li>
           <li><span class="checklist-icon">&#10003;</span><span>Set the autobilling threshold high enough to cover peak workload between checks</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Track tier limits for concurrency, daily generations and monthly spend</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Track tier limits for concurrency, rolling 24-hour generation windows and rolling 30-day credit purchase caps</span></li>
           <li><span class="checklist-icon">&#10003;</span><span>Separate completed, failed and throttled task records to analyze real usable-output cost</span></li>
           <li><span class="checklist-icon">&#10003;</span><span>Use actual credit usage from the Developer Portal rather than local estimates for financial reporting</span></li>
           <li><span class="checklist-icon">&#10003;</span><span>Note the pricing review date and re-check before any production scaling</span></li>
@@ -369,7 +366,7 @@ Estimated API cost:  12,000 × $0.01 = $120</code></pre>
           </div>
           <div class="faq-item">
             <h3 class="faq-question">How much does a five-second Gen-4.5 video cost?</h3>
-            <p class="faq-answer">Gen-4.5 is billed at 12 credits per second. A 5-second video consumes 12 &times; 5 = 60 credits, which equals 60 &times; $0.01 = $0.60. Text input, audio and any additional per-output charges are not included in this estimate.</p>
+            <p class="faq-answer">Gen-4.5 is billed at 12 credits per generated second. A 5-second video consumes 12 &times; 5 = 60 credits, which equals 60 &times; $0.01 = $0.60. This estimate applies the official Gen-4.5 rate of 12 credits per generated second. Separate Runway capabilities or additional generation tasks should be estimated independently.</p>
           </div>
           <div class="faq-item">
             <h3 class="faq-question">Is Gen-4 Turbo cheaper than Gen-4.5?</h3>
@@ -381,7 +378,7 @@ Estimated API cost:  12,000 × $0.01 = $120</code></pre>
           </div>
           <div class="faq-item">
             <h3 class="faq-question">Does Runway refund credits for failed tasks?</h3>
-            <p class="faq-answer">It depends on the failureCode. SAFETY.INPUT.* failures are explicitly not refunded. Other failure types — including SAFETY.OUTPUT.*, INPUT_PREPROCESSING.INTERNAL, ASSET.INVALID, THIRD_PARTY.UNAVAILABLE, INTERNAL and null — may be refunded per policy. Check the failureCode before assuming a failed task was or was not billed, and refer to the Developer Portal organization credit record.</p>
+            <p class="faq-answer">Runway's current task-failure documentation says <code>SAFETY.INPUT.*</code> failures are not refunded, unlike other task failures. Always inspect the returned <code>failureCode</code> before deciding whether to retry.</p>
           </div>
           <div class="faq-item">
             <h3 class="faq-question">What does THROTTLED mean?</h3>
