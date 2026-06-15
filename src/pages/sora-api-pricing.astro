@@ -7,37 +7,43 @@ import '../styles/global.css';
 
 const siteUrl = 'https://aicostplanner.com';
 const currentDate = new Date().toISOString().split('T')[0];
+const route = '/sora-api-pricing/';
+const lastReviewed = 'June 15, 2026';
 
-const breadcrumbs = [{ label: 'Sora API Pricing', href: '/sora-api-pricing/' }];
+const breadcrumbs = [{ label: 'Sora API Pricing', href: route }];
 const internalLinks = [
   { href: '/video-generation-api-pricing/', label: 'Video Generation API Pricing' },
-  { href: '/kling-api-pricing/', label: 'Kling API Pricing' },
   { href: '/runway-api-pricing/', label: 'Runway API Pricing' },
+  { href: '/small-prepaid-test/', label: 'Small Prepaid Test' },
+  { href: '/api-billing-mismatch/', label: 'API Billing Mismatch' },
+  { href: '/failed-generation-cost/', label: 'Failed Generation Cost' },
+  { href: '/billing-transparency/', label: 'Billing Transparency' },
+  { href: '/openai-api-usage/', label: 'OpenAI API Usage' },
 ];
 ---
 
 <PageLayout
-  title="Sora API Pricing and Availability"
-  description="Review Sora API pricing signals, video length, resolution, async jobs and current availability caveats."
-  canonical={`${siteUrl}/sora-api-pricing/`}
+  title="Sora API Pricing and September 2026 Shutdown"
+  description="Calculate Sora 2 API video costs by duration and resolution, compare Batch pricing, and prepare for the Videos API shutdown on September 24, 2026."
+  canonical={`${siteUrl}${route}`}
   type="article"
   lastUpdated={currentDate}
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org", "@type": "Article",
-      "headline": "Sora API Pricing: Video Length, Resolution and Current Availability",
-      "description": "Review Sora API pricing signals, video length, resolution, async jobs and current availability caveats.",
+      "headline": "Sora API Pricing and September 2026 Shutdown",
+      "description": "Calculate Sora 2 API video costs by duration and resolution, compare Batch pricing, and prepare for the Videos API shutdown on September 24, 2026.",
       "author": { "@type": "Organization", "name": "AICostPlanner" },
       "publisher": { "@type": "Organization", "name": "AICostPlanner", "url": siteUrl },
       "datePublished": currentDate, "dateModified": currentDate,
-      "mainEntityOfPage": { "@type": "WebPage", "@id": `${siteUrl}/sora-api-pricing/` }
+      "mainEntityOfPage": { "@type": "WebPage", "@id": `${siteUrl}${route}` }
     })} />
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org", "@type": "BreadcrumbList",
       "itemListElement": [
         { "@type": "ListItem", "position": 1, "name": "Home", "item": siteUrl },
-        { "@type": "ListItem", "position": 2, "name": "Sora API Pricing", "item": `${siteUrl}/sora-api-pricing/` }
+        { "@type": "ListItem", "position": 2, "name": "Sora API Pricing", "item": `${siteUrl}${route}` }
       ]
     })} />
   </Fragment>
@@ -47,53 +53,324 @@ const internalLinks = [
     <section class="hero-dark">
       <div class="container">
         <Breadcrumb items={breadcrumbs} />
-        <h1 class="page-title">Sora API Pricing and Availability Notes</h1>
-        <p class="page-meta"><span class="label-mono">Last updated: {currentDate}</span></p>
+        <h1 class="page-title">Sora API Pricing and 2026 Shutdown</h1>
+        <p class="page-meta"><span class="label-mono">Last reviewed: {lastReviewed}</span></p>
       </div>
     </section>
 
     <section class="section-light content-section">
       <div class="container container-narrow">
+
+        <div class="deprecation-notice">
+          <h2>Deprecation Notice</h2>
+          <p>
+            OpenAI has deprecated the <strong>Videos API</strong>, <strong>sora-2</strong> and
+            <strong>sora-2-pro</strong>. They are scheduled to shut down on
+            <strong>September 24, 2026</strong>. OpenAI's deprecation table currently lists no
+            recommended replacement. Use existing API access for active workloads and migration
+            planning rather than building new long-term dependencies.
+          </p>
+        </div>
+
         <div class="quick-answer">
           <h2>Quick Answer</h2>
           <p>
-            OpenAI Sora is a text-to-video and image-to-video generation API. Current Sora 
-            availability and pricing may vary. Some tiers have been deprecated or modified. 
-            Always check official OpenAI documentation for current Sora API availability.
+            Sora API pricing is based on generated video duration and output resolution. Standard
+            <code>sora-2</code> costs $0.10 per second at 720p. <code>sora-2-pro</code> costs
+            $0.30 per second at 720p, $0.50 per second at 1024p and $0.70 per second at 1080p.
+            Batch pricing is currently half the standard rate. However, OpenAI has deprecated the
+            Videos API and Sora 2 models and plans to remove them on September 24, 2026, so use
+            these prices for existing workloads and migration planning rather than assuming long-term
+            availability.
           </p>
         </div>
 
-        <h2>Summary</h2>
+        <h2>Sora Web/App vs Sora API Timeline</h2>
         <p>
-          Sora is OpenAI's video generation model. Pricing and availability have changed over 
-          time. This guide provides signals to watch when planning Sora integration.
+          OpenAI has announced a staged discontinuation of Sora services:
         </p>
-        <p class="scaffold-note"><strong>Scaffold content to expand later.</strong></p>
+        <ul>
+          <li><strong>Sora Web and App</strong>: Stopped as of April 26, 2026</li>
+          <li><strong>Videos API, sora-2 and sora-2-pro</strong>: Scheduled shutdown September 24, 2026</li>
+          <li><strong>Related model snapshots</strong>: Expected to stop alongside the API shutdown</li>
+          <li><strong>Recommended replacement</strong>: Not currently listed in OpenAI's deprecation table</li>
+        </ul>
+        <p>
+          Do not assume that the Sora API is already offline — it remains accessible until
+          September 24, 2026, but the shutdown date is firm. Plan accordingly for any existing
+          integrations.
+        </p>
 
-        <div class="warning-box">
-          <span class="warning-icon">!</span>
-          <p>
-            <strong>Important:</strong> Sora API availability has changed over time. Some 
-            previous tiers have been deprecated. Verify current availability and pricing 
-            directly with OpenAI before committing to Sora integration.
-          </p>
+        <h2>Current Sora API Models</h2>
+        <p>
+          As of {lastReviewed}, the active Sora video generation models are:
+        </p>
+        <ul>
+          <li><code>sora-2</code> — standard video generation, 720p output</li>
+          <li><code>sora-2-pro</code> — higher quality and resolution options including 1024p and 1080p</li>
+        </ul>
+        <p>
+          Both models are covered by the September 24, 2026 shutdown announcement. Do not start
+          new long-term Sora API integrations.
+        </p>
+
+        <h2>Standard Sora API Pricing</h2>
+        <p>
+          The following rates were reviewed on {lastReviewed} from the official OpenAI pricing page.
+          Rates are per generated second of video. Prices may change before the September 24, 2026
+          shutdown; check the live pricing page before billing estimates.
+        </p>
+        <div class="rate-table">
+          <table>
+            <thead>
+              <tr><th>Model</th><th>Resolution</th><th>Portrait / Landscape</th><th>Standard price</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>sora-2</code></td><td>720p</td><td>720&times;1280 / 1280&times;720</td><td>$0.10 / second</td></tr>
+              <tr><td><code>sora-2-pro</code></td><td>720p</td><td>720&times;1280 / 1280&times;720</td><td>$0.30 / second</td></tr>
+              <tr><td><code>sora-2-pro</code></td><td>1024p</td><td>1024&times;1792 / 1792&times;1024</td><td>$0.50 / second</td></tr>
+              <tr><td><code>sora-2-pro</code></td><td>1080p</td><td>1080&times;1920 / 1920&times;1080</td><td>$0.70 / second</td></tr>
+            </tbody>
+          </table>
         </div>
+        <p>
+          Audio is included in Sora 2 video output capability. Do not add a separate audio fee
+          unless the API documentation explicitly describes an additional audio charge for the
+          specific workflow in use.
+        </p>
 
-        <h2>What to Check</h2>
-        <ul class="checklist">
-          <li><span class="checklist-icon">&#10003;</span><span>Current Sora API availability status</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Video length limits (720p, 1080p, etc.)</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Current pricing tiers</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Rate limits and quotas</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Async job handling requirements</span></li>
+        <h2>Batch API Pricing</h2>
+        <p>
+          OpenAI also offers a Batch API for video generation. Batch jobs are processed
+          asynchronously and are suited for offline render queues rather than interactive use.
+          Batch pricing is currently half the standard rate:
+        </p>
+        <div class="rate-table">
+          <table>
+            <thead>
+              <tr><th>Model</th><th>Resolution</th><th>Batch price</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>sora-2</code></td><td>720p</td><td>$0.05 / second</td></tr>
+              <tr><td><code>sora-2-pro</code></td><td>720p</td><td>$0.15 / second</td></tr>
+              <tr><td><code>sora-2-pro</code></td><td>1024p</td><td>$0.25 / second</td></tr>
+              <tr><td><code>sora-2-pro</code></td><td>1080p</td><td>$0.35 / second</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          Batch pricing is also subject to the September 24, 2026 shutdown. Do not assume all
+          accounts or job types are immediately eligible for Batch access; eligibility and
+          availability are controlled by OpenAI.
+        </p>
+
+        <h2>Cost Formulas</h2>
+        <h3>Standard video generation</h3>
+        <pre><code>standard_video_cost =
+  price_per_second
+  × requested_generated_seconds</code></pre>
+        <h3>Batch video generation</h3>
+        <pre><code>batch_video_cost =
+  batch_price_per_second
+  × requested_generated_seconds</code></pre>
+        <h3>Project-level estimate</h3>
+        <pre><code>estimated_project_cost =
+  sum(standard_video_cost or batch_video_cost for all jobs)
++ sum(edit_job_costs)
++ sum(extension_job_costs)
++ sum(retries_or_duplicates_that_created_billable_usage)</code></pre>
+        <p>
+          The final term depends on actual Usage and Costs records. Do not assume all failed or
+          retried jobs are automatically billable or free.
+        </p>
+
+        <h2>Worked Cost Examples</h2>
+        <h3>Sora 2, 720p standard</h3>
+        <ul>
+          <li>8 seconds: 8 &times; $0.10 = $0.80</li>
+          <li>20 seconds: 20 &times; $0.10 = $2.00</li>
+        </ul>
+        <h3>Sora 2 Pro, 720p standard</h3>
+        <ul>
+          <li>8 seconds: 8 &times; $0.30 = $2.40</li>
+          <li>20 seconds: 20 &times; $0.30 = $6.00</li>
+        </ul>
+        <h3>Sora 2 Pro, 1024p standard</h3>
+        <ul>
+          <li>8 seconds: 8 &times; $0.50 = $4.00</li>
+          <li>20 seconds: 20 &times; $0.50 = $10.00</li>
+        </ul>
+        <h3>Sora 2 Pro, 1080p standard</h3>
+        <ul>
+          <li>8 seconds: 8 &times; $0.70 = $5.60</li>
+          <li>20 seconds: 20 &times; $0.70 = $14.00</li>
+        </ul>
+        <h3>Batch example — 100 videos at 8 seconds each, Sora 2 720p</h3>
+        <pre><code>100 × 8 × $0.05 = $40.00</code></pre>
+        <p>
+          These are cost estimates using the rates reviewed on {lastReviewed}. Do not treat them
+          as price guarantees; rates may change before the September 24, 2026 shutdown.
+        </p>
+
+        <h2>Duration and Resolution</h2>
+        <p>
+          Current OpenAI video generation guidelines:
+        </p>
+        <ul>
+          <li>Maximum generated video length: up to 20 seconds per job</li>
+          <li><code>sora-2</code> currently supports 720p output</li>
+          <li><code>sora-2-pro</code> supports 720p, 1024p and 1080p</li>
+          <li>1080p is not available on <code>sora-2</code></li>
+          <li>Higher resolution and longer duration tasks typically have higher queue latency</li>
+        </ul>
+        <p>
+          Acceptable <code>seconds</code> and <code>size</code> values are governed by the
+          current endpoint schema. Verify against the live API documentation before assuming
+          all integer durations within the 20-second cap are supported.
+        </p>
+
+        <h2>Sora 2 vs Sora 2 Pro</h2>
+        <p>
+          The primary differences relevant to cost estimation:
+        </p>
+        <ul>
+          <li><code>sora-2</code> offers 720p at $0.10/second — lower cost for standard-quality video</li>
+          <li><code>sora-2-pro</code> adds 1024p and 1080p at higher per-second rates</li>
+          <li>Both models are deprecated and scheduled for the same shutdown date</li>
+          <li>Do not choose <code>sora-2-pro</code> solely for availability assurance — both are going away on September 24, 2026</li>
         </ul>
 
-        <h2>Cost Factors</h2>
+        <h2>Async Video Job Lifecycle</h2>
+        <p>
+          Sora video generation uses asynchronous jobs. A typical workflow:
+        </p>
+        <ol>
+          <li>Submit <code>POST /v1/videos</code> to create a generation job</li>
+          <li>Persist the returned <code>video_id</code> or <code>job_id</code></li>
+          <li>Initial status may be <code>queued</code> or <code>in_progress</code></li>
+          <li>Poll <code>GET /v1/videos/{'{'+'video_id'+'}'}</code> or use a webhook for status updates</li>
+          <li>Webhook events include <code>video.completed</code> and <code>video.failed</code></li>
+          <li>Download output via the content endpoint when <code>status</code> is <code>completed</code></li>
+          <li>If status is <code>failed</code>, inspect the error code and message before retrying</li>
+        </ol>
+        <p>
+          Do not create a duplicate job upon client-side timeout without first querying the
+          original job's status. Polling or webhook consumption does not itself incur video
+          generation charges.
+        </p>
+
+        <h2>Generate vs Edit vs Extension</h2>
+        <p>
+          The Sora API supports multiple operations including text-to-video generation, image
+          reference, character reference, edit, extension and Batch jobs.
+        </p>
+        <p>
+          The current OpenAI pricing page does not list a separate flat fee for edit or extension
+          operations. Do not assume an edit or extension is free, discounted or charged at a fixed
+          fee. Record the resulting job, duration, model and organization cost record.
+        </p>
+        <p>
+          Each extension operation can add up to 20 seconds of video. A single video can be
+          extended up to six times, reaching a maximum total length of 120 seconds. Each
+          extension creates a new billable job — do not estimate a 120-second video by
+          multiplying $0.10/second by 120; count each intermediate extension as a separate
+          job in your project total.
+        </p>
+
+        <h2>Failed, Cancelled and Moderation-Blocked Jobs</h2>
+        <p>
+          OpenAI's video generation documentation does not state a universal rule that all
+          failed, cancelled or moderation-blocked jobs are billed or unbilled.
+        </p>
+        <p>
+          Do not assume that every failed, cancelled or moderation-blocked video job was billed
+          or free. Record the video ID, status, error code and message, model, size and requested
+          seconds, then inspect the organization Usage and Costs records before retrying.
+        </p>
+        <p>
+          Distinguish the HTTP status and error code — a rate-limit response and an
+          account-quota response require different handling. Check the error body and the
+          organization cost record rather than assuming a uniform policy.
+        </p>
+
+        <h2>Usage and Cost Reconciliation</h2>
+        <p>
+          For cost reconciliation:
+        </p>
         <ul>
-          <li><strong>Video length</strong> — Longer videos typically cost more</li>
-          <li><strong>Resolution</strong> — Higher resolution may have different pricing</li>
-          <li><strong>Quality tier</strong> — Different quality levels may have different rates</li>
-          <li><strong>Input type</strong> — Text-to-video vs image-to-video may differ</li>
+          <li>Reconstruct cost from per-second rates and generated durations in your job records</li>
+          <li>Cross-reference with the organization Usage and Costs data in the OpenAI dashboard</li>
+          <li>Identify and exclude duplicate or retry jobs that created unnecessary charges</li>
+          <li>Track Batch vs standard usage separately if both are used</li>
+          <li>Note the pricing review date for each estimate</li>
+        </ul>
+
+        <h2>September 2026 Migration Checklist</h2>
+        <p>
+          Given the confirmed shutdown date of September 24, 2026, begin migration planning now:
+        </p>
+        <ul class="checklist">
+          <li><span class="checklist-icon">&#10003;</span><span>Do not architect new long-term dependencies on Sora video output or OpenAI video IDs as primary keys</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Export and back up all existing video results and generation metadata while the API is still available</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Save prompts, input references, model, size, seconds and job IDs for every generation</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Download and store output files in your own object storage — do not rely on OpenAI content URLs persisting after shutdown</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Decouple your provider adapter layer from Sora-specific fields so migration can swap providers without rewriting business logic</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Run small comparison tests against alternative video generation APIs before the shutdown date</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Test alternative providers for audio capability, maximum duration, resolution support and async task handling differences</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Set an internal deadline at least two weeks before September 24, 2026 to allow buffer for edge cases</span></li>
+        </ul>
+
+        <h2>No Official Replacement Listed</h2>
+        <p>
+          OpenAI's current deprecation table does not list a recommended replacement for the
+          Videos API, <code>sora-2</code> or <code>sora-2-pro</code>. Do not substitute another
+          OpenAI model as an official replacement without a formal announcement.
+        </p>
+        <p>
+          For alternative video generation APIs, see the
+          <a href="/video-generation-api-pricing/">Video Generation API Pricing</a> guide for a
+          cross-provider overview. No third-party provider offers guaranteed feature parity with
+          Sora's specific output characteristics.
+        </p>
+
+        <h2>What to Log</h2>
+        <p>
+          For every Sora API job, record:
+        </p>
+        <ul>
+          <li>Video ID / job ID and timestamp (UTC)</li>
+          <li>Model (<code>sora-2</code> or <code>sora-2-pro</code>)</li>
+          <li>Model snapshot version, if applicable</li>
+          <li>Requested duration in seconds</li>
+          <li>Requested resolution and aspect ratio</li>
+          <li>Standard or Batch</li>
+          <li>Operation type: generate, edit, extension or other</li>
+          <li>Number of input references (image, character)</li>
+          <li>Job status (<code>completed</code>, <code>failed</code>, <code>queued</code>, <code>in_progress</code>)</li>
+          <li>Error code and message, if applicable</li>
+          <li>Retry count for this job</li>
+          <li>Webhook event received, if applicable</li>
+          <li>Local estimated cost before submission</li>
+          <li>Actual cost from organization Usage and Costs record</li>
+          <li>Output file storage location</li>
+          <li>Migration status for post-shutdown archival</li>
+        </ul>
+
+        <h2>Official Sources Reviewed</h2>
+        <p class="official-sources">
+          The information on this page is based on OpenAI's official documentation reviewed as
+          of {lastReviewed}. Pricing, model availability and the September 24, 2026 shutdown
+          announcement may change; verify current status in the OpenAI Developer Portal before
+          making integration decisions.
+        </p>
+        <ul>
+          <li>OpenAI API Docs: Pricing</li>
+          <li>OpenAI API Docs: Video Generation</li>
+          <li>OpenAI API Docs: Deprecations</li>
+          <li>OpenAI API Docs: Sora 2 model reference</li>
+          <li>OpenAI API Docs: Sora 2 Pro model reference</li>
+          <li>OpenAI API Docs: Changelog</li>
+          <li>OpenAI Help: What to know about the Sora discontinuation</li>
         </ul>
 
         <h2>Related Guides</h2>
@@ -105,29 +382,71 @@ const internalLinks = [
 
         <div class="ai-summary-block">
           <div class="ai-summary-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg> AI Summary</div>
-          <p>Sora API pricing depends on video length, resolution, and quality tier. Availability has changed over time with some tiers deprecated. Always verify current Sora availability and pricing with OpenAI documentation. This is scaffold content for future expansion.</p>
+          <p>
+            Sora API pricing is based on generated video duration and resolution. Standard
+            sora-2 costs $0.10/second at 720p; sora-2-pro adds 1024p at $0.50/second and
+            1080p at $0.70/second. Batch pricing is half the standard rate. OpenAI has
+            deprecated the Videos API, sora-2 and sora-2-pro, with a confirmed shutdown on
+            September 24, 2026 and no listed replacement. Existing users should export
+            outputs, decouple provider-specific fields from business logic, and run alternative
+            provider tests before the shutdown date. Edit and extension operations create
+            separate billable jobs — each extension adds up to 20 seconds and can repeat
+            up to six times per video. Failed or blocked jobs require inspection of the
+            organization Usage and Costs records rather than assuming uniform billing treatment.
+            AICostPlanner is an independent educational cost-planning site and is not
+            affiliated with OpenAI.
+          </p>
         </div>
 
         <h2>Frequently Asked Questions</h2>
         <div class="faq-list">
           <div class="faq-item">
-            <h3 class="faq-question">Is Sora API available?</h3>
-            <p class="faq-answer">Sora availability has changed over time. Check OpenAI's official documentation for current API availability status.</p>
+            <h3 class="faq-question">How much does the Sora API cost per second?</h3>
+            <p class="faq-answer">Standard rates as reviewed on June 15, 2026: sora-2 720p at $0.10/second; sora-2-pro 720p at $0.30/second; sora-2-pro 1024p at $0.50/second; sora-2-pro 1080p at $0.70/second. Batch pricing is half the standard rate. These rates may change before the September 24, 2026 shutdown.</p>
           </div>
           <div class="faq-item">
-            <h3 class="faq-question">How is Sora video generation priced?</h3>
-            <p class="faq-answer">Pricing depends on video length, resolution, and quality tier. Verify current rates with OpenAI's pricing page.</p>
+            <h3 class="faq-question">How much does an eight-second Sora 2 video cost?</h3>
+            <p class="faq-answer">At the reviewed rate of $0.10/second for sora-2 720p: 8 &times; $0.10 = $0.80. At $0.30/second for sora-2-pro 720p: 8 &times; $0.30 = $2.40. Batch would be 8 &times; $0.05 = $0.40. These are estimates using rates reviewed on June 15, 2026.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">How much does Sora 2 Pro 1080p cost?</h3>
+            <p class="faq-answer">Sora 2 Pro 1080p costs $0.70 per generated second at the reviewed rate. An 8-second video would cost approximately $5.60; a 20-second video would cost approximately $14.00. These are estimates using rates reviewed on June 15, 2026.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Is Batch API pricing cheaper?</h3>
+            <p class="faq-answer">Yes — Batch pricing is currently half the standard rate. For example, sora-2 720p standard is $0.10/second but Batch is $0.05/second. Batch is suited for offline render queues rather than interactive use, and availability depends on your account's Batch eligibility.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">When will the Sora API shut down?</h3>
+            <p class="faq-answer">The Videos API, sora-2 and sora-2-pro are scheduled to shut down on September 24, 2026. OpenAI has not announced an extension. Plan migration accordingly and set an internal deadline at least two weeks before that date.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Is the Sora web app already discontinued?</h3>
+            <p class="faq-answer">Yes. The Sora Web application and the RunwayML-powered Sora App stopped service on April 26, 2026. The API remains accessible until September 24, 2026.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">What replaces Sora 2 after September 24, 2026?</h3>
+            <p class="faq-answer">OpenAI's current deprecation table does not list a recommended replacement. Do not assume another OpenAI model is an official substitute. Begin evaluating alternative video generation providers now.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Are failed Sora video jobs billed?</h3>
+            <p class="faq-answer">Do not assume. Inspect the job's status, error code and message, then check the organization Usage and Costs record for that video ID before concluding whether the job was billable.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Should I start a new Sora API integration in 2026?</h3>
+            <p class="faq-answer">Not for long-term production use. Both sora-2 and sora-2-pro are deprecated with a confirmed September 24, 2026 shutdown and no listed replacement. Use the API for active migration and short-term workloads, not for new architectures expected to run beyond the shutdown date.</p>
           </div>
         </div>
 
         <div class="cta-block">
-          <h3>Ready to start?</h3>
-          <p>Create an API key with $1 trial credit and explore live model pricing.</p>
+          <h3>Estimate before you scale</h3>
+          <p>Use a small prepaid test to measure real Sora API cost before committing a larger budget — and begin migration planning before September 2026.</p>
           <div class="cta-buttons">
-            <a href="https://app.rutaapi.com/register?lng=en" class="btn btn-primary" target="_blank" rel="noopener">Create API Key <span class="btn-subtext">$1 trial credit</span></a>
+            <a href="https://app.rutaapi.com/register?lng=en" class="btn btn-primary" target="_blank" rel="noopener">Create API Key</a>
             <a href="https://app.rutaapi.com/pricing" class="btn btn-secondary-dark" target="_blank" rel="noopener">View Live Pricing</a>
           </div>
         </div>
+
       </div>
     </section>
   </main>
@@ -140,19 +459,29 @@ const internalLinks = [
   .page-title { font-size: 2.25rem; font-weight: 700; color: var(--color-text-dark); line-height: 1.15; margin: 0 0 var(--space-4) 0; letter-spacing: -0.02em; }
   .page-meta { margin: 0; }
   .content-section { padding: var(--space-12) 0 var(--space-16); background: var(--color-bg-light); }
+  .deprecation-notice { background: rgba(239, 68, 68, 0.06); border: 1px solid rgba(239, 68, 68, 0.25); border-radius: var(--radius-md); padding: var(--space-6); margin-bottom: var(--space-8); }
+  .deprecation-notice h2 { font-size: 1.125rem; font-weight: 600; color: var(--color-text-light); margin-bottom: var(--space-3); }
+  .deprecation-notice p { margin: 0; color: var(--color-text-light); line-height: 1.7; font-size: 0.9375rem; }
   .quick-answer { background: var(--color-bg-light-elevated); border-left: 4px solid var(--color-accent-blue); padding: var(--space-6); border-radius: 0 var(--radius-md) var(--radius-md) 0; margin-bottom: var(--space-10); }
   .quick-answer h2 { font-size: 1.125rem; font-weight: 600; color: var(--color-text-light); margin-bottom: var(--space-3); }
   .quick-answer p { margin: 0; color: var(--color-text-light); line-height: 1.7; }
   h2 { font-size: 1.5rem; font-weight: 600; color: var(--color-text-light); margin: var(--space-10) 0 var(--space-4); padding-top: var(--space-6); border-top: 1px solid var(--color-border-light); }
   h2:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+  h3 { font-size: 1.125rem; font-weight: 600; color: var(--color-text-light); margin: var(--space-6) 0 var(--space-3); }
   p { color: var(--color-text-light-muted); line-height: 1.75; margin-bottom: var(--space-4); }
   ul, ol { color: var(--color-text-light-muted); margin-bottom: var(--space-4); padding-left: var(--space-6); }
   li { margin-bottom: var(--space-2); line-height: 1.7; }
-  .mono { font-family: var(--font-mono); font-size: 0.875em; background: var(--color-bg-light-muted); padding: 0.125em 0.375em; border-radius: var(--radius-sm); }
-  .scaffold-note { background: rgba(59, 130, 246, 0.08); border: 1px dashed var(--color-accent-blue); border-radius: var(--radius-md); padding: var(--space-4); margin-top: var(--space-4); }
-  .warning-box { display: flex; gap: var(--space-3); background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: var(--radius-md); padding: var(--space-4); margin: var(--space-6) 0; }
-  .warning-icon { flex-shrink: 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; background: var(--color-accent-yellow); color: white; border-radius: 50%; font-weight: bold; font-size: 0.875rem; }
-  .warning-box p { margin: 0; font-size: 0.9375rem; }
+  a { color: var(--color-accent-blue); text-decoration: underline; }
+  a:hover { color: var(--color-accent-cyan); }
+  code { font-family: var(--font-mono); font-size: 0.875em; background: var(--color-bg-light-muted); padding: 0.125em 0.375em; border-radius: var(--radius-sm); }
+  pre { background: var(--color-bg-dark); border: 1px solid var(--color-bg-dark-border); border-radius: var(--radius-md); padding: var(--space-4); overflow-x: auto; margin-bottom: var(--space-6); }
+  pre code { background: transparent; color: var(--color-accent-cyan); font-size: 0.8125rem; padding: 0; }
+  .official-sources { background: rgba(59, 130, 246, 0.06); border: 1px solid rgba(59, 130, 246, 0.15); border-radius: var(--radius-md); padding: var(--space-4); }
+  .rate-table { overflow-x: auto; margin-bottom: var(--space-6); }
+  .rate-table table { width: 100%; border-collapse: collapse; font-size: 0.9375rem; }
+  .rate-table th { background: var(--color-bg-light-elevated); padding: var(--space-3) var(--space-4); text-align: left; font-weight: 600; color: var(--color-text-light); border-bottom: 2px solid var(--color-border-light); }
+  .rate-table td { padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-border-light); color: var(--color-text-light-muted); font-family: var(--font-mono); }
+  .rate-table tr:last-child td { border-bottom: none; }
   .checklist { list-style: none; padding: 0; }
   .checklist li { display: flex; align-items: flex-start; gap: var(--space-3); padding: var(--space-3) 0; }
   .checklist-icon { color: var(--color-accent-green); font-weight: bold; flex-shrink: 0; }
@@ -171,11 +500,10 @@ const internalLinks = [
   .faq-answer { margin: 0; font-size: 0.9375rem; line-height: 1.7; }
   .cta-block { text-align: center; padding: var(--space-10); background: var(--color-bg-light-muted); border-radius: var(--radius-xl); margin-top: var(--space-10); }
   .cta-block h3 { font-size: 1.25rem; font-weight: 600; color: var(--color-text-light); margin-bottom: var(--space-3); }
-  .cta-block p { max-width: 40ch; margin: 0 auto var(--space-6); }
+  .cta-block p { max-width: 42ch; margin: 0 auto var(--space-6); }
   .cta-buttons { display: flex; gap: var(--space-4); justify-content: center; flex-wrap: wrap; }
   .btn-primary { background: linear-gradient(135deg, var(--color-accent-blue), var(--color-accent-cyan)); color: white; padding: var(--space-3) var(--space-6); border-radius: var(--radius-md); font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: var(--space-2); transition: all var(--transition-fast); }
   .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); color: white; }
-  .btn-subtext { font-size: 0.75rem; font-weight: 400; opacity: 0.9; background: rgba(255,255,255,0.15); padding: var(--space-1) var(--space-2); border-radius: var(--radius-sm); }
   .btn-secondary-dark { background: transparent; color: var(--color-text-light); padding: var(--space-3) var(--space-6); border-radius: var(--radius-md); font-weight: 500; border: 1px solid var(--color-border-light); text-decoration: none; display: inline-flex; align-items: center; gap: var(--space-2); transition: all var(--transition-fast); }
   .btn-secondary-dark:hover { border-color: var(--color-accent-blue); color: var(--color-accent-blue); }
   @media (max-width: 640px) { .page-title { font-size: 1.75rem; } .link-cards { grid-template-columns: 1fr; } .cta-buttons { flex-direction: column; } .cta-buttons .btn { width: 100%; justify-content: center; } }
