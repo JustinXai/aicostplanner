@@ -7,37 +7,43 @@ import '../styles/global.css';
 
 const siteUrl = 'https://aicostplanner.com';
 const currentDate = new Date().toISOString().split('T')[0];
+const route = '/runway-api-pricing/';
+const lastReviewed = 'June 15, 2026';
 
-const breadcrumbs = [{ label: 'Runway API Pricing', href: '/runway-api-pricing/' }];
+const breadcrumbs = [{ label: 'Runway API Pricing', href: route }];
 const internalLinks = [
   { href: '/video-generation-api-pricing/', label: 'Video Generation API Pricing' },
-  { href: '/kling-api-pricing/', label: 'Kling API Pricing' },
+  { href: '/small-prepaid-test/', label: 'Small Prepaid Test' },
+  { href: '/api-billing-mismatch/', label: 'API Billing Mismatch' },
   { href: '/failed-generation-cost/', label: 'Failed Generation Cost' },
+  { href: '/billing-transparency/', label: 'Billing Transparency' },
+  { href: '/image-generation-api-cost/', label: 'Image Generation API Cost' },
+  { href: '/gpt-image-api-cost/', label: 'GPT Image API Cost' },
 ];
 ---
 
 <PageLayout
-  title="Runway API Pricing and Credits"
-  description="Learn how Runway API credits work for generations and what to check before scaling video workflows."
-  canonical={`${siteUrl}/runway-api-pricing/`}
+  title="Runway API Cost Guide"
+  description="Calculate Runway API video cost from credits per second, duration, model choice, failed tasks, API billing and usage limits."
+  canonical={`${siteUrl}${route}`}
   type="article"
   lastUpdated={currentDate}
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org", "@type": "Article",
-      "headline": "Runway API Pricing: Credits and Generation Cost Checks",
-      "description": "Learn how Runway API credits work for generations and what to check before scaling video workflows.",
+      "headline": "Runway API Cost Guide",
+      "description": "Calculate Runway API video cost from credits per second, duration, model choice, failed tasks, API billing and usage limits.",
       "author": { "@type": "Organization", "name": "AICostPlanner" },
       "publisher": { "@type": "Organization", "name": "AICostPlanner", "url": siteUrl },
       "datePublished": currentDate, "dateModified": currentDate,
-      "mainEntityOfPage": { "@type": "WebPage", "@id": `${siteUrl}/runway-api-pricing/` }
+      "mainEntityOfPage": { "@type": "WebPage", "@id": `${siteUrl}${route}` }
     })} />
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org", "@type": "BreadcrumbList",
       "itemListElement": [
         { "@type": "ListItem", "position": 1, "name": "Home", "item": siteUrl },
-        { "@type": "ListItem", "position": 2, "name": "Runway API Pricing", "item": `${siteUrl}/runway-api-pricing/` }
+        { "@type": "ListItem", "position": 2, "name": "Runway API Pricing", "item": `${siteUrl}${route}` }
       ]
     })} />
   </Fragment>
@@ -47,44 +53,290 @@ const internalLinks = [
     <section class="hero-dark">
       <div class="container">
         <Breadcrumb items={breadcrumbs} />
-        <h1 class="page-title">Runway API Pricing and Credits</h1>
-        <p class="page-meta"><span class="label-mono">Last updated: {currentDate}</span></p>
+        <h1 class="page-title">Runway API Pricing Explained</h1>
+        <p class="page-meta"><span class="label-mono">Last reviewed: {lastReviewed}</span></p>
       </div>
     </section>
 
     <section class="section-light content-section">
       <div class="container container-narrow">
+
         <div class="quick-answer">
           <h2>Quick Answer</h2>
           <p>
-            Runway API uses credits for video generation. Different generation types and quality 
-            settings consume different amounts of credits. Understanding these patterns helps 
-            you plan Runway video generation budgets.
+            Runway API usage is billed in credits. The current developer pricing page values one credit
+            at $0.01, so video cost equals credits per second multiplied by duration and then by $0.01.
+            Model rates differ substantially: Gen-4.5 currently costs 12 credits per second, while
+            Gen-4 Turbo costs 5 credits per second. API credits are separate from credits purchased
+            in the Runway web application.
           </p>
         </div>
 
-        <h2>Summary</h2>
+        <h2>Runway API Credits vs USD</h2>
         <p>
-          Runway offers video generation APIs with credit-based pricing. This guide explains 
-          what to check before scaling Runway integrations.
+          The Runway Developer API uses credits as its billing unit. The pricing page as of
+          {lastReviewed} values one credit at $0.01. This means:
         </p>
-        <p class="scaffold-note"><strong>Scaffold content to expand later.</strong></p>
+        <pre><code>1 credit = $0.01
+1,000 credits = $10.00</code></pre>
+        <p>
+          Video cost formula:
+        </p>
+        <pre><code>video_cost_usd =
+  credits_per_second
+  × generated_duration_seconds
+  × $0.01</code></pre>
+        <p>
+          For models with a minimum credit charge per generation:
+        </p>
+        <pre><code>billable_credits =
+  max(model_minimum_credits, credits_per_second × duration)</code></pre>
+        <p>
+          Sales tax may be added separately. Rates change; check the official Runway pricing page
+          before production use. Do not substitute Web App subscription credits for Developer API credits.
+        </p>
 
-        <h2>Credit-Based Pricing</h2>
+        <h2>Current Video Model Rates</h2>
+        <p>
+          The following rates were reviewed on {lastReviewed} from the official Runway Developer API
+          pricing page. Rates vary significantly by model. Always verify the current rate before
+          estimating a project budget.
+        </p>
+        <div class="rate-table">
+          <table>
+            <thead>
+              <tr><th>Model</th><th>Credits per second</th><th>Notes</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>gen4.5</code></td><td>12</td><td>Current primary model</td></tr>
+              <tr><td><code>gen4_turbo</code></td><td>5</td><td>Lower cost alternative</td></tr>
+              <tr><td><code>aleph2</code></td><td>28</td><td>56-credit minimum per generation</td></tr>
+              <tr><td><code>act_two</code></td><td>5</td><td>Character animation</td></tr>
+              <tr><td><code>seedance2</code> 480p/720p</td><td>36</td><td>Standard quality</td></tr>
+              <tr><td><code>seedance2</code> 1080p</td><td>40</td><td>High quality</td></tr>
+              <tr><td><code>seedance2_fast</code></td><td>29</td><td>Fast mode, any resolution</td></tr>
+              <tr><td><code>veo3</code></td><td>40</td><td></td></tr>
+              <tr><td><code>veo3.1</code> with audio</td><td>40</td><td></td></tr>
+              <tr><td><code>veo3.1</code> without audio</td><td>20</td><td></td></tr>
+              <tr><td><code>veo3.1_fast</code> with audio</td><td>15</td><td></td></tr>
+              <tr><td><code>veo3.1_fast</code> without audio</td><td>10</td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          Some models listed above are available through the Runway API but are not Runway-native
+          models — check the official pricing table for the current model roster and which are
+          Runway-native versus third-party integrations. Note that certain models such as
+          <code>gen4_aleph</code> and <code>gen3a_turbo</code> are marked deprecated and
+          scheduled for sunset on 2026-07-30; do not build new integrations around them.
+        </p>
+
+        <h2>Calculable Cost Examples</h2>
+        <h3>Gen-4.5 (12 credits/second)</h3>
         <ul>
-          <li><strong>Credit bundles</strong> — Purchase credits for generations</li>
-          <li><strong>Generation type</strong> — Different modes may have different costs</li>
-          <li><strong>Duration</strong> — Longer videos may consume more credits</li>
-          <li><strong>Quality</strong> — Higher quality may cost more credits</li>
+          <li>5 seconds: 12 &times; 5 = 60 credits = $0.60</li>
+          <li>10 seconds: 12 &times; 10 = 120 credits = $1.20</li>
+        </ul>
+        <h3>Gen-4 Turbo (5 credits/second)</h3>
+        <ul>
+          <li>5 seconds: 5 &times; 5 = 25 credits = $0.25</li>
+          <li>10 seconds: 5 &times; 10 = 50 credits = $0.50</li>
+        </ul>
+        <h3>Aleph 2.0 (28 credits/second, 56-credit minimum)</h3>
+        <ul>
+          <li>2-second calculated cost: 28 &times; 2 = 56 credits = $0.56 (equals minimum)</li>
+          <li>1-second calculated cost: 28 &times; 1 = 28 credits &rarr; billable = 56 credits minimum</li>
+        </ul>
+        <p>
+          These examples estimate cost from credits per second. They do not cover additional
+          per-output charges, multimodal features or post-processing steps. Always cross-reference
+          the official pricing page and the specific endpoint schema for the model in use.
+        </p>
+
+        <h2>Web App Credits vs Developer API Credits</h2>
+        <p>
+          Credits or subscription plans purchased at <strong>app.runwayml.com</strong> are separate
+          from credits purchased at the <strong>Developer Portal (dev.runwayml.com)</strong>.
+          This has practical consequences:
+        </p>
+        <ul>
+          <li>Web App credits do not appear in your Developer API organization</li>
+          <li>Developer API credits do not appear in your Runway Web App workspace</li>
+          <li>Confirm you are viewing the Developer Portal organization when checking API credit balance</li>
+          <li>Do not purchase a Runway web subscription plan to fund API-based integrations</li>
         </ul>
 
-        <h2>What to Check</h2>
+        <h2>Minimum Purchase and Autobilling</h2>
+        <p>
+          Runway Developer API billing includes the following terms as of {lastReviewed}:
+        </p>
+        <ul>
+          <li>Initial credit purchase minimum: $10 (1,000 credits)</li>
+          <li>Autobilling recharge minimum: 1,000 credits / $10</li>
+          <li>The system checks the credit balance periodically — not before every task</li>
+          <li>Payment failures follow a retry process documented in the Developer Portal</li>
+          <li>Your usage tier's monthly-spend allowance may limit the autobilling recharge amount</li>
+        </ul>
+        <p>
+          Because the autobilling balance check runs periodically rather than before every task,
+          applications should monitor remaining credits and stop or queue work when the balance
+          is low. Do not assume autobilling is instantaneous or certain to recharge before
+          a balance reaches zero.
+        </p>
+
+        <h2>Usage Tiers and Concurrency Limits</h2>
+        <p>
+          Runway API usage tiers control multiple dimensions:
+        </p>
+        <ul>
+          <li>Maximum concurrency — number of tasks that can be queued or processing simultaneously</li>
+          <li>Maximum generations per day</li>
+          <li>Maximum monthly spend</li>
+          <li>Per-model or per-modality restrictions</li>
+          <li>Credit balance minimums</li>
+        </ul>
+        <p>
+          When the concurrency limit is reached, tasks may be marked <code>THROTTLED</code>. A
+          throttled task has been saved but has not yet entered the processing queue. Do not
+          immediately create a duplicate submission upon seeing <code>THROTTLED</code>; this
+          compounds the queue and may cause duplicate outputs.
+        </p>
+        <p>
+          Runway does not publish a universal maximum requests-per-minute cap. However, tier limits
+          on concurrency, daily generations and monthly spend still apply. Do not characterize
+          the API as having unrestricted parallel task capacity or no workload constraints.
+        </p>
+
+        <h2>Task Failures and Credit Treatment</h2>
+        <p>
+          Runway API tasks report a <code>failureCode</code> when a task does not complete
+          successfully. Credit treatment varies by failure type:
+        </p>
+        <div class="rate-table">
+          <table>
+            <thead>
+              <tr><th>failureCode</th><th>Credit behavior</th><th>Recommended action</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>SAFETY.INPUT.*</code></td><td>Credits not refunded</td><td>Do not retry</td></tr>
+              <tr><td><code>SAFETY.OUTPUT.*</code></td><td>Refunded per policy</td><td>Record and review; retry only if warranted</td></tr>
+              <tr><td><code>INPUT_PREPROCESSING.SAFETY.TEXT</code></td><td>Credits not refunded</td><td>Do not retry</td></tr>
+              <tr><td><code>INPUT_PREPROCESSING.INTERNAL</code></td><td>May be refunded</td><td>Wait, then retry</td></tr>
+              <tr><td><code>ASSET.INVALID</code></td><td>May be refunded</td><td>Fix input; do not retry unchanged</td></tr>
+              <tr><td><code>THIRD_PARTY.UNAVAILABLE</code></td><td>May be refunded</td><td>Wait, then retry</td></tr>
+              <tr><td><code>INTERNAL</code> or <code>null</code></td><td>May be refunded</td><td>Wait, then retry</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          Runway explicitly states that credits are not refunded for <code>SAFETY.INPUT.*</code>
+          failures. Do not assume all failed tasks are billed, or that all failures are
+          refunded, or that every failure should be retried. Match the action to the
+          <code>failureCode</code>.
+        </p>
+
+        <h2>What to Log</h2>
+        <p>
+          For every Runway API task, record:
+        </p>
+        <ul>
+          <li>Task ID</li>
+          <li>Status (<code>succeeded</code>, <code>failed</code>, <code>THROTTLED</code>, etc.)</li>
+          <li><code>failureCode</code> and failure message, if applicable</li>
+          <li>Model used</li>
+          <li>Requested duration</li>
+          <li>Submitted timestamp (UTC)</li>
+          <li>Completion or failure timestamp (UTC)</li>
+          <li>Estimated credits before submission</li>
+          <li>Actual credit usage from the organization record</li>
+          <li>Retry count for this task</li>
+        </ul>
+
+        <h2>Task Lifecycle and Duplicate Cost Risk</h2>
+        <p>
+          Runway API uses asynchronous tasks. Common patterns that lead to unintended cost:
+        </p>
+        <ul>
+          <li><strong>Duplicate submission</strong> — submitting the same task more than once before checking status</li>
+          <li><strong>Automatic SDK retry overlapping with application retry</strong> — both fire, doubling the charge</li>
+          <li><strong>Worker duplicate consumption</strong> — a worker picks up the same task twice</li>
+          <li><strong>Timeout-triggered new task creation</strong> — client times out before a slow generation completes, then creates a new task instead of polling the original</li>
+          <li><strong>Multi-output workflows</strong> — generating extra outputs without tracking them</li>
+          <li><strong>Completion recorded locally but not persisted</strong> — a successful generation is re-requested because the result was lost</li>
+        </ul>
+        <p>
+          Recommended workflow:
+        </p>
+        <ul>
+          <li>Create the task and persist the returned task ID</li>
+          <li>Poll or use the SDK <code>wait</code> helper to monitor completion</li>
+          <li>Inspect the <code>status</code> field before taking further action</li>
+          <li>If a timeout occurs, query the original task ID before creating a new one</li>
+          <li>Retry only when the <code>failureCode</code> permits it</li>
+        </ul>
+
+        <h2>Worked Project Estimate</h2>
+        <h3>Planning 200 Gen-4.5 videos at 5 seconds each</h3>
+        <pre><code>Credits per video:  12 × 5 = 60 credits
+Total credits:       200 × 60 = 12,000 credits
+Estimated API cost:  12,000 × $0.01 = $120</code></pre>
+        <h3>Usable-output cost ratio</h3>
+        <pre><code>cost_per_usable_video =
+  total_consumed_credits × $0.01
+  ÷ usable_completed_videos</code></pre>
+        <p>
+          Do not automatically include all failed tasks in or exclude them from the denominator.
+          Use the actual credit usage reported in your Developer Portal organization record,
+          and divide by the number of videos that meet your quality and completion criteria.
+        </p>
+
+        <h2>Image and Other Runway API Models</h2>
+        <p>
+          The Runway Developer API also covers non-video capabilities. These are billed in credits
+          with different units:
+        </p>
+        <ul>
+          <li><code>gen4_image</code>: 5 credits (720p), 8 credits (1080p)</li>
+          <li><code>gen4_image_turbo</code>: 2 credits (any resolution)</li>
+          <li><code>gpt_image_2</code>: 1–41 credits depending on quality, resolution and output count</li>
+          <li>Upscale, audio and realtime models: varies by capability and resolution</li>
+        </ul>
+        <p>
+          For image-specific cost guidance, see the
+          <a href="/image-generation-api-cost/">Image Generation API Cost</a> and
+          <a href="/gpt-image-api-cost/">GPT Image API Cost</a> guides.
+        </p>
+
+        <h2>Cost Control Checklist</h2>
         <ul class="checklist">
-          <li><span class="checklist-icon">&#10003;</span><span>Credit cost per generation type</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Duration limits</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Quality tier differences</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Credit expiration policy</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Failed generation credit treatment</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Run a representative small test before committing a full project budget</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Fix the model and duration for consistent cost estimation across a batch</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Persist task IDs immediately after submission</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Implement idempotent submission — check for existing task before creating a new one</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Set a maximum retry count per task to prevent runaway charges</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Retry only when the <code>failureCode</code> allows it; never retry <code>SAFETY.INPUT.*</code></span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Monitor credit balance and pause work when it falls below a safe threshold</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Set the autobilling threshold high enough to cover peak workload between checks</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Track tier limits for concurrency, daily generations and monthly spend</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Separate completed, failed and throttled task records to analyze real usable-output cost</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Use actual credit usage from the Developer Portal rather than local estimates for financial reporting</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Note the pricing review date and re-check before any production scaling</span></li>
+        </ul>
+
+        <h2>Official Sources Reviewed</h2>
+        <p class="official-sources">
+          The information on this page is based on Runway's official developer documentation reviewed
+          as of {lastReviewed}. Pricing, model availability and API terms may change; always verify
+          current rates in the Developer Portal before scaling.
+        </p>
+        <ul>
+          <li>Runway Developer Docs: Pricing</li>
+          <li>Runway Developer Docs: Setup and Authentication</li>
+          <li>Runway Developer Docs: Autobilling</li>
+          <li>Runway Developer Docs: Usage Tiers</li>
+          <li>Runway Developer Docs: Task Failures and Error Handling</li>
+          <li>Runway Developer Docs: Using the API</li>
+          <li>Runway Help: Runway API FAQs</li>
         </ul>
 
         <h2>Related Guides</h2>
@@ -96,25 +348,64 @@ const internalLinks = [
 
         <div class="ai-summary-block">
           <div class="ai-summary-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg> AI Summary</div>
-          <p>Runway API uses credits for video generation. Different generation types, durations, and quality settings consume different credit amounts. This guide explains Runway pricing patterns. This is scaffold content for future expansion.</p>
+          <p>
+            Runway API is billed in credits at $0.01 each, with video cost determined by model,
+            credits per second and generated duration. Gen-4.5 costs 12 credits/second ($0.12/second)
+            while Gen-4 Turbo costs 5 credits/second ($0.05/second). Aleph 2.0 applies a 56-credit
+            minimum. Credits purchased at the Web App are separate from Developer API credits.
+            Autobilling checks balance periodically, not in real time. Task failure credit treatment
+            depends on failureCode — SAFETY.INPUT.* failures are not refunded. Use the Developer
+            Portal organization records for financial reconciliation, not local task estimates.
+            AICostPlanner is an independent educational cost-planning site and is not affiliated
+            with Runway.
+          </p>
         </div>
 
         <h2>Frequently Asked Questions</h2>
         <div class="faq-list">
           <div class="faq-item">
-            <h3 class="faq-question">How is Runway API priced?</h3>
-            <p class="faq-answer">Runway uses credit-based pricing. Different generation types, durations, and quality settings consume different amounts of credits. Check current Runway pricing for details.</p>
+            <h3 class="faq-question">How much is one Runway API credit?</h3>
+            <p class="faq-answer">One Runway API credit equals $0.01 as of June 15, 2026. This rate may change. Multiply the credits consumed by $0.01 to get the USD cost.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">How much does a five-second Gen-4.5 video cost?</h3>
+            <p class="faq-answer">Gen-4.5 is billed at 12 credits per second. A 5-second video consumes 12 &times; 5 = 60 credits, which equals 60 &times; $0.01 = $0.60. Text input, audio and any additional per-output charges are not included in this estimate.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Is Gen-4 Turbo cheaper than Gen-4.5?</h3>
+            <p class="faq-answer">Yes. Gen-4 Turbo is billed at 5 credits per second versus Gen-4.5 at 12 credits per second. At 5 seconds, Gen-4 Turbo costs 25 credits ($0.25) compared to Gen-4.5 at 60 credits ($0.60). Actual cost savings depend on whether Gen-4 Turbo meets the quality and capability requirements of your use case.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Are Runway Web App credits usable in the API?</h3>
+            <p class="faq-answer">No. Credits and subscription plans purchased at app.runwayml.com are separate from Developer API credits at dev.runwayml.com. API credits do not appear in the Web App workspace and vice versa. Always confirm you are in the correct Developer Portal organization when checking your API credit balance.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Does Runway refund credits for failed tasks?</h3>
+            <p class="faq-answer">It depends on the failureCode. SAFETY.INPUT.* failures are explicitly not refunded. Other failure types — including SAFETY.OUTPUT.*, INPUT_PREPROCESSING.INTERNAL, ASSET.INVALID, THIRD_PARTY.UNAVAILABLE, INTERNAL and null — may be refunded per policy. Check the failureCode before assuming a failed task was or was not billed, and refer to the Developer Portal organization credit record.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">What does THROTTLED mean?</h3>
+            <p class="faq-answer">THROTTLED means the task was accepted and saved, but has not yet entered the processing queue because the concurrency limit for the current usage tier has been reached. The task will be processed when capacity becomes available. Do not create a duplicate submission upon seeing THROTTLED — wait for the original task to be picked up, or check its status before creating a replacement.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">How does Runway autobilling work?</h3>
+            <p class="faq-answer">Autobilling automatically recharges your credit balance when it falls below a configured threshold. The minimum recharge amount is 1,000 credits ($10). The balance check runs periodically — approximately hourly — not before every task. Applications should still track their own credit balance and pause or queue work when it is low, rather than relying on autobilling to trigger before a balance runs out.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Is Runway API pricing the same as a Runway subscription?</h3>
+            <p class="faq-answer">No. The Runway Web App subscription plans and credit bundles are separate from Developer API pricing. API rates, models and billing are managed in the Developer Portal. Check the official API pricing page for the current credit-to-USD rate and per-model credit costs.</p>
           </div>
         </div>
 
         <div class="cta-block">
-          <h3>Ready to start?</h3>
-          <p>Create an API key with $1 trial credit and explore live model pricing.</p>
+          <h3>Estimate before you scale</h3>
+          <p>Use a small prepaid test to measure real Runway API cost before committing a larger project budget.</p>
           <div class="cta-buttons">
-            <a href="https://app.rutaapi.com/register?lng=en" class="btn btn-primary" target="_blank" rel="noopener">Create API Key <span class="btn-subtext">$1 trial credit</span></a>
+            <a href="https://app.rutaapi.com/register?lng=en" class="btn btn-primary" target="_blank" rel="noopener">Create API Key</a>
             <a href="https://app.rutaapi.com/pricing" class="btn btn-secondary-dark" target="_blank" rel="noopener">View Live Pricing</a>
           </div>
         </div>
+
       </div>
     </section>
   </main>
@@ -132,11 +423,21 @@ const internalLinks = [
   .quick-answer p { margin: 0; color: var(--color-text-light); line-height: 1.7; }
   h2 { font-size: 1.5rem; font-weight: 600; color: var(--color-text-light); margin: var(--space-10) 0 var(--space-4); padding-top: var(--space-6); border-top: 1px solid var(--color-border-light); }
   h2:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+  h3 { font-size: 1.125rem; font-weight: 600; color: var(--color-text-light); margin: var(--space-6) 0 var(--space-3); }
   p { color: var(--color-text-light-muted); line-height: 1.75; margin-bottom: var(--space-4); }
   ul, ol { color: var(--color-text-light-muted); margin-bottom: var(--space-4); padding-left: var(--space-6); }
   li { margin-bottom: var(--space-2); line-height: 1.7; }
-  .mono { font-family: var(--font-mono); font-size: 0.875em; background: var(--color-bg-light-muted); padding: 0.125em 0.375em; border-radius: var(--radius-sm); }
-  .scaffold-note { background: rgba(59, 130, 246, 0.08); border: 1px dashed var(--color-accent-blue); border-radius: var(--radius-md); padding: var(--space-4); margin-top: var(--space-4); }
+  a { color: var(--color-accent-blue); text-decoration: underline; }
+  a:hover { color: var(--color-accent-cyan); }
+  code { font-family: var(--font-mono); font-size: 0.875em; background: var(--color-bg-light-muted); padding: 0.125em 0.375em; border-radius: var(--radius-sm); }
+  pre { background: var(--color-bg-dark); border: 1px solid var(--color-bg-dark-border); border-radius: var(--radius-md); padding: var(--space-4); overflow-x: auto; margin-bottom: var(--space-6); }
+  pre code { background: transparent; color: var(--color-accent-cyan); font-size: 0.8125rem; padding: 0; }
+  .official-sources { background: rgba(59, 130, 246, 0.06); border: 1px solid rgba(59, 130, 246, 0.15); border-radius: var(--radius-md); padding: var(--space-4); }
+  .rate-table { overflow-x: auto; margin-bottom: var(--space-6); }
+  .rate-table table { width: 100%; border-collapse: collapse; font-size: 0.9375rem; }
+  .rate-table th { background: var(--color-bg-light-elevated); padding: var(--space-3) var(--space-4); text-align: left; font-weight: 600; color: var(--color-text-light); border-bottom: 2px solid var(--color-border-light); }
+  .rate-table td { padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-border-light); color: var(--color-text-light-muted); font-family: var(--font-mono); }
+  .rate-table tr:last-child td { border-bottom: none; }
   .checklist { list-style: none; padding: 0; }
   .checklist li { display: flex; align-items: flex-start; gap: var(--space-3); padding: var(--space-3) 0; }
   .checklist-icon { color: var(--color-accent-green); font-weight: bold; flex-shrink: 0; }
@@ -155,11 +456,10 @@ const internalLinks = [
   .faq-answer { margin: 0; font-size: 0.9375rem; line-height: 1.7; }
   .cta-block { text-align: center; padding: var(--space-10); background: var(--color-bg-light-muted); border-radius: var(--radius-xl); margin-top: var(--space-10); }
   .cta-block h3 { font-size: 1.25rem; font-weight: 600; color: var(--color-text-light); margin-bottom: var(--space-3); }
-  .cta-block p { max-width: 40ch; margin: 0 auto var(--space-6); }
+  .cta-block p { max-width: 42ch; margin: 0 auto var(--space-6); }
   .cta-buttons { display: flex; gap: var(--space-4); justify-content: center; flex-wrap: wrap; }
   .btn-primary { background: linear-gradient(135deg, var(--color-accent-blue), var(--color-accent-cyan)); color: white; padding: var(--space-3) var(--space-6); border-radius: var(--radius-md); font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: var(--space-2); transition: all var(--transition-fast); }
   .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); color: white; }
-  .btn-subtext { font-size: 0.75rem; font-weight: 400; opacity: 0.9; background: rgba(255,255,255,0.15); padding: var(--space-1) var(--space-2); border-radius: var(--radius-sm); }
   .btn-secondary-dark { background: transparent; color: var(--color-text-light); padding: var(--space-3) var(--space-6); border-radius: var(--radius-md); font-weight: 500; border: 1px solid var(--color-border-light); text-decoration: none; display: inline-flex; align-items: center; gap: var(--space-2); transition: all var(--transition-fast); }
   .btn-secondary-dark:hover { border-color: var(--color-accent-blue); color: var(--color-accent-blue); }
   @media (max-width: 640px) { .page-title { font-size: 1.75rem; } .link-cards { grid-template-columns: 1fr; } .cta-buttons { flex-direction: column; } .cta-buttons .btn { width: 100%; justify-content: center; } }
