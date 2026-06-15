@@ -7,36 +7,43 @@ import '../styles/global.css';
 
 const siteUrl = 'https://aicostplanner.com';
 const currentDate = new Date().toISOString().split('T')[0];
+const route = '/gpt-image-api-cost/';
+const lastReviewed = 'June 15, 2026';
 
-const breadcrumbs = [{ label: 'GPT Image API Cost', href: '/gpt-image-api-cost/' }];
+const breadcrumbs = [{ label: 'GPT Image API Cost', href: route }];
 const internalLinks = [
-  { href: '/image-generation-api-pricing/', label: 'Image Generation API Pricing' },
-  { href: '/media-api-cost/', label: 'Media API Cost' },
+  { href: '/image-generation-api-cost/', label: 'Image Generation API Cost' },
+  { href: '/openai-api-usage/', label: 'OpenAI API Usage' },
+  { href: '/openai-api-billing/', label: 'OpenAI API Billing' },
+  { href: '/openai-api-credits/', label: 'OpenAI API Credits' },
+  { href: '/api-billing-mismatch/', label: 'API Billing Mismatch' },
+  { href: '/small-prepaid-test/', label: 'Small Prepaid Test' },
+  { href: '/failed-generation-cost/', label: 'Failed Generation Cost' },
 ];
 ---
 
 <PageLayout
-  title="GPT Image API Cost Guide"
-  description="Learn how GPT Image API cost may vary by input, output, image size, edits and generation settings."
-  canonical={`${siteUrl}/gpt-image-api-cost/`}
+  title="GPT Image API Cost: GPT Image 2 Guide"
+  description="Estimate GPT Image 2 API cost using text input, image input and image output tokens, quality, size, edits and Responses API overhead."
+  canonical={`${siteUrl}${route}`}
   type="article"
   lastUpdated={currentDate}
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org", "@type": "Article",
-      "headline": "GPT Image API Cost: What Affects Image Generation Spend",
-      "description": "Learn how GPT Image API cost may vary by input, output, image size, edits and generation settings.",
+      "headline": "GPT Image API Cost: GPT Image 2 Guide",
+      "description": "Estimate GPT Image 2 API cost using text input, image input and image output tokens, quality, size, edits and Responses API overhead.",
       "author": { "@type": "Organization", "name": "AICostPlanner" },
       "publisher": { "@type": "Organization", "name": "AICostPlanner", "url": siteUrl },
       "datePublished": currentDate, "dateModified": currentDate,
-      "mainEntityOfPage": { "@type": "WebPage", "@id": `${siteUrl}/gpt-image-api-cost/` }
+      "mainEntityOfPage": { "@type": "WebPage", "@id": `${siteUrl}${route}` }
     })} />
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org", "@type": "BreadcrumbList",
       "itemListElement": [
         { "@type": "ListItem", "position": 1, "name": "Home", "item": siteUrl },
-        { "@type": "ListItem", "position": 2, "name": "GPT Image API Cost", "item": `${siteUrl}/gpt-image-api-cost/` }
+        { "@type": "ListItem", "position": 2, "name": "GPT Image API Cost", "item": `${siteUrl}${route}` }
       ]
     })} />
   </Fragment>
@@ -46,44 +53,361 @@ const internalLinks = [
     <section class="hero-dark">
       <div class="container">
         <Breadcrumb items={breadcrumbs} />
-        <h1 class="page-title">GPT Image API Cost</h1>
-        <p class="page-meta"><span class="label-mono">Last updated: {currentDate}</span></p>
+        <h1 class="page-title">GPT Image API Cost Explained</h1>
+        <p class="page-meta"><span class="label-mono">Last reviewed: {lastReviewed}</span></p>
       </div>
     </section>
 
     <section class="section-light content-section">
       <div class="container container-narrow">
+
         <div class="quick-answer">
           <h2>Quick Answer</h2>
           <p>
-            GPT Image API cost depends on the number of images generated, image resolution, 
-            quality settings, and any editing operations. Understanding these factors helps 
-            you estimate costs before scaling your image generation workflows.
+            GPT Image 2 cost is token-based, not a single flat charge per image. Estimate text input
+            tokens, image input tokens for edits or reference images, and image output tokens determined
+            by the requested quality and size. When image generation runs through the Responses API,
+            also include the main model's token usage. Use OpenAI's current pricing page and image
+            calculator before scaling.
           </p>
         </div>
 
-        <h2>Summary</h2>
+        <h2>Current GPT Image Models</h2>
         <p>
-          OpenAI's image generation API charges based on image count and quality. This guide 
-          explains the cost factors and how to monitor spending.
+          <code>gpt-image-2</code> is OpenAI's current latest GPT Image model as reviewed on {lastReviewed}.
+          Previous image generation models include <code>gpt-image-1.5</code> and the earlier
+          <code>gpt-image-1</code>. Historical model prices, quality tiers and behavior described for
+          DALL&middot;E 2 or DALL&middot;E 3 do not apply directly to <code>gpt-image-2</code>.
         </p>
-        <p class="scaffold-note"><strong>Scaffold content to expand later.</strong></p>
 
-        <h2>What Affects GPT Image Cost</h2>
+        <h2>How GPT Image 2 Billing Works</h2>
+        <p>
+          GPT Image 2 uses token-based billing across three input/output dimensions:
+        </p>
         <ul>
-          <li><strong>Number of images</strong> — Each generation request creates images</li>
-          <li><strong>Resolution</strong> — Higher resolution images cost more</li>
-          <li><strong>Quality tier</strong> — HD quality typically costs more than standard</li>
-          <li><strong>Edits and variations</strong> — edit requests may have separate pricing</li>
-          <li><strong>Retries</strong> — Failed generations may incur charges</li>
+          <li><strong>Text input tokens</strong> — tokens consumed by the text prompt and any text-only context</li>
+          <li><strong>Image input tokens</strong> — tokens consumed by any input images (edits, reference images, masks)</li>
+          <li><strong>Image output tokens</strong> — tokens billed for the generated image output, driven by quality and size settings</li>
+        </ul>
+        <p>
+          These three dimensions are summed to produce the total billed token count for each request,
+          multiplied by their respective per-token rates. GPT Image 2 does not charge a flat fee per
+          output image.
+        </p>
+
+        <h2>Current GPT Image 2 Token Rates</h2>
+        <p>
+          The following rates were reviewed on {lastReviewed}. These rates may change; always check
+          OpenAI's live pricing page before production use.
+        </p>
+        <div class="rate-table">
+          <table>
+            <thead>
+              <tr><th>Token type</th><th>Rate per 1M tokens</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Text input</td><td>$5.00</td></tr>
+              <tr><td>Cached text input</td><td>$1.25</td></tr>
+              <tr><td>Image input</td><td>$8.00</td></tr>
+              <tr><td>Cached image input</td><td>$2.00</td></tr>
+              <tr><td>Image output</td><td>$30.00</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          There is no separate text output rate. Megapixels are useful for planning output dimensions,
+          but the billed unit is image output tokens, not pixels.
+        </p>
+
+        <h2>Image API vs Responses API Cost</h2>
+        <h3>Image API</h3>
+        <p>
+          The Image API uses <code>POST /v1/images/generations</code> and
+          <code>POST /v1/images/edits</code> directly, specifying <code>gpt-image-2</code> as the model.
+          This approach is suited for single-step text-to-image, image editing and explicit model selection.
+        </p>
+        <p>
+          Cost components for Image API requests:
+        </p>
+        <ul>
+          <li>Text input tokens</li>
+          <li>Image input tokens (edits and reference images)</li>
+          <li>Image output tokens</li>
+        </ul>
+        <h3>Responses API</h3>
+        <p>
+          The Responses API uses the <code>image_generation</code> tool within a multi-step or
+          conversational workflow. Responses API image-generation requests include the main model's
+          token usage in addition to image-generation costs.
+        </p>
+        <p>
+          Cost components for Responses API requests with image generation:
+        </p>
+        <ul>
+          <li>Main model text input and output tokens</li>
+          <li>Image text input tokens (prompt passed to the image-generation tool)</li>
+          <li>Image input tokens (any reference images in the tool call)</li>
+          <li>Image output tokens</li>
+          <li>Partial image output tokens (if streaming partial images)</li>
+        </ul>
+        <p>
+          Do not assume Responses API is always more expensive than Image API; the difference depends on
+          the main model's input, context size and how the image-generation tool is used.
+        </p>
+
+        <h2>Text Input, Image Input and Image Output Tokens</h2>
+        <p>
+          GPT Image 2 cost is additive across token types. Use this formula structure:
+        </p>
+        <pre><code>estimated_image_request_cost =
+  text_input_cost
++ image_input_cost
++ image_output_cost
++ main_model_cost_if_using_responses_api
++ partial_image_output_cost</code></pre>
+        <p>Where:</p>
+        <pre><code>text_input_cost =
+  uncached_text_input_tokens × $5.00 / 1,000,000
++ cached_text_input_tokens    × $1.25 / 1,000,000
+
+image_input_cost =
+  uncached_image_input_tokens × $8.00 / 1,000,000
++ cached_image_input_tokens   × $2.00 / 1,000,000
+
+image_output_cost =
+  image_output_tokens × $30.00 / 1,000,000</code></pre>
+        <p>
+          Always divide by 1,000,000 when converting per-million rates. Do not substitute output file
+          byte size directly for billed image output tokens.
+        </p>
+
+        <h2>GPT Image 2 Output Cost Examples</h2>
+        <p>
+          These examples estimate image output cost only. Text input and image input tokens are
+          additional.
+        </p>
+        <div class="rate-table">
+          <table>
+            <thead>
+              <tr><th>Quality</th><th>1024&times;1024</th><th>1024&times;1536</th><th>1536&times;1024</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Low</td><td>$0.006</td><td>$0.005</td><td>$0.005</td></tr>
+              <tr><td>Medium</td><td>$0.053</td><td>$0.041</td><td>$0.041</td></tr>
+              <tr><td>High</td><td>$0.211</td><td>$0.165</td><td>$0.165</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          These are image output cost estimates from OpenAI's official calculator. The total request
+          cost also includes text input tokens and, for edit/reference requests, image input tokens.
+          <code>gpt-image-2</code> supports additional sizes beyond those shown. Within the same quality
+          tier, larger non-square dimensions may sometimes use fewer output tokens; use the official
+          calculator rather than estimating from megapixels alone.
+        </p>
+
+        <h2>Quality and Flexible Size</h2>
+        <p>
+          GPT Image 2 quality settings:
+        </p>
+        <ul>
+          <li><code>low</code> — suitable for draft previews and rapid iteration</li>
+          <li><code>medium</code> — balanced quality for most production uses</li>
+          <li><code>high</code> — highest output quality, highest token cost</li>
+          <li><code>auto</code> — model selects quality based on context</li>
+        </ul>
+        <p>
+          Size constraints for <code>gpt-image-2</code> include:
+        </p>
+        <ul>
+          <li>Neither dimension may exceed 3840 pixels</li>
+          <li>Both dimensions must be multiples of 16</li>
+          <li>Aspect ratio must not exceed 3:1</li>
+          <li>Total pixel count must fall within OpenAI's permitted range</li>
+          <li><code>auto</code> size is available</li>
+        </ul>
+        <p>
+          Size and quality influence image output tokens. Megapixels are useful for planning, but they
+          are not a universal direct billing unit.
+        </p>
+
+        <h2>Generate vs Edit Cost</h2>
+        <h3>Text-to-image generation</h3>
+        <p>
+          A basic generate request costs text input tokens plus image output tokens. There is no fixed
+          base fee per image.
+        </p>
+        <h3>Image edit / reference-image workflow</h3>
+        <p>
+          Edit requests and reference-image workflows include an additional image input token cost.
+          <code>gpt-image-2</code> processes image inputs at high fidelity automatically. Edit
+          requests containing reference images therefore use image input tokens in addition to text
+          input and image output tokens.
+        </p>
+        <p>
+          Do not assume edit requests have a fixed separate edit fee. Do not attempt to reduce cost
+          by specifying <code>input_fidelity=low</code> — this parameter should be omitted; the model
+          automatically handles input images at high fidelity.
+        </p>
+
+        <h2>Reference Image Input Cost</h2>
+        <p>
+          Any request that sends one or more images to <code>gpt-image-2</code> — whether for editing,
+          variation or reference — consumes image input tokens. The number of image input tokens
+          depends on the image dimensions and encoding overhead, not just pixel count.
+        </p>
+        <p>
+          Minimize unnecessary image input tokens by:
+        </p>
+        <ul>
+          <li>Sending only the reference images actually needed for the task</li>
+          <li>Avoiding duplicate or redundant image submissions across requests</li>
+          <li>Confirming that the task genuinely requires image input before including images</li>
         </ul>
 
-        <h2>Cost Optimization Tips</h2>
+        <h2>Multiple Images and <code>n</code></h2>
+        <p>
+          The Image API <code>n</code> parameter generates multiple images in a single request. When
+          requesting multiple images, include every generated output in the cost estimate. Do not
+          apply a one-image estimate to the entire request.
+        </p>
+        <pre><code>n=2 at medium/1024×1024:
+  image_output_cost = 2 × $0.053 = $0.106
+  + text_input_cost (additional)
+  + image_input_cost if any (additional)</code></pre>
+        <p>
+          Do not assume one request always costs the same regardless of <code>n</code>.
+        </p>
+
+        <h2>Partial Image Streaming Cost</h2>
+        <p>
+          When partial image streaming is enabled through <code>partial_images</code>, each partial
+          image requested adds 100 image output tokens to the billed total.
+        </p>
+        <pre><code>partial_image_cost =
+  partial_image_count × 100 × $30.00 / 1,000,000
+
+With current rates: 1 partial image ≈ $0.003</code></pre>
+        <p>
+          Partial image cost is an additional charge on top of the final image output tokens. At
+          current rates, 100 image output tokens equal approximately $0.003 per partial image. This
+          rate may change.
+        </p>
+
+        <h2>Output Format and Compression</h2>
+        <p>
+          <code>gpt-image-2</code> supports PNG (default), JPEG and WebP output formats, including
+          JPEG/WebP compression options.
+        </p>
+        <p>
+          File format and compression affect transfer size and latency. Do not assume a smaller
+          file automatically means fewer billed image output tokens. Billed output tokens are
+          determined by the model's internal image representation, not the compressed file size.
+        </p>
+
+        <h2>Failed, Timed-Out and Moderation-Blocked Requests</h2>
+        <p>
+          Do not assume a failed, timed-out or moderation-blocked request was billed or free.
+          Record the request ID, response status and timestamp, then inspect the organization
+          Usage and Costs records before retrying.
+        </p>
+        <p>
+          To investigate a potentially failed request:
+        </p>
+        <ul>
+          <li>Check the HTTP response status code and error body</li>
+          <li>Look up the request ID in the organization Usage Dashboard</li>
+          <li>Cross-reference with the Costs endpoint or Cost export</li>
+          <li>Confirm the request reached the API before troubleshooting retries</li>
+        </ul>
+        <p>
+          Avoid an unbounded retry loop that generates unnecessary usage. Cap retries and validate
+          that each retry is warranted before sending it.
+        </p>
+
+        <h2>Worked Cost Examples</h2>
+        <h3>Example 1: Image API — basic generate</h3>
+        <pre><code>Model:      gpt-image-2
+Action:     generate
+Quality:    medium
+Size:       1024×1024
+Images (n): 1
+Text input: ~100 tokens ≈ $0.0005
+Image input: none
+Image output: $0.053 (from calculator)
+Total estimate: > $0.053 (text input additional)</code></pre>
+        <h3>Example 2: Image API — edit with reference image</h3>
+        <pre><code>Model:       gpt-image-2
+Action:      edit
+Quality:     high
+Size:        1536×1024
+Images (n):  1
+Text input:  ~150 tokens ≈ $0.00075
+Image input: encoded reference image
+Image output: $0.165 (from calculator)
+Total estimate: > $0.165 (image input tokens additional)</code></pre>
+        <h3>Example 3: Responses API with image generation tool</h3>
+        <pre><code>Main model: gpt-4o (example)
+Image text input: ~200 tokens ≈ $0.001
+Image input: 1 reference image (billed as image input tokens)
+Image output: high/1024×1536 = $0.165
+Partial images: 2 × 100 tokens = 200 tokens ≈ $0.006
+Main model total: text + output tokens × applicable rate
+
+Total = main model cost + image text input + image input + image output + partial image cost</code></pre>
+
+        <h2>What to Log</h2>
+        <p>
+          Record the following for each GPT Image request to support cost reconciliation:
+        </p>
+        <ul>
+          <li>Request ID and timestamp (UTC)</li>
+          <li>API type — Image API or Responses API</li>
+          <li>Requested model (<code>gpt-image-2</code>, <code>gpt-image-1.5</code>, etc.)</li>
+          <li>Main model, if using Responses API</li>
+          <li>Action — generate, edit or reference</li>
+          <li>Prompt version or hash</li>
+          <li>Number of input images and their dimensions</li>
+          <li>Requested <code>n</code> (number of images)</li>
+          <li>Requested size and quality</li>
+          <li>Partial image count, if streaming</li>
+          <li>Output format selected</li>
+          <li>Success or failure status with error code if applicable</li>
+          <li>Retry count</li>
+          <li>Local estimated cost before the call</li>
+          <li>Organization Usage and Costs record for reconciliation</li>
+        </ul>
+        <p>
+          Note: standard model responses do not include a monetary <code>usage.cost</code> field.
+          Cost must be reconstructed from token counts and applicable rates.
+        </p>
+
+        <h2>Cost Reduction Checklist</h2>
         <ul class="checklist">
-          <li><span class="checklist-icon">&#10003;</span><span>Start with lower resolution for testing</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Use standard quality before HD</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Batch requests when possible</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Track failed generation attempts</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Use <code>low</code> quality for drafts and early iterations; reserve <code>high</code> for final outputs</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Specify the exact size needed — avoid defaulting to oversized outputs</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Set <code>n</code> to the minimum number of images actually required per request</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Include only the reference images genuinely needed for an edit or variation</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Avoid unbounded retry loops; cap retries and validate before each attempt</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Save and reuse prompts that produce acceptable outputs to avoid redundant generations</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Use small prepaid tests to calibrate estimated cost against real Costs data before scaling</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>For Responses API calls, record the main model's token usage separately from the image tool cost</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Enable partial images only when a live preview is needed — otherwise disable streaming</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Verify <code>gpt-image-2</code> capability before sending unsupported requests (e.g., transparent background)</span></li>
+        </ul>
+
+        <h2>Official Sources Reviewed</h2>
+        <p class="official-sources">
+          The information on this page is based on OpenAI's official documentation reviewed as
+          of {lastReviewed}. Pricing and model capabilities may change; always verify current
+          behavior in the API reference and pricing page.
+        </p>
+        <ul>
+          <li>OpenAI API Docs: Image Generation</li>
+          <li>OpenAI API Docs: Image Generation Tools</li>
+          <li>OpenAI API Docs: GPT Image 2 model reference</li>
+          <li>OpenAI API Docs: GPT Image 1.5 model reference</li>
+          <li>OpenAI API Docs: Pricing</li>
         </ul>
 
         <h2>Related Guides</h2>
@@ -95,25 +419,56 @@ const internalLinks = [
 
         <div class="ai-summary-block">
           <div class="ai-summary-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg> AI Summary</div>
-          <p>GPT Image API cost depends on image count, resolution, quality tier, edit operations, and retries. This guide explains cost factors and optimization strategies. This is scaffold content for future expansion.</p>
+          <p>
+            GPT Image 2 uses token-based billing across text input ($5.00/M tokens), image input ($8.00/M tokens) and image output ($30.00/M tokens) with cached variants. Size and quality drive output tokens; megapixels are a planning aid, not the billing unit. The Image API covers direct generation and editing; the Responses API adds main model token usage on top. Partial images add approximately $0.003 per image at current rates. GPT Image 2 does not support transparent backgrounds, and failed requests require investigation through Usage and Costs records before assuming they were billed or free. Use the official calculator and openai-api-usage reconciliation practices to keep estimates aligned with actual spend. AICostPlanner is an independent educational cost-planning site and is not affiliated with OpenAI.
+          </p>
         </div>
 
         <h2>Frequently Asked Questions</h2>
         <div class="faq-list">
           <div class="faq-item">
-            <h3 class="faq-question">How is GPT Image API priced?</h3>
-            <p class="faq-answer">OpenAI charges per image based on resolution and quality settings. Check the current pricing page for specific rates.</p>
+            <h3 class="faq-question">How much does GPT Image 2 cost?</h3>
+            <p class="faq-answer">GPT Image 2 cost is the sum of text input tokens, image input tokens and image output tokens, each billed at its own per-million rate. At reviewed rates: text input $5.00/M, image input $8.00/M, cached text input $1.25/M, cached image input $2.00/M, image output $30.00/M. These rates were reviewed on June 15, 2026 and may change.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Is GPT Image 2 charged per image or per token?</h3>
+            <p class="faq-answer">Per token, not per image. The cost formula covers text input tokens, image input tokens (for edits and reference images) and image output tokens. A request with n=4 images costs four times the image output portion of the formula compared to n=1.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Does image size affect GPT Image 2 cost?</h3>
+            <p class="faq-answer">Yes. Size and quality together determine the number of billed image output tokens. Larger dimensions and higher quality produce more output tokens. Within the same quality tier, non-square sizes may sometimes use fewer output tokens than square sizes of similar pixel area. Use the official calculator rather than estimating from megapixels alone.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Is editing cheaper than generating a new image?</h3>
+            <p class="faq-answer">Not automatically. Edit requests add image input token cost on top of text input and image output tokens. There is no fixed separate edit fee. Only generating without any input images avoids the image input token component.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Does the Responses API add extra cost?</h3>
+            <p class="faq-answer">Yes — Responses API image generation includes the main model's text input and output token cost in addition to the image-generation token costs. Compare the total against an equivalent Image API call to determine which approach is more cost-effective for a given workflow.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Do partial images cost extra?</h3>
+            <p class="faq-answer">Each partial image requested through partial_images adds 100 image output tokens, which at current rates equals approximately $0.003. This is an additional charge on top of the final image output tokens and is not included in the final image cost.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Does compression reduce GPT Image token cost?</h3>
+            <p class="faq-answer">No. File format and compression affect transfer size and latency but not the billed image output token count. Billed tokens reflect the model's internal representation, not the compressed file delivered to the client.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Are failed GPT Image requests billed?</h3>
+            <p class="faq-answer">Do not assume. Check the organization Usage Dashboard and Costs endpoint to determine whether a request generated billable tokens. Record request ID, response status and timestamp for every call, then reconcile against organization records before concluding that a failed request was or was not billed.</p>
           </div>
         </div>
 
         <div class="cta-block">
-          <h3>Ready to start?</h3>
-          <p>Create an API key with $1 trial credit and explore live model pricing.</p>
+          <h3>Estimate before you scale</h3>
+          <p>Use a small prepaid test to measure real GPT Image API cost before committing a larger budget.</p>
           <div class="cta-buttons">
-            <a href="https://app.rutaapi.com/register?lng=en" class="btn btn-primary" target="_blank" rel="noopener">Create API Key <span class="btn-subtext">$1 trial credit</span></a>
+            <a href="https://app.rutaapi.com/register?lng=en" class="btn btn-primary" target="_blank" rel="noopener">Create API Key</a>
             <a href="https://app.rutaapi.com/pricing" class="btn btn-secondary-dark" target="_blank" rel="noopener">View Live Pricing</a>
           </div>
         </div>
+
       </div>
     </section>
   </main>
@@ -131,11 +486,21 @@ const internalLinks = [
   .quick-answer p { margin: 0; color: var(--color-text-light); line-height: 1.7; }
   h2 { font-size: 1.5rem; font-weight: 600; color: var(--color-text-light); margin: var(--space-10) 0 var(--space-4); padding-top: var(--space-6); border-top: 1px solid var(--color-border-light); }
   h2:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+  h3 { font-size: 1.125rem; font-weight: 600; color: var(--color-text-light); margin: var(--space-6) 0 var(--space-3); }
   p { color: var(--color-text-light-muted); line-height: 1.75; margin-bottom: var(--space-4); }
   ul, ol { color: var(--color-text-light-muted); margin-bottom: var(--space-4); padding-left: var(--space-6); }
   li { margin-bottom: var(--space-2); line-height: 1.7; }
-  .mono { font-family: var(--font-mono); font-size: 0.875em; background: var(--color-bg-light-muted); padding: 0.125em 0.375em; border-radius: var(--radius-sm); }
-  .scaffold-note { background: rgba(59, 130, 246, 0.08); border: 1px dashed var(--color-accent-blue); border-radius: var(--radius-md); padding: var(--space-4); margin-top: var(--space-4); }
+  a { color: var(--color-accent-blue); text-decoration: underline; }
+  a:hover { color: var(--color-accent-cyan); }
+  code { font-family: var(--font-mono); font-size: 0.875em; background: var(--color-bg-light-muted); padding: 0.125em 0.375em; border-radius: var(--radius-sm); }
+  pre { background: var(--color-bg-dark); border: 1px solid var(--color-bg-dark-border); border-radius: var(--radius-md); padding: var(--space-4); overflow-x: auto; margin-bottom: var(--space-6); }
+  pre code { background: transparent; color: var(--color-accent-cyan); font-size: 0.8125rem; padding: 0; }
+  .official-sources { background: rgba(59, 130, 246, 0.06); border: 1px solid rgba(59, 130, 246, 0.15); border-radius: var(--radius-md); padding: var(--space-4); }
+  .rate-table { overflow-x: auto; margin-bottom: var(--space-6); }
+  .rate-table table { width: 100%; border-collapse: collapse; font-size: 0.9375rem; }
+  .rate-table th { background: var(--color-bg-light-elevated); padding: var(--space-3) var(--space-4); text-align: left; font-weight: 600; color: var(--color-text-light); border-bottom: 2px solid var(--color-border-light); }
+  .rate-table td { padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-border-light); color: var(--color-text-light-muted); font-family: var(--font-mono); }
+  .rate-table tr:last-child td { border-bottom: none; }
   .checklist { list-style: none; padding: 0; }
   .checklist li { display: flex; align-items: flex-start; gap: var(--space-3); padding: var(--space-3) 0; }
   .checklist-icon { color: var(--color-accent-green); font-weight: bold; flex-shrink: 0; }
@@ -154,11 +519,10 @@ const internalLinks = [
   .faq-answer { margin: 0; font-size: 0.9375rem; line-height: 1.7; }
   .cta-block { text-align: center; padding: var(--space-10); background: var(--color-bg-light-muted); border-radius: var(--radius-xl); margin-top: var(--space-10); }
   .cta-block h3 { font-size: 1.25rem; font-weight: 600; color: var(--color-text-light); margin-bottom: var(--space-3); }
-  .cta-block p { max-width: 40ch; margin: 0 auto var(--space-6); }
+  .cta-block p { max-width: 42ch; margin: 0 auto var(--space-6); }
   .cta-buttons { display: flex; gap: var(--space-4); justify-content: center; flex-wrap: wrap; }
   .btn-primary { background: linear-gradient(135deg, var(--color-accent-blue), var(--color-accent-cyan)); color: white; padding: var(--space-3) var(--space-6); border-radius: var(--radius-md); font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: var(--space-2); transition: all var(--transition-fast); }
   .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); color: white; }
-  .btn-subtext { font-size: 0.75rem; font-weight: 400; opacity: 0.9; background: rgba(255,255,255,0.15); padding: var(--space-1) var(--space-2); border-radius: var(--radius-sm); }
   .btn-secondary-dark { background: transparent; color: var(--color-text-light); padding: var(--space-3) var(--space-6); border-radius: var(--radius-md); font-weight: 500; border: 1px solid var(--color-border-light); text-decoration: none; display: inline-flex; align-items: center; gap: var(--space-2); transition: all var(--transition-fast); }
   .btn-secondary-dark:hover { border-color: var(--color-accent-blue); color: var(--color-accent-blue); }
   @media (max-width: 640px) { .page-title { font-size: 1.75rem; } .link-cards { grid-template-columns: 1fr; } .cta-buttons { flex-direction: column; } .cta-buttons .btn { width: 100%; justify-content: center; } }
