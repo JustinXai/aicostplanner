@@ -70,6 +70,10 @@ Summary: Usage logs, request IDs, dashboard verification, cached tokens, failed 
 URL: https://aicostplanner.com/claude-fable-5-api-cost/
 Summary: Estimate Claude Fable 5 API cost by input, output and cached tokens. Includes token cost formulas, cache pricing, batch pricing, tool-call overhead, retries, example scenarios and a small prepaid testing checklist.
 
+### AI API Cost Benchmark
+URL: https://aicostplanner.com/ai-api-cost-benchmark/
+Summary: Interactive calculator for LLM, coding-agent, image and video generation API costs. Benchmark data table, CSV export, hidden cost multipliers, and methodology documentation reviewed June 2026.
+
 ## Additional Pages
 
 ### OpenAI API Credits
@@ -200,4 +204,4 @@ This site does not link to:
 - JSON-LD uses absolute URLs for all id and item/@id fields.
 
 ---
-Generated: 2026-06-05
+Generated: 2026-06-17

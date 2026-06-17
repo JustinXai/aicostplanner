@@ -1,0 +1,1069 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import '../styles/global.css';
+
+const siteUrl = 'https://aicostplanner.com';
+const currentDate = new Date().toISOString().split('T')[0];
+const route = '/ai-api-cost-benchmark/';
+const lastReviewed = 'June 17, 2026';
+
+const breadcrumbs = [{ label: 'AI API Cost Benchmark', href: route }];
+const internalLinks = [
+  { href: '/claude-code-token-cost/', label: 'Claude Code Token Cost' },
+  { href: '/openrouter-credits/', label: 'OpenRouter Credits' },
+  { href: '/image-generation-api-cost/', label: 'Image Generation API Cost' },
+  { href: '/gpt-image-api-cost/', label: 'GPT Image API Cost' },
+  { href: '/video-generation-api-cost/', label: 'Video Generation API Cost' },
+  { href: '/failed-generation-cost/', label: 'Failed Generation Cost' },
+  { href: '/billing-transparency/', label: 'Billing Transparency' },
+  { href: '/small-prepaid-test/', label: 'Small Prepaid Test' },
+];
+
+const benchmarkData = [
+  { category: 'LLM', provider: 'Anthropic', model: 'Claude 3.5 Sonnet 4', unit: 'per 1M tokens', input: '$3.00', output: '$15.00', notes: '' },
+  { category: 'LLM', provider: 'Anthropic', model: 'Claude 3.5 Sonnet 4 (cached)', unit: 'per 1M tokens', input: '$0.30', output: '—', notes: 'Cache read' },
+  { category: 'LLM', provider: 'Anthropic', model: 'Claude Sonnet 4', unit: 'per 1M tokens', input: '$1.50', output: '$6.00', notes: '' },
+  { category: 'LLM', provider: 'Anthropic', model: 'Claude Sonnet 4 (cached)', unit: 'per 1M tokens', input: '$0.15', output: '—', notes: 'Cache read' },
+  { category: 'LLM', provider: 'Anthropic', model: 'Claude Opus 4', unit: 'per 1M tokens', input: '$15.00', output: '$75.00', notes: '' },
+  { category: 'LLM', provider: 'OpenAI', model: 'gpt-4o', unit: 'per 1M tokens', input: '$2.50', output: '$10.00', notes: '' },
+  { category: 'LLM', provider: 'OpenAI', model: 'gpt-4o-mini', unit: 'per 1M tokens', input: '$0.15', output: '$0.60', notes: '' },
+  { category: 'LLM', provider: 'OpenAI', model: 'o3', unit: 'per 1M tokens', input: '$15.00', output: '$60.00', notes: 'Reasoning model' },
+  { category: 'LLM', provider: 'OpenAI', model: 'o4-mini', unit: 'per 1M tokens', input: '$1.10', output: '$14.00', notes: 'Compact reasoning' },
+  { category: 'LLM', provider: 'OpenAI', model: 'gpt-4.1', unit: 'per 1M tokens', input: '$2.00', output: '$8.00', notes: '' },
+  { category: 'LLM', provider: 'Google', model: 'gemini-2.5-flash', unit: 'per 1M tokens', input: '$0.30', output: '$1.20', notes: '' },
+  { category: 'LLM', provider: 'Google', model: 'gemini-2.0-flash', unit: 'per 1M tokens', input: '$0.10', output: '$0.40', notes: '' },
+  { category: 'Image', provider: 'OpenAI', model: 'gpt-image-2', unit: 'per image', input: '—', output: '—', notes: 'Price varies by quality, size, count' },
+  { category: 'Image', provider: 'Runway', model: 'gen4_image (720p)', unit: 'per image', input: '—', output: '$0.05', notes: '5 credits at $0.01/credit' },
+  { category: 'Image', provider: 'Runway', model: 'gen4_image_turbo', unit: 'per image', input: '—', output: '$0.02', notes: '2 credits at $0.01/credit' },
+  { category: 'Video', provider: 'Runway', model: 'gen4.5', unit: 'per second', input: '—', output: '$0.12', notes: '12 credits/sec at $0.01/credit' },
+  { category: 'Video', provider: 'Runway', model: 'gen4_turbo', unit: 'per second', input: '—', output: '$0.05', notes: '5 credits/sec' },
+  { category: 'Video', provider: 'Runway', model: 'seedance2_fast (480p/720p)', unit: 'per second', input: '—', output: '$0.29', notes: '29 credits/sec' },
+  { category: 'Video', provider: 'Runway', model: 'aleph2', unit: 'per second', input: '—', output: '$0.28', notes: '28 credits/sec; 56-credit minimum' },
+  { category: 'Video', provider: 'OpenAI', model: 'sora-2 (720p)', unit: 'per second', input: '—', output: '$0.10', notes: 'DEPRECATED — shutdown 2026-09-24' },
+  { category: 'Video', provider: 'OpenAI', model: 'sora-2-pro (720p)', unit: 'per second', input: '—', output: '$0.30', notes: 'DEPRECATED — shutdown 2026-09-24' },
+  { category: 'Video', provider: 'OpenAI', model: 'sora-2-pro (1080p)', unit: 'per second', input: '—', output: '$0.70', notes: 'DEPRECATED — shutdown 2026-09-24' },
+  { category: 'Video', provider: 'OpenAI', model: 'sora-2 (720p batch)', unit: 'per second', input: '—', output: '$0.05', notes: 'DEPRECATED — shutdown 2026-09-24' },
+  { category: 'LLM', provider: 'OpenRouter', model: 'Various', unit: 'per 1M tokens', input: 'varies', output: 'varies', notes: 'Prices vary by model and provider. Check openrouter.ai/docs/models' },
+];
+---
+
+<PageLayout
+  title="2026 AI API Cost Benchmark: Estimates"
+  description="Estimate real AI API costs across LLM, coding-agent, image and video workloads. Model tokens, retries, caching and failed jobs, then export the benchmark as CSV."
+  canonical={`${siteUrl}${route}`}
+  type="article"
+  lastUpdated={currentDate}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org", "@type": "Article",
+      "headline": "2026 AI API Cost Benchmark: LLM, Image and Video Costs",
+      "description": "Estimate real AI API costs across LLM, coding-agent, image and video workloads. Model tokens, retries, caching and failed jobs, then export the benchmark as CSV.",
+      "author": { "@type": "Organization", "name": "AICostPlanner" },
+      "publisher": { "@type": "Organization", "name": "AICostPlanner", "url": siteUrl },
+      "datePublished": currentDate, "dateModified": currentDate,
+      "mainEntityOfPage": { "@type": "WebPage", "@id": `${siteUrl}${route}` }
+    })} />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org", "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": siteUrl },
+        { "@type": "ListItem", "position": 2, "name": "AI API Cost Benchmark", "item": `${siteUrl}${route}` }
+      ]
+    })} />
+  </Fragment>
+
+  <Header />
+  <main>
+    <section class="hero-dark">
+      <div class="container">
+        <Breadcrumb items={breadcrumbs} />
+        <h1 class="page-title">2026 AI API Cost Benchmark</h1>
+        <p class="page-meta"><span class="label-mono">Last reviewed: {lastReviewed}</span></p>
+      </div>
+    </section>
+
+    <section class="section-light content-section">
+      <div class="container container-narrow">
+
+        <div class="quick-answer">
+          <h2>Quick Answer</h2>
+          <p>
+            Listed API prices are only a starting point. Real monthly budgets also depend on input-to-output
+            token ratios, repeated conversation context, coding-agent tool results, cache behavior, retry
+            rates, failed or moderated media jobs and user regeneration choices. This calculator separates
+            the official per-unit rate from an operational planning budget that accounts for those multipliers.
+          </p>
+        </div>
+
+        <!-- HERO CTA STRIP -->
+        <div class="benchmark-hero-strip">
+          <p class="benchmark-subtitle">Estimate LLM, coding-agent, image and video API costs before you ship.</p>
+          <div class="benchmark-hero-actions">
+            <a href="#calculator" class="btn btn-primary-dark">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v2H4zM4 10h16v2H4zM4 16h16v2H4zM10 4v16M7 7h6M7 13h6"/></svg>
+              Calculate your cost
+            </a>
+            <a href="/data/ai-api-cost-benchmark-2026-06.csv" class="btn btn-secondary-dark" download>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+              Download CSV
+            </a>
+          </div>
+          <p class="benchmark-source-note">
+            Prices sourced from official provider pricing pages as of {lastReviewed}.
+            All figures are pricing snapshots — verify before production use.
+          </p>
+        </div>
+
+        <!-- TABLE OF CONTENTS -->
+        <nav class="toc" aria-label="Table of contents">
+          <h2>Contents</h2>
+          <ol>
+            <li><a href="#calculator">Quick Estimate Calculator</a></li>
+            <li><a href="#llm-cost">LLM API Cost</a></li>
+            <li><a href="#agent-cost">Coding-Agent Cost</a></li>
+            <li><a href="#image-cost">Image Generation Cost</a></li>
+            <li><a href="#video-cost">Video Generation Cost</a></li>
+            <li><a href="#hidden-costs">Hidden Cost Multipliers</a></li>
+            <li><a href="#methodology">Benchmark Methodology</a></li>
+            <li><a href="#benchmark-table">Benchmark Data</a></li>
+            <li><a href="#download">Download CSV</a></li>
+            <li><a href="#sources">Official Sources</a></li>
+            <li><a href="#faq">FAQ</a></li>
+          </ol>
+        </nav>
+
+        <!-- CALCULATOR -->
+        <div id="calculator" class="calculator-wrapper">
+          <h2>Quick Estimate Calculator</h2>
+          <p class="calc-intro">
+            These are editable planning scenarios, not universal usage averages.
+            Fill in your own numbers or load one of the presets below.
+          </p>
+
+          <!-- PRESETS -->
+          <div class="presets-bar">
+            <span class="presets-label">Presets:</span>
+            <button class="preset-btn" data-preset="prototype" type="button">Prototype</button>
+            <button class="preset-btn" data-preset="small-production" type="button">Small Production App</button>
+            <button class="preset-btn" data-preset="agent-heavy" type="button">Agent-Heavy Workflow</button>
+            <button class="preset-btn" data-preset="reset" type="button">Reset</button>
+          </div>
+
+          <!-- TABS -->
+          <div class="calc-tabs" role="tablist">
+            <button class="calc-tab active" role="tab" data-tab="llm" aria-selected="true" type="button">LLM App</button>
+            <button class="calc-tab" role="tab" data-tab="agent" aria-selected="false" type="button">Coding Agent</button>
+            <button class="calc-tab" role="tab" data-tab="image" aria-selected="false" type="button">Image Generation</button>
+            <button class="calc-tab" role="tab" data-tab="video" aria-selected="false" type="button">Video Generation</button>
+          </div>
+
+          <!-- LLM CALCULATOR -->
+          <div id="calc-llm" class="calc-panel active" role="tabpanel" aria-labelledby="tab-llm">
+            <div class="calc-inputs">
+              <div class="calc-row">
+                <div class="calc-field">
+                  <label for="llm-users">Monthly active users</label>
+                  <input type="number" id="llm-users" min="1" max="10000000" step="1" value="100" aria-describedby="llm-users-help" />
+                  <span class="field-help" id="llm-users-help">Number of users who make at least one API request per month.</span>
+                </div>
+                <div class="calc-field">
+                  <label for="llm-days">Active days per month</label>
+                  <input type="number" id="llm-days" min="1" max="31" step="1" value="20" aria-describedby="llm-days-help" />
+                  <span class="field-help" id="llm-days-help">Average days each active user makes a request.</span>
+                </div>
+              </div>
+              <div class="calc-row">
+                <div class="calc-field">
+                  <label for="llm-rpu">Requests per active user per day</label>
+                  <input type="number" id="llm-rpu" min="0.1" max="1000" step="0.1" value="3" aria-describedby="llm-rpu-help" />
+                  <span class="field-help" id="llm-rpu-help">Average API requests per active user per active day.</span>
+                </div>
+                <div class="calc-field">
+                  <label for="llm-itok">Average input tokens per request</label>
+                  <input type="number" id="llm-itok" min="1" max="1000000" step="1" value="2000" aria-describedby="llm-itok-help" />
+                  <span class="field-help" id="llm-itok-help">Prompt tokens, including conversation context.</span>
+                </div>
+              </div>
+              <div class="calc-row">
+                <div class="calc-field">
+                  <label for="llm-otok">Average output tokens per request</label>
+                  <input type="number" id="llm-otok" min="1" max="1000000" step="1" value="500" aria-describedby="llm-otok-help" />
+                  <span class="field-help" id="llm-otok-help">Completion tokens per response.</span>
+                </div>
+                <div class="calc-field">
+                  <label for="llm-ipr">Input price per 1M tokens (USD)</label>
+                  <input type="number" id="llm-ipr" min="0" max="10000" step="0.01" value="3.00" aria-describedby="llm-ipr-help" />
+                  <span class="field-help" id="llm-ipr-help">Check the provider pricing page for current rate.</span>
+                </div>
+              </div>
+              <div class="calc-row">
+                <div class="calc-field">
+                  <label for="llm-opr">Output price per 1M tokens (USD)</label>
+                  <input type="number" id="llm-opr" min="0" max="10000" step="0.01" value="15.00" aria-describedby="llm-opr-help" />
+                  <span class="field-help" id="llm-opr-help">Check the provider pricing page for current rate.</span>
+                </div>
+                <div class="calc-field">
+                  <label for="llm-retry">Retry rate (%)</label>
+                  <input type="number" id="llm-retry" min="0" max="100" step="0.1" value="3" aria-describedby="llm-retry-help" />
+                  <span class="field-help" id="llm-retry-help">Estimated percentage of requests that are retried.</span>
+                </div>
+              </div>
+              <div class="calc-row">
+                <div class="calc-field calc-field--full">
+                  <label for="llm-buf">Budget buffer (%)</label>
+                  <input type="number" id="llm-buf" min="0" max="500" step="1" value="15" aria-describedby="llm-buf-help" />
+                  <span class="field-help" id="llm-buf-help">Extra percentage added to cover retries, context growth and unexpected load.</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-result" id="llm-result" aria-live="polite">
+              <div class="result-empty">Enter values above to see your estimated monthly cost.</div>
+            </div>
+          </div>
+
+          <!-- AGENT CALCULATOR -->
+          <div id="calc-agent" class="calc-panel" role="tabpanel" aria-labelledby="tab-agent" hidden>
+            <div class="calc-inputs">
+              <div class="calc-row">
+                <div class="calc-field">
+                  <label for="agent-tasks">Tasks per month</label>
+                  <input type="number" id="agent-tasks" min="1" max="1000000" step="1" value="500" aria-describedby="agent-tasks-help" />
+                  <span class="field-help" id="agent-tasks-help">Completed coding tasks per month.</span>
+                </div>
+                <div class="calc-field">
+                  <label for="agent-calls">Model calls per completed task</label>
+                  <input type="number" id="agent-calls" min="1" max="1000" step="1" value="8" aria-describedby="agent-calls-help" />
+                  <span class="field-help" id="agent-calls-help">Each task may require multiple model calls to complete.</span>
+                </div>
+              </div>
+              <div class="calc-row">
+                <div class="calc-field">
+                  <label for="agent-itok">Average input tokens per call</label>
+                  <input type="number" id="agent-itok" min="1" max="1000000" step="1" value="20000" aria-describedby="agent-itok-help" />
+                  <span class="field-help" id="agent-itok-help">Prompt tokens per call — typically larger than chat due to context and tools.</span>
+                </div>
+                <div class="calc-field">
+                  <label for="agent-otok">Average output tokens per call</label>
+                  <input type="number" id="agent-otok" min="1" max="1000000" step="1" value="3000" aria-describedby="agent-otok-help" />
+                  <span class="field-help" id="agent-otok-help">Completion tokens per call.</span>
+                </div>
+              </div>
+              <div class="calc-row">
+                <div class="calc-field">
+                  <label for="agent-ttok">Tool-result tokens per call</label>
+                  <input type="number" id="agent-ttok" min="0" max="1000000" step="1" value="5000" aria-describedby="agent-ttok-help" />
+                  <span class="field-help" id="agent-ttok-help">Tool results injected as context in subsequent calls. Varies widely by workflow.</span>
+                </div>
+                <div class="calc-field">
+                  <label for="agent-retry">Retry rate (%)</label>
+                  <input type="number" id="agent-retry" min="0" max="100" step="0.1" value="8" aria-describedby="agent-retry-help" />
+                  <span class="field-help" id="agent-retry-help">Estimated percentage of calls retried due to error or timeout.</span>
+                </div>
+              </div>
+              <div class="calc-row">
+                <div class="calc-field">
+                  <label for="agent-ipr">Input price per 1M tokens (USD)</label>
+                  <input type="number" id="agent-ipr" min="0" max="10000" step="0.01" value="3.00" />
+                </div>
+                <div class="calc-field">
+                  <label for="agent-opr">Output price per 1M tokens (USD)</label>
+                  <input type="number" id="agent-opr" min="0" max="10000" step="0.01" value="15.00" />
+                </div>
+              </div>
+              <div class="calc-row">
+                <div class="calc-field">
+                  <label for="agent-crdp">Cache read percentage (%)</label>
+                  <input type="number" id="agent-crdp" min="0" max="100" step="1" value="30" aria-describedby="agent-crdp-help" />
+                  <span class="field-help" id="agent-crdp-help">Approximate percentage of input tokens served from cache (reduces cost).</span>
+                </div>
+                <div class="calc-field">
+                  <label for="agent-crwtp">Cache read discount (%)</label>
+                  <input type="number" id="agent-crwtp" min="0" max="100" step="1" value="90" aria-describedby="agent-crwtp-help" />
+                  <span class="field-help" id="agent-crwtp-help">Typical cache read discount — Anthropic cache read is 90% off input price.</span>
+                </div>
+              </div>
+              <div class="calc-row">
+                <div class="calc-field">
+                  <label for="agent-buf">Budget buffer (%)</label>
+                  <input type="number" id="agent-buf" min="0" max="500" step="1" value="20" />
+                </div>
+              </div>
+            </div>
+            <div class="calc-result" id="agent-result" aria-live="polite">
+              <div class="result-empty">Enter values above to see your estimated monthly cost.</div>
+            </div>
+          </div>
+
+          <!-- IMAGE CALCULATOR -->
+          <div id="calc-image" class="calc-panel" role="tabpanel" aria-labelledby="tab-image" hidden>
+            <div class="calc-inputs">
+              <div class="calc-row">
+                <div class="calc-field">
+                  <label for="img-permonth">Accepted images per month</label>
+                  <input type="number" id="img-permonth" min="1" max="10000000" step="1" value="1000" aria-describedby="img-permonth-help" />
+                  <span class="field-help" id="img-permonth-help">Final accepted outputs per month (not submitted jobs).</span>
+                </div>
+                <div class="calc-field">
+                  <label for="img-attempts">Average attempts per accepted image</label>
+                  <input type="number" id="img-attempts" min="1" max="100" step="0.1" value="1.5" aria-describedby="img-attempts-help" />
+                  <span class="field-help" id="img-attempts-help">Includes rejected or re-generated attempts before acceptance.</span>
+                </div>
+              </div>
+              <div class="calc-row">
+                <div class="calc-field">
+                  <label for="img-price">Price per generation (USD)</label>
+                  <input type="number" id="img-price" min="0" max="100" step="0.001" value="0.04" aria-describedby="img-price-help" />
+                  <span class="field-help" id="img-price-help">Per accepted output or per job, depending on provider billing model.</span>
+                </div>
+                <div class="calc-field">
+                  <label for="img-fail">Rejection/failure rate (%)</label>
+                  <input type="number" id="img-fail" min="0" max="100" step="0.1" value="10" aria-describedby="img-fail-help" />
+                  <span class="field-help" id="img-fail-help">Estimated percentage of submitted jobs that failed or were rejected.</span>
+                </div>
+              </div>
+              <div class="calc-row">
+                <div class="calc-field">
+                  <label for="img-buf">Budget buffer (%)</label>
+                  <input type="number" id="img-buf" min="0" max="500" step="1" value="15" />
+                </div>
+              </div>
+            </div>
+            <p class="calc-warning">
+              Failed-job billing varies by provider. Verify the provider policy and reconcile the
+              request ID with the billing dashboard. Do not assume all failed or retried jobs were billed.
+            </p>
+            <div class="calc-result" id="image-result" aria-live="polite">
+              <div class="result-empty">Enter values above to see your estimated monthly cost.</div>
+            </div>
+          </div>
+
+          <!-- VIDEO CALCULATOR -->
+          <div id="calc-video" class="calc-panel" role="tabpanel" aria-labelledby="tab-video" hidden>
+            <div class="calc-inputs">
+              <div class="calc-row">
+                <div class="calc-field">
+                  <label for="vid-videos">Accepted videos per month</label>
+                  <input type="number" id="vid-videos" min="1" max="100000" step="1" value="100" aria-describedby="vid-videos-help" />
+                  <span class="field-help" id="vid-videos-help">Final accepted video outputs per month.</span>
+                </div>
+                <div class="calc-field">
+                  <label for="vid-attempts">Average attempts per accepted video</label>
+                  <input type="number" id="vid-attempts" min="1" max="100" step="0.1" value="1.3" aria-describedby="vid-attempts-help" />
+                  <span class="field-help" id="vid-attempts-help">Includes failed, moderated or re-submitted jobs.</span>
+                </div>
+              </div>
+              <div class="calc-row">
+                <div class="calc-field">
+                  <label for="vid-seconds">Seconds per generated job</label>
+                  <input type="number" id="vid-seconds" min="1" max="120" step="1" value="8" aria-describedby="vid-seconds-help" />
+                  <span class="field-help" id="vid-seconds-help">Requested duration per job. Maximum varies by provider.</span>
+                </div>
+                <div class="calc-field">
+                  <label for="vid-mode">Billing mode</label>
+                  <select id="vid-mode" aria-describedby="vid-mode-help">
+                    <option value="per-second">Per second</option>
+                    <option value="per-job">Per job (flat)</option>
+                  </select>
+                  <span class="field-help" id="vid-mode-help">Switch between per-second and per-job pricing.</span>
+                </div>
+              </div>
+              <div class="calc-row">
+                <div class="calc-field">
+                  <label for="vid-pps">Price per second (USD)</label>
+                  <input type="number" id="vid-pps" min="0" max="100" step="0.001" value="0.10" aria-describedby="vid-pps-help" />
+                  <span class="field-help" id="vid-pps-help">Rate per generated second. Check the video provider pricing page.</span>
+                </div>
+                <div class="calc-field">
+                  <label for="vid-ppj">Price per job (USD)</label>
+                  <input type="number" id="vid-ppj" min="0" max="100" step="0.01" value="0.80" aria-describedby="vid-ppj-help" />
+                  <span class="field-help" id="vid-ppj-help">Flat cost per completed job (e.g. 8s × $0.10/s = $0.80).</span>
+                </div>
+              </div>
+              <div class="calc-row">
+                <div class="calc-field">
+                  <label for="vid-fail">Failure/retry rate (%)</label>
+                  <input type="number" id="vid-fail" min="0" max="100" step="0.1" value="20" aria-describedby="vid-fail-help" />
+                  <span class="field-help" id="vid-fail-help">Estimated percentage of submitted jobs that failed or were retried.</span>
+                </div>
+                <div class="calc-field">
+                  <label for="vid-buf">Budget buffer (%)</label>
+                  <input type="number" id="vid-buf" min="0" max="500" step="1" value="20" />
+                </div>
+              </div>
+            </div>
+            <p class="calc-warning">
+              Failed-job billing varies by provider. Verify the provider policy and reconcile the
+              job ID with the billing dashboard. Do not assume all failed or retried jobs were billed.
+            </p>
+            <div class="calc-result" id="video-result" aria-live="polite">
+              <div class="result-empty">Enter values above to see your estimated monthly cost.</div>
+            </div>
+          </div>
+
+          <!-- COPY / EXPORT -->
+          <div class="calc-actions">
+            <button class="btn btn-secondary-dark" id="calc-copy" type="button">Copy result</button>
+            <button class="btn btn-secondary-dark" id="calc-export" type="button">Export CSV row</button>
+          </div>
+        </div>
+
+        <!-- WHY LISTED PRICE IS NOT FINAL -->
+        <h2 id="llm-cost">Why Listed API Price Is Not the Final Product Cost</h2>
+        <p>
+          A provider's per-token, per-image or per-second price is the base unit, but real product
+          costs diverge from it through several compounding factors:
+        </p>
+        <ul>
+          <li><strong>Input-to-output ratio</strong> — Prompt-heavy applications with short responses cost more per useful output than balanced request-response flows.</li>
+          <li><strong>Repeated conversation context</strong> — Multi-turn conversations re-send prior turns as context. The same 10-turn conversation can cost 5–10&times; a single-turn exchange.</li>
+          <li><strong>Coding-agent tool results</strong> — Each tool call returns data that is injected into the next model call as context. A single coding task can accumulate thousands of tool-result tokens.</li>
+          <li><strong>Cache write and read</strong> — Some providers charge for tokens stored as cache and credit cache reads at a significant discount. Using cache effectively can reduce input costs by 50–90%.</li>
+          <li><strong>Retries</strong> — Each retry doubles the cost of the original operation. Unhandled errors, timeouts and rate-limit backoff can multiply spend unexpectedly.</li>
+          <li><strong>Duplicate or overlapped jobs</strong> — A client timeout followed by a new submission creates two billed jobs instead of one.</li>
+          <li><strong>Failed or moderated media tasks</strong> — Some providers bill job creation regardless of outcome. Moderation blocks, invalid inputs and queue timeouts all create billable events.</li>
+          <li><strong>User rejection and regeneration</strong> — If users reject outputs and regenerate, each attempt is a new API call. Image and video workflows are particularly sensitive to this.</li>
+          <li><strong>Gateway and marketplace routing</strong> — OpenRouter and similar marketplaces add routing overhead and may charge differently from direct provider APIs.</li>
+          <li><strong>Billing reconciliation lag</strong> — Dashboard usage may not reflect billed amounts until hours after the request, making real-time cost monitoring difficult.</li>
+        </ul>
+        <p>
+          This calculator separates the official unit rate from a planning budget that multiplies
+          the base cost by retry rate and a buffer. Always cross-reference with your actual
+          organization usage data before committing a budget.
+        </p>
+
+        <!-- LLM COST SECTION -->
+        <h2 id="agent-cost">LLM API Cost</h2>
+        <p>
+          LLM API cost is driven by tokens. Every request sends input tokens (prompt + conversation
+          context) and receives output tokens (completion). Prices are quoted per million tokens (M tokens).
+        </p>
+        <pre><code>monthly_requests =
+  monthly_active_users
+  × active_days_per_month
+  × requests_per_user_per_day
+
+input_cost =
+  monthly_requests
+  × average_input_tokens
+  ÷ 1,000,000
+  × input_price_per_million
+
+output_cost =
+  monthly_requests
+  × average_output_tokens
+  ÷ 1,000,000
+  × output_price_per_million
+
+base_cost = input_cost + output_cost
+
+retry_adjusted_cost =
+  base_cost × (1 + retry_rate_as_decimal)
+
+planned_budget =
+  retry_adjusted_cost × (1 + buffer_as_decimal)</code></pre>
+
+        <!-- CODING AGENT SECTION -->
+        <h2 id="image-cost">Coding-Agent Cost</h2>
+        <p>
+          Coding agents cost more than simple chat requests because each completed task involves
+          multiple model calls, large context windows and tool-result token accumulation.
+        </p>
+        <p>
+          Tool calls themselves are not free operations — they generate output tokens and inject
+          result data into subsequent calls, increasing the input token count of every following
+          request. Specific costs depend on the model, tool definitions, context window size,
+          cache usage and provider billing rules. Use your actual usage records to calibrate
+          these estimates.
+        </p>
+        <pre><code>monthly_model_calls =
+  tasks_per_month
+  × calls_per_task
+
+total_input_tokens_per_call =
+  prompt_tokens + tool_result_tokens
+
+base_call_cost =
+  (prompt_tokens + tool_result_tokens) ÷ 1,000,000 × input_price
+  + output_tokens ÷ 1,000,000 × output_price
+
+monthly_base_cost =
+  monthly_model_calls × base_call_cost
+
+effective_input_cost =
+  (1 - cache_read_pct) × full_price
+  + cache_read_pct × cache_discount_price
+
+planned_budget =
+  monthly_base_cost × (1 + retry_rate) × (1 + buffer)</code></pre>
+
+        <!-- IMAGE GENERATION SECTION -->
+        <h2 id="video-cost">Image Generation Cost</h2>
+        <p>
+          Image generation is usually billed per accepted output or per submitted job. The effective
+          cost per accepted image is higher than the listed per-generation price because rejected
+          or re-generated attempts also consume budget.
+        </p>
+        <pre><code>submitted_jobs =
+  accepted_images × average_attempts_per_accepted
+
+effective_cost_per_accepted =
+  listed_price × average_attempts_per_accepted
+
+monthly_generation_cost =
+  submitted_jobs × listed_price
+
+effective_output_cost =
+  monthly_generation_cost ÷ accepted_images
+
+planned_budget =
+  submitted_jobs × listed_price × (1 + buffer)</code></pre>
+        <p>
+          Do not assume all failed or retried image generation jobs are billed or free.
+          Inspect the provider's failure policy and check the billing dashboard before
+          assuming a uniform treatment.
+        </p>
+
+        <!-- VIDEO GENERATION SECTION -->
+        <h2 id="hidden-costs">Video Generation Cost</h2>
+        <p>
+          Video generation is typically billed by generated duration (seconds) or per job.
+          Async job lifecycle — creation, polling, completion, failure and webhook delivery —
+          means that timeouts, retries and moderation blocks can all create billable events.
+        </p>
+        <pre><code>submitted_jobs =
+  accepted_videos × attempts_per_accepted
+
+total_generated_seconds =
+  submitted_jobs × seconds_per_job
+
+base_spend =
+  (billing_mode == per-second)
+    ? total_generated_seconds × price_per_second
+    : submitted_jobs × price_per_job
+
+planned_budget =
+  base_spend × (1 + buffer)</code></pre>
+
+        <!-- METHODOLOGY -->
+        <h2 id="methodology">Benchmark Methodology</h2>
+        <p>
+          Each data point on this page is classified as one of:
+        </p>
+        <ul>
+          <li><strong>Official fact</strong> — Directly quoted from the provider's current official documentation.</li>
+          <li><strong>Pricing snapshot</strong> — Verified from the official pricing page on the review date. Prices may have changed since then.</li>
+          <li><strong>Editable assumption</strong> — Default values in the calculator are illustrative planning estimates, not provider guarantees.</li>
+          <li><strong>Derived calculation</strong> — Results computed from the formulas above. Not audited by any provider.</li>
+          <li><strong>Provider-specific policy</strong> — Billing behavior that varies by provider, model and account tier.</li>
+        </ul>
+
+        <!-- LIMITATIONS -->
+        <h2 id="benchmark-table">Benchmark Data</h2>
+        <p class="benchmark-table-note">
+          All prices are pricing snapshots reviewed on {lastReviewed} from official provider pages.
+          Prices change — always verify against the live provider pricing page before production use.
+          Video generation models are deprecated or scheduled for shutdown; check current availability.
+        </p>
+        <div class="rate-table">
+          <table>
+            <thead>
+              <tr><th>Category</th><th>Provider</th><th>Model / Service</th><th>Unit</th><th>Input</th><th>Output</th><th>Notes</th></tr>
+            </thead>
+            <tbody>
+              {benchmarkData.map(row => (
+                <tr>
+                  <td>{row.category}</td>
+                  <td>{row.provider}</td>
+                  <td><code>{row.model}</code></td>
+                  <td>{row.unit}</td>
+                  <td>{row.input}</td>
+                  <td>{row.output}</td>
+                  <td>{row.notes}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- DOWNLOAD -->
+        <h2 id="download">Download CSV</h2>
+        <p>
+          Export the benchmark data as a CSV file for use in your own cost model or spreadsheet.
+          The file includes category, provider, model, billing unit, prices and source URLs.
+        </p>
+        <div class="csv-download-block">
+          <a href="/data/ai-api-cost-benchmark-2026-06.csv" class="btn btn-secondary-dark" download>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+            ai-api-cost-benchmark-2026-06.csv
+          </a>
+          <p class="csv-meta">
+            Snapshot as of {lastReviewed}. Prices may have changed.
+            Columns: category, provider, model_or_service, billing_unit, input_price_per_million,
+            cached_input_price_per_million, output_price_per_million, price_per_image,
+            price_per_second, currency, source_url, source_checked_at, notes.
+          </p>
+        </div>
+
+        <!-- OFFICIAL SOURCES -->
+        <h2 id="sources">Official Sources</h2>
+        <p>
+          The benchmark data on this page was verified against official provider documentation
+          as of {lastReviewed}. Pricing, model availability and API terms may have changed since
+          then. Verify against the live documentation before making integration decisions.
+        </p>
+        <ul>
+          <li>Anthropic API Docs: <a href="https://www.anthropic.com/api" target="_blank" rel="noopener">Pricing</a> — Claude model rates and prompt caching</li>
+          <li>OpenAI API Docs: <a href="https://developers.openai.com/api/docs" target="_blank" rel="noopener">Pricing</a> — GPT-4o, o3, o4-mini, gpt-image-2, Sora 2</li>
+          <li>Google Gemini API: <a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">Pricing</a> — Gemini model rates</li>
+          <li>OpenRouter Docs: <a href="https://openrouter.ai/docs/models" target="_blank" rel="noopener">Models</a> — Marketplace routing and per-model rates</li>
+          <li>Runway Developer API: <a href="https://dev.runwayml.com/api" target="_blank" rel="noopener">Pricing</a> — Video and image generation credits</li>
+        </ul>
+
+        <!-- INTERNAL LINKS -->
+        <h2>Related Guides</h2>
+        <div class="link-cards">
+          {internalLinks.map(link => (
+            <a href={link.href} class="link-card"><h4>{link.label}</h4><p>Learn more about this topic</p></a>
+          ))}
+        </div>
+
+        <!-- AI SUMMARY -->
+        <div class="ai-summary-block">
+          <div class="ai-summary-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg> AI Summary</div>
+          <p>
+            This benchmark page provides an interactive calculator for LLM, coding-agent, image and
+            video generation workloads. It separates the official per-unit rate from a planning
+            budget that accounts for retries, context growth, tool-result token accumulation,
+            failed jobs and user regeneration. Prices reviewed on {lastReviewed} from official
+            provider documentation. Sora 2 and Runway deprecated models are flagged. The CSV
+            export enables cost modeling in external tools. Estimates must be reconciled with
+            actual provider usage records. This is an educational planning tool and is not
+            affiliated with any API provider. AICostPlanner is an independent educational
+            cost-planning site.
+          </p>
+        </div>
+
+        <!-- FAQ -->
+        <h2 id="faq">Frequently Asked Questions</h2>
+        <div class="faq-list">
+          <div class="faq-item">
+            <h3 class="faq-question">How do I estimate monthly AI API cost?</h3>
+            <p class="faq-answer">Start with the official per-unit price (per token, per image, per second). Then multiply by your monthly volume. Finally, add a buffer for retries, failed jobs and unexpected load — typically 15–30% for LLM workloads and 20–40% for media generation. The calculator above applies this automatically based on the values you enter.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Why does a coding agent cost more than a single chat request?</h3>
+            <p class="faq-answer">A coding agent typically makes multiple model calls per task, each with a large input context that includes conversation history, tool definitions and tool-result data. A task that generates 10 model calls with 20,000 input tokens each consumes roughly 50&times; more than a single 500-token chat request. Cache read discounts can partially offset this, but the effect varies by provider and task type.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Should retries be included in an API budget?</h3>
+            <p class="faq-answer">Yes. Each retry doubles the cost of the original operation. If your retry rate is 3%, your budget should be multiplied by 1.03. If retries are 20%, multiply by 1.20. The calculator adds this adjustment automatically. Track your actual retry rate from logs rather than guessing.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Are failed image or video jobs always charged?</h3>
+            <p class="faq-answer">Do not assume. Billing for failed jobs depends on the provider, the specific error type and whether the job was created or partially processed. For Runway, safety failures are not refunded; for OpenAI Sora, consult the current error documentation. Always inspect the job ID and compare against the organization usage dashboard before assuming a universal policy.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">How often is the benchmark updated?</h3>
+            <p class="faq-answer">The benchmark reflects official provider pricing as of the review date shown on the page ({lastReviewed}). Prices change frequently — check the official provider pricing pages directly before making production budget commitments. The CSV file is named with the snapshot date so you can track which version you are using.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Can I use the CSV in my own spreadsheet?</h3>
+            <p class="faq-answer">Yes. The CSV file includes columns for category, provider, model, billing unit, input price, output price, source URL and review date. You can import it into any spreadsheet tool, filter by category or provider, and combine it with your own volume estimates. Remember that prices may have changed since the snapshot date.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Does this calculator replace provider billing data?</h3>
+            <p class="faq-answer">No. The calculator produces planning estimates. Actual billed amounts depend on real token counts, cache behavior, failure handling and provider-specific billing policies. Always reconcile your estimates against the provider's usage dashboard and actual invoice before committing a production budget.</p>
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="cta-block">
+          <h3>Compare available model pricing</h3>
+          <p>Use a small prepaid test to verify actual cost before scaling a production workflow.</p>
+          <div class="cta-buttons">
+            <a href="https://app.rutaapi.com/register?lng=en" class="btn btn-primary" target="_blank" rel="noopener">Create API Key</a>
+            <a href="https://app.rutaapi.com/pricing" class="btn btn-secondary-dark" target="_blank" rel="noopener">View Live Pricing</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+  <Footer />
+</PageLayout>
+
+<script>
+  // =========================================================
+  //  Calculator logic
+  // =========================================================
+
+  function get(id) { return document.getElementById(id); }
+  function num(id) { return parseFloat(get(id).value) || 0; }
+  function fmt(n, decimals) {
+    if (isNaN(n) || !isFinite(n)) return '—';
+    return n.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+  }
+  function fmtUSD(n) {
+    if (isNaN(n) || !isFinite(n)) return '—';
+    return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  // ----- LLM -----
+  function calcLLM() {
+    var users = num('llm-users');
+    var days = num('llm-days');
+    var rpu = num('llm-rpu');
+    var itok = num('llm-itok');
+    var otok = num('llm-otok');
+    var ipr = num('llm-ipr');
+    var opr = num('llm-opr');
+    var retry = num('llm-retry') / 100;
+    var buf = num('llm-buf') / 100;
+
+    var monthlyReqs = users * days * rpu;
+    var inputCost = monthlyReqs * itok / 1e6 * ipr;
+    var outputCost = monthlyReqs * otok / 1e6 * opr;
+    var baseCost = inputCost + outputCost;
+    var afterRetry = baseCost * (1 + retry);
+    var planned = afterRetry * (1 + buf);
+
+    var el = get('llm-result');
+    el.innerHTML = '<div class="result-grid"><div class="result-item"><span class="result-label">Monthly requests</span><span class="result-value">' + fmt(monthlyReqs, 0) + '</span></div><div class="result-item"><span class="result-label">Input cost</span><span class="result-value">' + fmtUSD(inputCost) + '</span></div><div class="result-item"><span class="result-label">Output cost</span><span class="result-value">' + fmtUSD(outputCost) + '</span></div><div class="result-item"><span class="result-label">Base API cost</span><span class="result-value">' + fmtUSD(baseCost) + '</span></div><div class="result-item"><span class="result-label">After retries (' + fmt(retry*100,0) + '%)</span><span class="result-value">' + fmtUSD(afterRetry) + '</span></div><div class="result-item result-item--highlight"><span class="result-label">Planned monthly budget</span><span class="result-value">' + fmtUSD(planned) + '</span></div></div>';
+  }
+
+  // ----- Agent -----
+  function calcAgent() {
+    var tasks = num('agent-tasks');
+    var calls = num('agent-calls');
+    var itok = num('agent-itok');
+    var otok = num('agent-otok');
+    var ttok = num('agent-ttok');
+    var retry = num('agent-retry') / 100;
+    var ipr = num('agent-ipr');
+    var opr = num('agent-opr');
+    var crdp = num('agent-crdp') / 100;
+    var crwtp = num('agent-crwtp') / 100;
+    var buf = num('agent-buf') / 100;
+
+    var monthlyCalls = tasks * calls;
+    var cacheDiscount = crdp * (1 - crwtp);
+    var effectiveInputRate = ipr * (1 - cacheDiscount);
+    var costPerCall = (itok + ttok) / 1e6 * effectiveInputRate + otok / 1e6 * opr;
+    var baseCost = monthlyCalls * costPerCall;
+    var afterRetry = baseCost * (1 + retry);
+    var planned = afterRetry * (1 + buf);
+
+    var el = get('agent-result');
+    el.innerHTML = '<div class="result-grid"><div class="result-item"><span class="result-label">Monthly model calls</span><span class="result-value">' + fmt(monthlyCalls, 0) + '</span></div><div class="result-item"><span class="result-label">Base call cost</span><span class="result-value">' + fmtUSD(costPerCall) + '</span></div><div class="result-item"><span class="result-label">Monthly base cost</span><span class="result-value">' + fmtUSD(baseCost) + '</span></div><div class="result-item"><span class="result-label">After retries (' + fmt(retry*100,0) + '%)</span><span class="result-value">' + fmtUSD(afterRetry) + '</span></div><div class="result-item"><span class="result-label">Cost per completed task</span><span class="result-value">' + fmtUSD(planned / tasks) + '</span></div><div class="result-item result-item--highlight"><span class="result-label">Planned monthly budget</span><span class="result-value">' + fmtUSD(planned) + '</span></div></div>';
+  }
+
+  // ----- Image -----
+  function calcImage() {
+    var accepted = num('img-permonth');
+    var attempts = num('img-attempts');
+    var price = num('img-price');
+    var fail = num('img-fail') / 100;
+    var buf = num('img-buf') / 100;
+
+    var submitted = accepted * attempts;
+    var genCost = submitted * price;
+    var effectiveCost = genCost / accepted;
+    var planned = genCost * (1 + buf);
+
+    var el = get('image-result');
+    el.innerHTML = '<div class="result-grid"><div class="result-item"><span class="result-label">Submitted jobs</span><span class="result-value">' + fmt(submitted, 0) + '</span></div><div class="result-item"><span class="result-label">Listed generation cost</span><span class="result-value">' + fmtUSD(genCost) + '</span></div><div class="result-item"><span class="result-label">Effective cost per accepted image</span><span class="result-value">' + fmtUSD(effectiveCost) + '</span></div><div class="result-item"><span class="result-label">After buffer (' + fmt(buf*100,0) + '%)</span><span class="result-value">' + fmtUSD(planned) + '</span></div><div class="result-item result-item--highlight"><span class="result-label">Planned monthly budget</span><span class="result-value">' + fmtUSD(planned) + '</span></div></div>';
+  }
+
+  // ----- Video -----
+  function calcVideo() {
+    var accepted = num('vid-videos');
+    var attempts = num('vid-attempts');
+    var secs = num('vid-seconds');
+    var mode = get('vid-mode').value;
+    var pps = num('vid-pps');
+    var ppj = num('vid-ppj');
+    var fail = num('vid-fail') / 100;
+    var buf = num('vid-buf') / 100;
+
+    var submitted = accepted * attempts;
+    var totalSecs = submitted * secs;
+    var baseSpend = (mode === 'per-second') ? totalSecs * pps : submitted * ppj;
+    var planned = baseSpend * (1 + buf);
+
+    var el = get('video-result');
+    el.innerHTML = '<div class="result-grid"><div class="result-item"><span class="result-label">Submitted jobs</span><span class="result-value">' + fmt(submitted, 0) + '</span></div><div class="result-item"><span class="result-label">Total generated seconds</span><span class="result-value">' + fmt(totalSecs, 0) + 's</span></div><div class="result-item"><span class="result-label">Base spend (' + mode + ')</span><span class="result-value">' + fmtUSD(baseSpend) + '</span></div><div class="result-item"><span class="result-label">Effective cost per accepted video</span><span class="result-value">' + fmtUSD(planned / accepted) + '</span></div><div class="result-item result-item--highlight"><span class="result-label">Planned monthly budget</span><span class="result-value">' + fmtUSD(planned) + '</span></div></div>';
+  }
+
+  // ----- Attach listeners -----
+  ['llm-users','llm-days','llm-rpu','llm-itok','llm-otok','llm-ipr','llm-opr','llm-retry','llm-buf'].forEach(function(id) {
+    var el = get(id);
+    if (el) el.addEventListener('input', calcLLM);
+  });
+  ['agent-tasks','agent-calls','agent-itok','agent-otok','agent-ttok','agent-retry','agent-ipr','agent-opr','agent-crdp','agent-crwtp','agent-buf'].forEach(function(id) {
+    var el = get(id);
+    if (el) el.addEventListener('input', calcAgent);
+  });
+  ['img-permonth','img-attempts','img-price','img-fail','img-buf'].forEach(function(id) {
+    var el = get(id);
+    if (el) el.addEventListener('input', calcImage);
+  });
+  ['vid-videos','vid-attempts','vid-seconds','vid-mode','vid-pps','vid-ppj','vid-fail','vid-buf'].forEach(function(id) {
+    var el = get(id);
+    if (el) el.addEventListener('input', calcVideo);
+  });
+
+  // ----- Tabs -----
+  document.querySelectorAll('.calc-tab').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.calc-tab').forEach(function(t) {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      document.querySelectorAll('.calc-panel').forEach(function(p) {
+        p.classList.remove('active');
+        p.setAttribute('hidden', '');
+      });
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
+      var panelId = 'calc-' + tab.dataset.tab;
+      var panel = get(panelId);
+      if (panel) {
+        panel.classList.add('active');
+        panel.removeAttribute('hidden');
+      }
+    });
+  });
+
+  // ----- Presets -----
+  var PRESETS = {
+    'prototype': {
+      'llm-users':'100','llm-days':'20','llm-rpu':'3','llm-itok':'2000','llm-otok':'500','llm-ipr':'3.00','llm-opr':'15.00','llm-retry':'3','llm-buf':'15',
+      'agent-tasks':'500','agent-calls':'8','agent-itok':'20000','agent-otok':'3000','agent-ttok':'5000','agent-retry':'8','agent-ipr':'3.00','agent-opr':'15.00','agent-crdp':'30','agent-crwtp':'90','agent-buf':'20',
+      'img-permonth':'1000','img-attempts':'1.5','img-price':'0.04','img-fail':'10','img-buf':'15',
+      'vid-videos':'100','vid-attempts':'1.3','vid-seconds':'8','vid-mode':'per-second','vid-pps':'0.10','vid-ppj':'0.80','vid-fail':'20','vid-buf':'20',
+    },
+    'small-production': {
+      'llm-users':'2000','llm-days':'25','llm-rpu':'4','llm-itok':'3000','llm-otok':'800','llm-ipr':'3.00','llm-opr':'15.00','llm-retry':'5','llm-buf':'20',
+      'agent-tasks':'2000','agent-calls':'10','agent-itok':'25000','agent-otok':'4000','agent-ttok':'8000','agent-retry':'8','agent-ipr':'3.00','agent-opr':'15.00','agent-crdp':'25','agent-crwtp':'90','agent-buf':'25',
+      'img-permonth':'5000','img-attempts':'1.5','img-price':'0.04','img-fail':'10','img-buf':'20',
+      'vid-videos':'500','vid-attempts':'1.3','vid-seconds':'10','vid-mode':'per-second','vid-pps':'0.10','vid-ppj':'1.00','vid-fail':'20','vid-buf':'25',
+    },
+    'agent-heavy': {
+      'llm-users':'50','llm-days':'20','llm-rpu':'10','llm-itok':'5000','llm-otok':'2000','llm-ipr':'3.00','llm-opr':'15.00','llm-retry':'10','llm-buf':'25',
+      'agent-tasks':'500','agent-calls':'8','agent-itok':'20000','agent-otok':'3000','agent-ttok':'5000','agent-retry':'8','agent-ipr':'3.00','agent-opr':'15.00','agent-crdp':'30','agent-crwtp':'90','agent-buf':'20',
+      'img-permonth':'2000','img-attempts':'2.0','img-price':'0.04','img-fail':'15','img-buf':'20',
+      'vid-videos':'200','vid-attempts':'1.5','vid-seconds':'12','vid-mode':'per-second','vid-pps':'0.10','vid-ppj':'1.20','vid-fail':'25','vid-buf':'30',
+    },
+  };
+
+  document.querySelectorAll('.preset-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var preset = btn.dataset.preset;
+      if (preset === 'reset') {
+        // reset handled by clearing — just reload
+        document.querySelectorAll('input[id^="llm-"], input[id^="agent-"], input[id^="img-"], input[id^="vid-"]').forEach(function(inp) {
+          inp.value = inp.defaultValue;
+        });
+        calcLLM(); calcAgent(); calcImage(); calcVideo();
+        return;
+      }
+      var vals = PRESETS[preset];
+      if (!vals) return;
+      Object.keys(vals).forEach(function(id) {
+        var el = get(id);
+        if (el) el.value = vals[id];
+      });
+      calcLLM(); calcAgent(); calcImage(); calcVideo();
+    });
+  });
+
+  // ----- Copy -----
+  get('calc-copy').addEventListener('click', function() {
+    var active = document.querySelector('.calc-panel.active');
+    if (!active) return;
+    var result = active.querySelector('.calc-result');
+    if (!result) return;
+    var text = result.textContent || '';
+    navigator.clipboard.writeText(text).catch(function(){});
+    var btn = get('calc-copy');
+    var orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(function() { btn.textContent = orig; }, 2000);
+  });
+
+  // ----- Export -----
+  get('calc-export').addEventListener('click', function() {
+    var lines = ['calculator,month,value'];
+    var panels = [
+      { id: 'calc-llm', label: 'LLM' },
+      { id: 'calc-agent', label: 'Agent' },
+      { id: 'calc-image', label: 'Image' },
+      { id: 'calc-video', label: 'Video' },
+    ];
+    var now = new Date().toISOString().slice(0, 7);
+    panels.forEach(function(p) {
+      var el = get(p.id);
+      if (!el || !el.classList.contains('active')) return;
+      var vals = el.querySelectorAll('input[id], select[id]');
+      vals.forEach(function(inp) {
+        var label = inp.labels && inp.labels[0] ? inp.labels[0].textContent : inp.id;
+        lines.push(p.label + ',' + now + ',' + (inp.value || ''));
+      });
+    });
+    var csv = lines.join('\n');
+    var blob = new Blob([csv], { type: 'text/csv' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'ai-api-cost-estimate-' + now + '.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  // Init
+  calcLLM();
+</script>
+
+<style>
+  .hero-dark { background: var(--color-bg-dark); padding: var(--space-12) 0 var(--space-10); border-bottom: 1px solid var(--color-bg-dark-border); }
+  .hero-dark :global(.breadcrumb) { margin-bottom: var(--space-6); }
+  .page-title { font-size: 2.25rem; font-weight: 700; color: var(--color-text-dark); line-height: 1.15; margin: 0 0 var(--space-4) 0; letter-spacing: -0.02em; }
+  .page-meta { margin: 0; }
+  .content-section { padding: var(--space-12) 0 var(--space-16); background: var(--color-bg-light); }
+  .quick-answer { background: var(--color-bg-light-elevated); border-left: 4px solid var(--color-accent-blue); padding: var(--space-6); border-radius: 0 var(--radius-md) var(--radius-md) 0; margin-bottom: var(--space-10); }
+  .quick-answer h2 { font-size: 1.125rem; font-weight: 600; color: var(--color-text-light); margin-bottom: var(--space-3); }
+  .quick-answer p { margin: 0; color: var(--color-text-light); line-height: 1.7; }
+
+  /* Hero strip */
+  .benchmark-hero-strip { background: var(--color-bg-light-elevated); border: 1px solid var(--color-border-light); border-radius: var(--radius-lg); padding: var(--space-8); margin-bottom: var(--space-10); text-align: center; }
+  .benchmark-subtitle { font-size: 1.0625rem; color: var(--color-text-light); margin-bottom: var(--space-6); line-height: 1.6; }
+  .benchmark-hero-actions { display: flex; gap: var(--space-4); justify-content: center; flex-wrap: wrap; margin-bottom: var(--space-4); }
+  .benchmark-source-note { font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-text-light-subtle); margin: 0; }
+
+  /* TOC */
+  .toc { background: var(--color-bg-light-elevated); border: 1px solid var(--color-border-light); border-radius: var(--radius-md); padding: var(--space-6); margin-bottom: var(--space-10); }
+  .toc h2 { font-size: 1rem; font-weight: 600; color: var(--color-text-light); margin-bottom: var(--space-4); }
+  .toc ol { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2) var(--space-8); padding-left: var(--space-6); margin: 0; }
+  .toc li { margin-bottom: var(--space-1); line-height: 1.5; }
+  .toc a { color: var(--color-accent-blue); font-size: 0.875rem; text-decoration: none; }
+  .toc a:hover { text-decoration: underline; color: var(--color-accent-cyan); }
+
+  /* Calculator */
+  .calculator-wrapper { background: var(--color-bg-dark); border: 1px solid var(--color-bg-dark-border); border-radius: var(--radius-xl); padding: var(--space-8); margin-bottom: var(--space-10); }
+  .calculator-wrapper > h2 { color: var(--color-text-dark); font-size: 1.5rem; margin: 0 0 var(--space-2); padding-top: 0; border-top: none; }
+  .calc-intro { color: var(--color-text-dark-muted); font-size: 0.875rem; margin-bottom: var(--space-6); }
+  .presets-bar { display: flex; gap: var(--space-3); flex-wrap: wrap; align-items: center; margin-bottom: var(--space-6); }
+  .presets-label { font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-accent-cyan); }
+  .preset-btn { background: rgba(34, 211, 238, 0.08); color: var(--color-accent-cyan); border: 1px solid rgba(34, 211, 238, 0.2); border-radius: var(--radius-sm); padding: var(--space-2) var(--space-3); font-size: 0.75rem; font-family: var(--font-mono); cursor: pointer; transition: all var(--transition-fast); }
+  .preset-btn:hover { background: rgba(34, 211, 238, 0.15); border-color: rgba(34, 211, 238, 0.4); }
+
+  /* Tabs */
+  .calc-tabs { display: flex; gap: 2px; margin-bottom: var(--space-6); border-bottom: 1px solid var(--color-bg-dark-border); }
+  .calc-tab { background: transparent; color: var(--color-text-dark-muted); border: none; border-bottom: 2px solid transparent; padding: var(--space-3) var(--space-4); font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: all var(--transition-fast); margin-bottom: -1px; }
+  .calc-tab.active { color: var(--color-accent-cyan); border-bottom-color: var(--color-accent-cyan); }
+  .calc-tab:hover:not(.active) { color: var(--color-text-dark); }
+
+  /* Panels */
+  .calc-panel { display: none; }
+  .calc-panel.active { display: block; }
+
+  /* Inputs */
+  .calc-inputs { display: flex; flex-direction: column; gap: var(--space-4); margin-bottom: var(--space-6); }
+  .calc-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+  .calc-field { display: flex; flex-direction: column; gap: var(--space-1); }
+  .calc-field--full { grid-column: 1 / -1; }
+  .calc-field label { font-size: 0.8125rem; font-weight: 600; color: var(--color-text-dark); font-family: var(--font-mono); }
+  .calc-field input, .calc-field select { background: var(--color-bg-dark-card); border: 1px solid var(--color-bg-dark-border); border-radius: var(--radius-sm); padding: var(--space-2) var(--space-3); color: var(--color-text-dark); font-size: 0.875rem; font-family: var(--font-mono); width: 100%; box-sizing: border-box; }
+  .calc-field input:focus, .calc-field select:focus { outline: none; border-color: var(--color-accent-cyan); }
+  .field-help { font-size: 0.6875rem; color: var(--color-text-dark-muted); line-height: 1.4; }
+  .calc-warning { background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: var(--radius-sm); padding: var(--space-3) var(--space-4); font-size: 0.8125rem; color: var(--color-text-dark-muted); margin-bottom: var(--space-4); }
+
+  /* Result */
+  .calc-result { background: var(--color-bg-dark-card); border: 1px solid var(--color-bg-dark-border); border-radius: var(--radius-md); padding: var(--space-5); min-height: 80px; }
+  .result-empty { color: var(--color-text-dark-muted); font-size: 0.875rem; font-style: italic; }
+  .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+  .result-item { display: flex; flex-direction: column; gap: 2px; }
+  .result-item--highlight { grid-column: 1 / -1; background: rgba(34, 211, 238, 0.08); border: 1px solid rgba(34, 211, 238, 0.2); border-radius: var(--radius-sm); padding: var(--space-3); }
+  .result-label { font-family: var(--font-mono); font-size: 0.6875rem; color: var(--color-accent-cyan); opacity: 0.8; text-transform: uppercase; letter-spacing: 0.05em; }
+  .result-value { font-family: var(--font-mono); font-size: 1rem; font-weight: 600; color: var(--color-text-dark); }
+  .result-item--highlight .result-value { font-size: 1.25rem; color: var(--color-accent-cyan); }
+
+  /* Calc actions */
+  .calc-actions { display: flex; gap: var(--space-3); margin-top: var(--space-4); }
+
+  /* Buttons */
+  .btn { display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-3) var(--space-6); border-radius: var(--radius-md); font-weight: 600; font-size: 0.875rem; text-decoration: none; transition: all var(--transition-fast); cursor: pointer; border: none; }
+  .btn-primary { background: linear-gradient(135deg, var(--color-accent-blue), var(--color-accent-cyan)); color: white; }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); color: white; }
+  .btn-primary-dark { background: linear-gradient(135deg, var(--color-accent-blue), var(--color-accent-cyan)); color: white; }
+  .btn-primary-dark:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); color: white; }
+  .btn-secondary-dark { background: transparent; color: var(--color-text-dark); padding: var(--space-3) var(--space-5); border: 1px solid var(--color-bg-dark-border); border-radius: var(--radius-md); font-weight: 500; }
+  .btn-secondary-dark:hover { border-color: var(--color-accent-cyan); color: var(--color-accent-cyan); }
+
+  /* Content sections */
+  h2 { font-size: 1.5rem; font-weight: 600; color: var(--color-text-light); margin: var(--space-10) 0 var(--space-4); padding-top: var(--space-6); border-top: 1px solid var(--color-border-light); }
+  h2:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+  p { color: var(--color-text-light-muted); line-height: 1.75; margin-bottom: var(--space-4); }
+  ul, ol { color: var(--color-text-light-muted); margin-bottom: var(--space-4); padding-left: var(--space-6); }
+  li { margin-bottom: var(--space-2); line-height: 1.7; }
+  a { color: var(--color-accent-blue); text-decoration: underline; }
+  a:hover { color: var(--color-accent-cyan); }
+  code { font-family: var(--font-mono); font-size: 0.875em; background: var(--color-bg-light-muted); padding: 0.125em 0.375em; border-radius: var(--radius-sm); }
+  pre { background: var(--color-bg-dark); border: 1px solid var(--color-bg-dark-border); border-radius: var(--radius-md); padding: var(--space-4); overflow-x: auto; margin-bottom: var(--space-6); }
+  pre code { background: transparent; color: var(--color-accent-cyan); font-size: 0.8125rem; padding: 0; }
+
+  /* Rate table */
+  .benchmark-table-note { font-size: 0.875rem; color: var(--color-text-light-muted); margin-bottom: var(--space-4); }
+  .rate-table { overflow-x: auto; margin-bottom: var(--space-6); }
+  .rate-table table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+  .rate-table th { background: var(--color-bg-light-elevated); padding: var(--space-3) var(--space-4); text-align: left; font-weight: 600; color: var(--color-text-light); border-bottom: 2px solid var(--color-border-light); }
+  .rate-table td { padding: var(--space-2) var(--space-4); border-bottom: 1px solid var(--color-border-light); color: var(--color-text-light-muted); }
+  .rate-table td:first-child { font-weight: 600; color: var(--color-text-light); }
+  .rate-table tr:last-child td { border-bottom: none; }
+
+  /* CSV download */
+  .csv-download-block { background: var(--color-bg-light-elevated); border: 1px solid var(--color-border-light); border-radius: var(--radius-md); padding: var(--space-6); margin-bottom: var(--space-6); }
+  .csv-meta { font-size: 0.8125rem; color: var(--color-text-light-muted); margin: var(--space-3) 0 0; }
+
+  /* Link cards */
+  .link-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-4); margin-bottom: var(--space-8); }
+  .link-card { display: block; padding: var(--space-5); background: var(--color-bg-light-elevated); border: 1px solid var(--color-border-light); border-radius: var(--radius-md); text-decoration: none; transition: all var(--transition-fast); }
+  .link-card:hover { border-color: var(--color-accent-blue); transform: translateY(-2px); }
+  .link-card h4 { font-size: 1rem; font-weight: 600; color: var(--color-text-light); margin: 0 0 var(--space-2) 0; }
+  .link-card p { font-size: 0.875rem; color: var(--color-text-light-muted); margin: 0; }
+
+  /* AI summary */
+  .ai-summary-block { background: linear-gradient(135deg, rgba(34, 211, 238, 0.04), rgba(59, 130, 246, 0.04)); border: 1px solid rgba(34, 211, 238, 0.15); border-radius: var(--radius-xl); padding: var(--space-6); margin: var(--space-10) 0; }
+  .ai-summary-label { display: flex; align-items: center; gap: var(--space-2); font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-accent-cyan); margin-bottom: var(--space-4); }
+  .ai-summary-block p { margin: 0; font-size: 0.9375rem; line-height: 1.8; }
+
+  /* FAQ */
+  .faq-list { margin-bottom: var(--space-10); }
+  .faq-item { padding: var(--space-6) 0; border-bottom: 1px solid var(--color-border-light); }
+  .faq-item:first-child { border-top: 1px solid var(--color-border-light); }
+  .faq-question { font-size: 1.0625rem; font-weight: 600; color: var(--color-text-light); margin-bottom: var(--space-3); }
+  .faq-answer { margin: 0; font-size: 0.9375rem; line-height: 1.7; color: var(--color-text-light-muted); }
+
+  /* CTA */
+  .cta-block { text-align: center; padding: var(--space-10); background: var(--color-bg-light-muted); border-radius: var(--radius-xl); margin-top: var(--space-10); }
+  .cta-block h3 { font-size: 1.25rem; font-weight: 600; color: var(--color-text-light); margin-bottom: var(--space-3); }
+  .cta-block p { max-width: 42ch; margin: 0 auto var(--space-6); color: var(--color-text-light-muted); }
+  .cta-buttons { display: flex; gap: var(--space-4); justify-content: center; flex-wrap: wrap; }
+  .btn-primary { background: linear-gradient(135deg, var(--color-accent-blue), var(--color-accent-cyan)); color: white; padding: var(--space-3) var(--space-6); border-radius: var(--radius-md); font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: var(--space-2); transition: all var(--transition-fast); }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); color: white; }
+  .btn-secondary-dark { background: transparent; color: var(--color-text-light); padding: var(--space-3) var(--space-6); border-radius: var(--radius-md); font-weight: 500; border: 1px solid var(--color-border-light); text-decoration: none; display: inline-flex; align-items: center; gap: var(--space-2); transition: all var(--transition-fast); }
+  .btn-secondary-dark:hover { border-color: var(--color-accent-blue); color: var(--color-accent-blue); }
+
+  @media (max-width: 640px) {
+    .calc-row { grid-template-columns: 1fr; }
+    .result-grid { grid-template-columns: 1fr; }
+    .toc ol { grid-template-columns: 1fr; }
+    .link-cards { grid-template-columns: 1fr; }
+    .cta-buttons { flex-direction: column; }
+    .benchmark-hero-actions { flex-direction: column; }
+  }
+</style>

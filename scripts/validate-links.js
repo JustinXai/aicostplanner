@@ -16,7 +16,13 @@ const ALLOWED_CTA_URLS = [
 
 const ALLOWED_OTHER_URLS = [
   'https://aicostplanner.com',
-  'https://www.aicostplanner.com'
+  'https://www.aicostplanner.com',
+  'https://www.anthropic.com/api',
+  'https://developers.openai.com/api/docs',
+  'https://ai.google.dev/gemini-api/docs/pricing',
+  'https://openrouter.ai/docs/models',
+  'https://dev.runwayml.com/api',
+  'https://platform.openai.com/docs/guides/image-generation'
 ];
 
 const BANNED_DOMAINS = [

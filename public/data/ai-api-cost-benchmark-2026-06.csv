@@ -1,0 +1,38 @@
+category,provider,model_or_service,billing_unit,input_price_per_million,cached_input_price_per_million,output_price_per_million,price_per_image,price_per_second,currency,source_url,source_checked_at,notes
+LLM,Anthropic,Claude 3.5 Sonnet 4,per 1M tokens,3.00,,15.00,,,,USD,https://www.anthropic.com/api,2026-06-17,Input = prompt + cached prefill. Output = completion tokens. Prices in USD.
+LLM,Anthropic,Claude 3.5 Sonnet 4 (cached),per 1M tokens,,0.30,,,USD,https://www.anthropic.com/api,2026-06-17,Cache read price applies to cached input tokens reused from earlier turns.
+LLM,Anthropic,Claude 3.7 Sonnet,per 1M tokens,3.00,,15.00,,,,USD,https://www.anthropic.com/api,2026-06-17,Same rate as Claude 3.5 Sonnet 4.
+LLM,Anthropic,Claude 3.7 Sonnet (cached),per 1M tokens,,0.30,,,USD,https://www.anthropic.com/api,2026-06-17,
+LLM,Anthropic,Claude Opus 4,per 1M tokens,15.00,,75.00,,,,USD,https://www.anthropic.com/api,2026-06-17,Highest capability tier.
+LLM,Anthropic,Claude Opus 4 (cached),per 1M tokens,,1.50,,,USD,https://www.anthropic.com/api,2026-06-17,
+LLM,Anthropic,Claude Sonnet 4,per 1M tokens,1.50,,6.00,,,,USD,https://www.anthropic.com/api,2026-06-17,Cost-effective middle tier.
+LLM,Anthropic,Claude Sonnet 4 (cached),per 1M tokens,,0.15,,,USD,https://www.anthropic.com/api,2026-06-17,
+LLM,OpenAI,gpt-4.1,per 1M tokens,2.00,,8.00,,,,USD,https://developers.openai.com/api/docs,2026-06-17,Prices as listed on OpenAI pricing page.
+LLM,OpenAI,gpt-4.1-nano,per 1M tokens,0.11,,0.55,,,,USD,https://developers.openai.com/api/docs,2026-06-17,
+LLM,OpenAI,o3,per 1M tokens,15.00,,60.00,,,,USD,https://developers.openai.com/api/docs,2026-06-17,Reasoning model. Input includes extended thinking tokens at same rate.
+LLM,OpenAI,o4-mini,per 1M tokens,1.10,,14.00,,,,USD,https://developers.openai.com/api/docs,2026-06-17,Compact reasoning model.
+LLM,OpenAI,gpt-4o,per 1M tokens,2.50,,10.00,,,,USD,https://developers.openai.com/api/docs,2026-06-17,
+LLM,OpenAI,gpt-4o-mini,per 1M tokens,0.15,,0.60,,,,USD,https://developers.openai.com/api/docs,2026-06-17,
+LLM,OpenAI,gpt-4.5,per 1M tokens,75.00,,150.00,,,,USD,https://developers.openai.com/api/docs,2026-06-17,Use for non-reasoning high capability tasks.
+LLM,Google,gemini-2.5-flash,per 1M tokens,0.30,,1.20,,,,USD,https://ai.google.dev/gemini-api/docs/pricing,2026-06-17,Billed in USD via Google AI API.
+LLM,Google,gemini-2.5-pro,per 1M tokens,1.25,,5.00,,,,USD,https://ai.google.dev/gemini-api/docs/pricing,2026-06-17,
+LLM,Google,gemini-2.0-flash,per 1M tokens,0.10,,0.40,,,,USD,https://ai.google.dev/gemini-api/docs/pricing,2026-06-17,
+LLM,OpenRouter,various models,per 1M tokens,,,,,,USD,https://openrouter.ai/docs/models,2026-06-17,OpenRouter routes to multiple providers. Prices vary by model and provider. Always check OpenRouter model list for current per-million rates.
+Image,OpenAI,gpt-image-2,per image,,,,varies,,USD,https://platform.openai.com/docs/guides/image-generation,2026-06-17,Price varies by quality setting, size and output count. Check live pricing page for current per-image rates.
+Image,Runway,gen4_image (720p),per image,,,,,5,USD,https://dev.runwayml.com/api,2026-06-17,Credits converted at $0.01 per credit. 5 credits = $0.05.
+Image,Runway,gen4_image (1080p),per image,,,,,8,USD,https://dev.runwayml.com/api,2026-06-17,8 credits = $0.08 at current rate.
+Image,Runway,gen4_image_turbo (any resolution),per image,,,,,2,USD,https://dev.runwayml.com/api,2026-06-17,2 credits = $0.02 at current rate.
+Video,Runway,gen4.5,per second,,,,,12,USD,https://dev.runwayml.com/api,2026-06-17,12 credits per second = $0.12. Deprecated models gen3a_turbo and gen4_aleph scheduled sunset 2026-07-30.
+Video,Runway,gen4_turbo,per second,,,,,5,USD,https://dev.runwayml.com/api,2026-06-17,5 credits per second = $0.05.
+Video,Runway,seedance2 (480p/720p),per second,,,,,36,USD,https://dev.runwayml.com/api,2026-06-17,36 credits per second = $0.36.
+Video,Runway,seedance2 (1080p),per second,,,,,40,USD,https://dev.runwayml.com/api,2026-06-17,40 credits per second = $0.40.
+Video,Runway,seedance2_fast (480p/720p),per second,,,,,29,USD,https://dev.runwayml.com/api,2026-06-17,29 credits per second = $0.29. NOT any resolution — only 480p/720p.
+Video,Runway,aleph2,per second,,,,,28,USD,https://dev.runwayml.com/api,2026-06-17,28 credits/second = $0.28. 56-credit minimum per generation.
+Video,OpenAI,sora-2 (720p),per second,,,,,0.10,USD,https://developers.openai.com/api/docs,2026-06-17,DEPRECATED — Videos API, sora-2 and sora-2-pro scheduled shutdown 2026-09-24.
+Video,OpenAI,sora-2-pro (720p),per second,,,,,0.30,USD,https://developers.openai.com/api/docs,2026-06-17,DEPRECATED — shutdown 2026-09-24.
+Video,OpenAI,sora-2-pro (1024p),per second,,,,,0.50,USD,https://developers.openai.com/api/docs,2026-06-17,DEPRECATED — shutdown 2026-09-24.
+Video,OpenAI,sora-2-pro (1080p),per second,,,,,0.70,USD,https://developers.openai.com/api/docs,2026-06-17,DEPRECATED — shutdown 2026-09-24.
+Video,OpenAI,sora-2 (720p batch),per second,,,,,0.05,USD,https://developers.openai.com/api/docs,2026-06-17,DEPRECATED — batch rate at half standard. Shutdown 2026-09-24.
+Video,OpenAI,sora-2-pro (720p batch),per second,,,,,0.15,USD,https://developers.openai.com/api/docs,2026-06-17,DEPRECATED — shutdown 2026-09-24.
+Video,OpenAI,sora-2-pro (1024p batch),per second,,,,,0.25,USD,https://developers.openai.com/api/docs,2026-06-17,DEPRECATED — shutdown 2026-09-24.
+Video,OpenAI,sora-2-pro (1080p batch),per second,,,,,0.35,USD,https://developers.openai.com/api/docs,2026-06-17,DEPRECATED — shutdown 2026-09-24.

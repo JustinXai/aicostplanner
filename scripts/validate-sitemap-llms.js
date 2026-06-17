@@ -39,7 +39,8 @@ const REQUIRED_PAGES = [
   '/product-video-api-cost/',
   '/realtime-voice-api-cost/',
   '/billing-transparency/',
-  '/claude-fable-5-api-cost/'
+  '/claude-fable-5-api-cost/',
+  '/ai-api-cost-benchmark/'
 ];
 
 let errors = [];
