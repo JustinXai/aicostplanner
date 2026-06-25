@@ -8,7 +8,7 @@ import '../styles/global.css';
 const siteUrl = 'https://aicostplanner.com';
 const currentDate = new Date().toISOString().split('T')[0];
 const route = '/openai-api-usage/';
-const lastReviewed = 'June 14, 2026';
+const lastReviewed = 'June 25, 2026';
 
 const breadcrumbs = [{ label: 'OpenAI API Usage', href: route }];
 const internalLinks = [
@@ -19,12 +19,13 @@ const internalLinks = [
   { href: '/agent-token-usage/', label: 'Agent Token Usage' },
   { href: '/billing-transparency/', label: 'Billing Transparency' },
   { href: '/image-generation-api-cost/', label: 'Image Generation API Cost' },
+  { href: '/ai-api-cost-benchmark/', label: 'AI API Cost Benchmark' },
 ];
 ---
 
 <PageLayout
-  title="OpenAI API Usage Guide"
-  description="Learn how to read OpenAI API usage, export Activity or Cost data, use organization Usage APIs and reconcile tokens with spend."
+  title="OpenAI API Usage: group_by & CSV"
+  description="Use OpenAI organization Usage and Costs APIs, group results by model or project, export CSV data, and reconcile token usage with API spend."
   canonical={`${siteUrl}${route}`}
   type="article"
   lastUpdated={currentDate}
@@ -32,8 +33,8 @@ const internalLinks = [
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org", "@type": "Article",
-      "headline": "OpenAI API Usage Guide",
-      "description": "Learn how to read OpenAI API usage, export Activity or Cost data, use organization Usage APIs and reconcile tokens with spend.",
+      "headline": "OpenAI API Usage: group_by & CSV",
+      "description": "Use OpenAI organization Usage and Costs APIs, group results by model or project, export CSV data, and reconcile token usage with API spend.",
       "author": { "@type": "Organization", "name": "AICostPlanner" },
       "publisher": { "@type": "Organization", "name": "AICostPlanner", "url": siteUrl },
       "datePublished": currentDate, "dateModified": currentDate,
@@ -46,6 +47,18 @@ const internalLinks = [
         { "@type": "ListItem", "position": 2, "name": "OpenAI API Usage", "item": `${siteUrl}${route}` }
       ]
     })} />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org", "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "How do I group OpenAI API usage by model?", "acceptedAnswer": { "@type": "Answer", "text": "Use the organization Usage endpoint for the relevant capability (such as completions) with the group_by parameter set to model. For example: GET /v1/organization/usage/completions?start_time=...&#38;group_by=model. Different endpoints support different group_by values — check the current API reference for the specific endpoint." }},
+        { "@type": "Question", "name": "What is the difference between the Usage API and Costs API?", "acceptedAnswer": { "@type": "Answer", "text": "The organization Usage endpoints return usage quantities (tokens, requests, images, seconds) broken down by API capability. The Costs endpoint (GET /v1/organization/costs) returns spend data in monetary amounts grouped by line item. Use Usage for investigating token and request patterns; use Costs for financial reconciliation." }},
+        { "@type": "Question", "name": "Does the Usage API return the final billed amount?", "acceptedAnswer": { "@type": "Answer", "text": "No. The organization Usage endpoints return usage quantities, not monetary amounts. Token counts alone do not equal final billed cost because of cached tokens, reasoning tokens, batch pricing and other factors. Use the Costs endpoint or the Costs tab export for financial totals." }},
+        { "@type": "Question", "name": "Which API key is required for organization usage endpoints?", "acceptedAnswer": { "@type": "Answer", "text": "An Admin API key is required for organization Usage and Costs endpoints. An ordinary application API key used for model inference does not grant access to administration endpoints. Admin keys must be stored in environment variables and never placed in browser code or support tickets." }},
+        { "@type": "Question", "name": "Why does the Usage Dashboard show no data?", "acceptedAnswer": { "@type": "Answer", "text": "Common causes: wrong organization selected, account lacks Usage Dashboard permission, project filter is restricting the view, date range is outside the period with usage, or the browser is logged into a different account. Confirm the organization, role, project filter and UTC date range." }},
+        { "@type": "Question", "name": "What timezone does the OpenAI Usage Dashboard use?", "acceptedAnswer": { "@type": "Answer", "text": "The Usage Dashboard uses UTC for all time ranges and filters. When comparing usage data against local logs or invoices, always normalize both records to UTC to avoid boundary mismatches at month boundaries." }},
+        { "@type": "Question", "name": "How do I export monthly OpenAI API costs as CSV?", "acceptedAnswer": { "@type": "Answer", "text": "Navigate to the Usage Dashboard in the API Platform, select the target organization and project, choose the calendar-month UTC date range, switch to the Cost tab, and download the CSV. The Cost export provides spend data grouped by line item, suitable for invoice reconciliation." }}
+      ]
+    })} />
   </Fragment>
 
   <Header />
@@ -53,7 +66,7 @@ const internalLinks = [
     <section class="hero-dark">
       <div class="container">
         <Breadcrumb items={breadcrumbs} />
-        <h1 class="page-title">OpenAI API Usage Explained</h1>
+        <h1 class="page-title">OpenAI API Usage API and Dashboard Guide</h1>
         <p class="page-meta"><span class="label-mono">Last reviewed: {lastReviewed}</span></p>
       </div>
     </section>
@@ -64,319 +77,322 @@ const internalLinks = [
         <div class="quick-answer">
           <h2>Quick Answer</h2>
           <p>
-            OpenAI API usage can be reviewed in the organization Usage Dashboard or retrieved through
-            organization Usage APIs. The dashboard uses UTC and supports project and time filters.
-            Export Activity data when investigating usage patterns and Cost data when reconciling spend.
-            For financial reporting, use the Costs endpoint or Cost export rather than assuming token
-            usage alone equals the final billed amount.
+            OpenAI provides two ways to view usage: the Usage Dashboard in the browser and the
+            organization Usage and Costs APIs for programmatic access. Both use UTC. The capability-specific
+            Usage endpoints (completions, embeddings, images, and so on) return token and request counts.
+            The Costs endpoint returns spend amounts for financial reconciliation. Admin API keys —
+            not ordinary application keys — are required for all organization administration endpoints.
+            Token usage alone does not equal the final billed amount; use the Costs endpoint for
+            spend totals.
           </p>
+          <div class="intent-table">
+            <div class="intent-row intent-header">
+              <span>Need</span><span>Use</span>
+            </div>
+            <div class="intent-row">
+              <span>View usage in browser</span>
+              <span>Usage Dashboard</span>
+            </div>
+            <div class="intent-row">
+              <span>Analyze tokens and requests programmatically</span>
+              <span>Organization Usage endpoints</span>
+            </div>
+            <div class="intent-row">
+              <span>Retrieve spend amounts</span>
+              <span>Organization Costs endpoint</span>
+            </div>
+            <div class="intent-row">
+              <span>Reconcile monthly bill</span>
+              <span>Cost CSV export</span>
+            </div>
+            <div class="intent-row">
+              <span>Analyze model or project activity</span>
+              <span>Activity CSV or grouped Usage query</span>
+            </div>
+            <div class="intent-row">
+              <span>Check prepaid balance</span>
+              <span>Billing / credit grants page</span>
+            </div>
+          </div>
         </div>
 
-        <h2>OpenAI API Usage vs Billing vs Credits</h2>
+        <h2>Usage vs Billing vs Credits</h2>
         <p>
-          OpenAI's API Platform separates usage monitoring, billing administration and credit management:
+          OpenAI separates usage monitoring, billing administration and credit management into three
+          distinct areas:
         </p>
         <ul>
-          <li><strong>Usage</strong> — how much was consumed (tokens, requests, images, audio, and so on), tracked via the Usage Dashboard and Usage APIs</li>
+          <li><strong>Usage</strong> — tokens, requests, images, audio and other consumption quantities; tracked via the Usage Dashboard and Usage APIs</li>
           <li><strong>Billing</strong> — payment arrangements, invoices, Tax ID, project budgets and payment methods; see the <a href="/openai-api-billing/">OpenAI API Billing</a> guide</li>
-          <li><strong>Credits</strong> — prepaid credit balance, credit purchases, auto recharge and expiry; see the <a href="/openai-api-credits/">OpenAI API Credits</a> guide</li>
+          <li><strong>Credits</strong> — prepaid credit balance, purchases, auto recharge and expiry; see the <a href="/openai-api-credits/">OpenAI API Credits</a> guide</li>
         </ul>
 
-        <h2>Who Can View the Usage Dashboard</h2>
+        <h2>Who Can View Usage</h2>
         <p>
-          OpenAI's usage documentation indicates that access to the Usage Dashboard is controlled at
-          the organization level. Only Organization Owners or users explicitly granted Usage Dashboard
-          permission can access it.
+          The Usage Dashboard and organization Usage APIs are part of the Administration API.
+          Only Organization Owners or users explicitly granted Usage Dashboard permission can access them.
         </p>
-        <p>
-          If the Usage Dashboard is not visible, check:
-        </p>
+        <p>If the dashboard is not visible, check:</p>
         <ul>
-          <li>The current organization is correct (top-right selector)</li>
+          <li>The correct organization is selected in the top-right selector</li>
           <li>The account role is Organization Owner or has Usage Dashboard permission</li>
-          <li>The project filter in the Usage page itself is not restricting the view</li>
+          <li>The project filter within the Usage page itself is not restricting the view</li>
           <li>The browser is logged into the correct account</li>
         </ul>
         <p>
-          Ordinary project members and API key holders do not automatically have Usage Dashboard access.
+          Ordinary project members and API key holders do not automatically have access.
+          Use the <a href="/ai-api-cost-benchmark/">AI API Cost Benchmark</a> to turn usage
+          assumptions into an estimated monthly budget.
         </p>
 
-        <h2>Dashboard Time Zone and Date Ranges</h2>
+        <h2>Dashboard Time Zone and Filters</h2>
         <p>
-          OpenAI's usage documentation describes the following for the Usage Dashboard:
+          The Usage Dashboard uses UTC for all time ranges. Always confirm the UTC range when
+          reconciling against local logs, invoices or support requests.
         </p>
         <ul>
-          <li>The Usage Dashboard uses UTC for all time ranges</li>
-          <li>Time comparisons must be normalized to UTC to avoid boundary mismatches</li>
           <li>The date-range selector applies to the currently selected project and filter set</li>
-          <li>The project selector within the Usage page is independent of the top-right organization/project selector — clearing it shows the organization-level aggregate</li>
-          <li>The Usage Dashboard does not automatically combine or consolidate usage across multiple organizations</li>
-        </ul>
-        <p>
-          Always confirm the UTC range when reconciling usage against local logs, invoices or support requests.
-        </p>
-
-        <h2>Organization and Project Filters</h2>
-        <p>
-          OpenAI's API Platform project documentation describes how project filters work in the Usage Dashboard:
-        </p>
-        <ul>
-          <li>The organization selector (top right) controls which organization's data is shown</li>
-          <li>The project filter within the Usage page filters to a specific project; clearing it shows all projects in the selected organization</li>
-          <li>These two selectors operate independently — a project selected in the Usage page does not change the top-right organization selector</li>
-          <li>After changing the selected organization, re-check the project filter within the Usage page before comparing totals.</li>
-          <li>Usage data is scoped to a single organization and does not span organizations automatically</li>
+          <li>The project selector within the Usage page is independent of the top-right organization selector — clearing it shows organization-level aggregates</li>
+          <li>The dashboard does not automatically consolidate usage across multiple organizations</li>
         </ul>
 
         <h2>Activity Data vs Cost Data</h2>
-        <p>
-          The Usage Dashboard provides two distinct export types:
-        </p>
-        <h3>Activity data</h3>
-        <p>
-          Activity exports provide granular usage data that can be filtered and analyzed by relevant
-          dimensions such as:
-        </p>
+        <p>The Usage Dashboard provides two distinct export types:</p>
         <ul>
-          <li>Project</li>
-          <li>User</li>
-          <li>API key</li>
-          <li>Model</li>
-          <li>Batch</li>
-          <li>Service tier</li>
+          <li><strong>Activity export</strong> — granular usage data filterable by project, user, API key, model, batch and service tier; suited for investigating usage patterns and debugging cost anomalies</li>
+          <li><strong>Cost export</strong> — spend data grouped by line item; the preferred source for monthly spend reporting, invoice reconciliation and financial totals</li>
         </ul>
         <p>
-          Activity data is suited for investigating usage patterns, debugging cost anomalies and
-          understanding request-level behavior. The Activity export is not a per-request-ID
-          statement of account; it provides aggregated records.
-        </p>
-        <h3>Cost data</h3>
-        <p>
-          Cost exports provide spend data grouped by line item. Cost data is the preferred source
-          for:
-        </p>
-        <ul>
-          <li>Monthly spend reporting</li>
-          <li>Invoice reconciliation</li>
-          <li>Project-level cost comparison</li>
-          <li>Calendar-month financial reporting</li>
-        </ul>
-        <p>
-          For financial purposes, OpenAI recommends using the Costs endpoint or the Costs tab in the
-          Usage Dashboard. Token counts alone do not always equal the final billed amount.
+          For financial purposes, use the Costs endpoint or Cost tab. Token counts alone do not
+          equal the final billed amount.
         </p>
 
-        <h2>Exporting Usage and Cost CSV Files</h2>
+        <h2>OpenAI Organization Usage and Costs Endpoints</h2>
         <p>
-          OpenAI's export documentation describes the following steps:
+          OpenAI provides a set of organization-level administration endpoints for programmatic
+          usage and cost retrieval. All require an Admin API key.
+        </p>
+        <div class="intent-table">
+          <div class="intent-row intent-header">
+            <span>Endpoint</span><span>Returns</span>
+          </div>
+          <div class="intent-row">
+            <span><code>GET /v1/organization/usage/completions</code></span>
+            <span>Text/completion model usage (tokens, requests)</span>
+          </div>
+          <div class="intent-row">
+            <span><code>GET /v1/organization/usage/embeddings</code></span>
+            <span>Embedding usage (tokens, requests)</span>
+          </div>
+          <div class="intent-row">
+            <span><code>GET /v1/organization/usage/images</code></span>
+            <span>Image generation usage (count, size, quality)</span>
+          </div>
+          <div class="intent-row">
+            <span><code>GET /v1/organization/usage/audio/speech</code></span>
+            <span>Audio speech usage (characters, requests)</span>
+          </div>
+          <div class="intent-row">
+            <span><code>GET /v1/organization/usage/audio/transcriptions</code></span>
+            <span>Audio transcription usage (seconds, requests)</span>
+          </div>
+          <div class="intent-row">
+            <span><code>GET /v1/organization/usage/moderations</code></span>
+            <span>Moderation usage (requests)</span>
+          </div>
+          <div class="intent-row">
+            <span><code>GET /v1/organization/usage/vector_stores</code></span>
+            <span>Vector store usage (bytes, requests)</span>
+          </div>
+          <div class="intent-row">
+            <span><code>GET /v1/organization/usage/code_interpreter/sessions</code></span>
+            <span>Code interpreter session counts</span>
+          </div>
+          <div class="intent-row">
+            <span><code>GET /v1/organization/costs</code></span>
+            <span>Spend amounts (USD) grouped by line item</span>
+          </div>
+        </div>
+        <p>
+          Check the current OpenAI API reference to confirm which endpoints are available,
+          as the surface may expand over time.
+        </p>
+
+        <h2>Admin API Key and Authorization</h2>
+        <p>
+          Organization Usage and Costs endpoints require an Admin API key — distinct from
+          application API keys used for model inference.
         </p>
         <ul>
+          <li>Admin API keys cannot be used for model inference endpoints</li>
+          <li>Application API keys do not grant access to administration endpoints</li>
+          <li>Admin keys must be stored in environment variables, never in source code, browser code or support tickets</li>
+          <li>Never paste admin keys into screenshots shared with support</li>
+        </ul>
+
+        <h3>cURL example</h3>
+        <pre><code>curl "https://api.openai.com/v1/organization/costs?start_time=&lt;unix-seconds&gt;&end_time=&lt;unix-seconds&gt;" \
+  -H "Authorization: Bearer $OPENAI_ADMIN_KEY"</code></pre>
+
+        <h3>JavaScript example (Node.js / backend only)</h3>
+        <pre><code>const https = require('https');
+
+async function getOrgCosts(startTime, endTime) &#123;
+  const adminKey = process.env.OPENAI_ADMIN_KEY;
+  if (!adminKey) throw new Error('OPENAI_ADMIN_KEY environment variable is not set');
+
+  const params = new URLSearchParams(&#123; start_time: startTime, end_time: endTime &#125;);
+  const options = &#123;
+    hostname: 'api.openai.com',
+    path: `/v1/organization/costs?$&#123;params&#125;`,
+    method: 'GET',
+    headers: &#123; 'Authorization': `Bearer $&#123;adminKey&#125;` &#125;
+  &#125;;
+
+  return new Promise((resolve, reject) => &#123;
+    const req = https.request(options, (res) => &#123;
+      let data = '';
+      res.on('data', (chunk) => &#123; data += chunk; &#125;);
+      res.on('end', () => &#123;
+        if (res.statusCode >= 400) &#123;
+          console.error('API error:', res.statusCode, data);
+          // Inspect error body for error.type and error.code
+          return reject(new Error(`HTTP $&#123;res.statusCode&#125;: $&#123;data&#125;`));
+        &#125;
+        resolve(JSON.parse(data));
+      &#125;);
+    &#125;);
+    req.on('error', reject);
+    req.end();
+  &#125;);
+&#125;</code></pre>
+        <p>
+          This code runs in a Node.js backend environment. Do not place Admin API keys
+          in browser-facing code.
+        </p>
+
+        <h3>Parameters</h3>
+        <div class="intent-table">
+          <div class="intent-row intent-header">
+            <span>Parameter</span><span>Description</span>
+          </div>
+          <div class="intent-row">
+            <span><code>start_time</code></span>
+            <span>Inclusive Unix timestamp (seconds). Defaults to the start of the current month.</span>
+          </div>
+          <div class="intent-row">
+            <span><code>end_time</code></span>
+            <span>Exclusive Unix timestamp (seconds). Defaults to the current time.</span>
+          </div>
+          <div class="intent-row">
+            <span><code>group_by</code></span>
+            <span>Supported by capability endpoints (completions, etc.). Values vary by endpoint — check the current API reference. Common values include model, project_id, user_id, api_key_id.</span>
+          </div>
+          <div class="intent-row">
+            <span><code>bucket_width</code></span>
+            <span>Time-bucket granularity for the completions endpoint. Supported values include 1m (one minute), 1h (one hour), 1d (one day).</span>
+          </div>
+          <div class="intent-row">
+            <span><code>next_page</code></span>
+            <span>Pagination token. When a response includes next_page, pass it to retrieve subsequent results. Incomplete pagination results in under-reported totals.</span>
+          </div>
+        </div>
+
+        <h3>Pagination</h3>
+        <pre><code>// Fetch all pages of usage data
+let nextPage = null;
+let allData = [];
+
+do &#123;
+  const params = new URLSearchParams(&#123; start_time: startTime, end_time: endTime &#125;);
+  if (nextPage) params.set('next_page', nextPage);
+
+  const response = await getOrgUsage(params);
+  allData = allData.concat(response.data || []);
+
+  nextPage = response.next_page || null;
+&#125; while (nextPage);</code></pre>
+
+        <h2>Usage API vs Costs API</h2>
+        <div class="intent-table">
+          <div class="intent-row intent-header">
+            <span></span><span>Usage endpoints</span><span>Costs endpoint</span>
+          </div>
+          <div class="intent-row">
+            <span><strong>Returns</strong></span>
+            <span>Usage quantities (tokens, images, seconds)</span>
+            <span>Monetary amounts (USD)</span>
+          </div>
+          <div class="intent-row">
+            <span><strong>Use for</strong></span>
+            <span>Token analysis, debugging, anomaly detection</span>
+            <span>Financial reconciliation, invoice matching</span>
+          </div>
+          <div class="intent-row">
+            <span><strong>Financial total</strong></span>
+            <span>Do not use for billing totals</span>
+            <span>Preferred for billing totals</span>
+          </div>
+        </div>
+
+        <h2>Exporting Cost Data from the Dashboard</h2>
+        <p>Steps to download a Cost CSV from the Usage Dashboard:</p>
+        <ol>
           <li>Navigate to the Usage Dashboard in the API Platform</li>
-          <li>Select the target organization and project (or leave project blank for organization-level data)</li>
+          <li>Select the target organization and project (or leave blank for organization-level data)</li>
           <li>Choose the calendar-month or custom UTC date range</li>
-          <li>Select the Activity tab or Cost tab depending on the analysis goal</li>
+          <li>Switch to the <strong>Cost</strong> tab</li>
           <li>Download the CSV and note the export timestamp</li>
-          <li>For partial-month data, export month-to-date and compare carefully with the full-month export</li>
-        </ul>
-
-        <h2>Usage API vs Costs Endpoint</h2>
+        </ol>
         <p>
-          OpenAI provides two distinct API surfaces for organization-level usage and cost data:
-        </p>
-        <h3>Organization Usage endpoints</h3>
-        <p>
-          Organization Usage APIs provide aggregated usage quantities broken down by API capability.
-          These endpoints return usage for specific capabilities such as completions, embeddings, images,
-          audio transcriptions, audio speech, moderations, vector stores, code interpreter sessions,
-          file search calls and web search calls.
-        </p>
-        <p>
-          Each endpoint returns data in its natural unit — tokens, images, seconds, characters, bytes,
-          sessions or request counts — depending on the capability. Do not assume all endpoints
-          return data in the same unit.
-        </p>
-        <h3>Costs endpoint</h3>
-        <p>
-          The <code>GET /v1/organization/costs</code> endpoint returns spend data. It may include:
-        </p>
-        <ul>
-          <li><code>amount.value</code> and <code>amount.currency</code></li>
-          <li><code>line_item</code></li>
-          <li><code>project_id</code></li>
-        </ul>
-        <p>
-          Usage data may not always reconcile perfectly with Costs because usage and spend are
-          recorded differently. For financial purposes, OpenAI recommends using the Costs endpoint
-          or the Costs tab.
-        </p>
-        <p>
-          Note: the model response <code>usage</code> object does not contain a monetary
-          <code>cost</code> field. Cost must be reconstructed from token counts and applicable pricing.
+          The Cost export provides aggregated spend grouped by line item. For partial-month
+          data, export month-to-date and compare carefully with the full-month export when
+          it becomes available.
         </p>
 
-        <h2>Admin API Key Requirements</h2>
+        <h2>Troubleshooting</h2>
+        <h3>401 or 403 on administration endpoints</h3>
         <p>
-          The organization Usage and Costs endpoints are part of the Administration API. They require
-          an Admin API key, not an ordinary application API key.
+          Verify the key is an Admin API key, not a project API key. Check that the
+          <code>Authorization: Bearer</code> header is correctly formatted. Admin keys
+          are distinct from keys used for model inference.
         </p>
+        <h3>Empty results or zero totals</h3>
         <p>
-          Key points:
+          Confirm the UTC date range covers the period with actual usage. Verify the
+          correct organization is selected. Check whether the project filter within
+          the Usage page is narrowing the results. Ensure the Admin key has access
+          to the target organization.
         </p>
-        <ul>
-          <li>An Admin API key is separate from API keys used for model requests</li>
-          <li>An Admin API key cannot be used for model inference endpoints</li>
-          <li>An ordinary application API key does not grant access to organization administration endpoints</li>
-          <li>Admin API keys should be read from environment variables, never hardcoded in application logic or pasted into support tickets</li>
-        </ul>
+        <h3>Data mismatch between local logs and API response</h3>
         <p>
-          Example request showing the correct endpoint and the expected key format:
-        </p>
-        <pre><code>curl "https://api.openai.com/v1/organization/costs?start_time=&lt;unix-seconds&gt;" \
-  -H "Authorization: Bearer &lt;OPENAI_ADMIN_KEY&gt;"</code></pre>
-
-        <h2>Text and Completion Usage</h2>
-        <p>
-          For text and completion models, a model response may include input token, output token
-          and total token counts. The response-level <code>usage</code> object fields may include:
-        </p>
-        <ul>
-          <li><code>input_tokens</code> — tokens consumed by the prompt and context</li>
-          <li><code>output_tokens</code> — tokens generated in the response</li>
-          <li><code>total_tokens</code> — sum of input and output tokens</li>
-        </ul>
-        <p>
-          The organization completions Usage endpoint separately aggregates fields such as
-          <code>input_tokens</code>, <code>output_tokens</code>, <code>input_cached_tokens</code>
-          and <code>num_model_requests</code>. Do not assume every response-level usage
-          field appears with the same name in the organization-level Usage API.
+          Common causes: incomplete pagination (missing next_page results), UTC boundary
+          mismatch at month ends, project filter set differently in dashboard vs API,
+          automatic retries adding usage not in application logs, or cached-token
+          pricing differences.
         </p>
 
-        <h2>Cached and Reasoning Tokens</h2>
-        <p>
-          Some models and endpoints expose additional token breakdowns. These may include:
-        </p>
+        <h2>Why Usage Does Not Equal Final Cost</h2>
+        <p>Token usage and billed cost are related but not identical. Common discrepancies:</p>
         <ul>
-          <li>Cached token counts and details — some requests benefit from context caching, which may affect pricing</li>
-          <li>Reasoning token details — depending on the model and endpoint, reasoning tokens may be billed as output tokens even when they are not exposed as visible answer text</li>
+          <li><strong>Cached tokens</strong> — context caching results in lower effective cost than raw token counts suggest</li>
+          <li><strong>Reasoning tokens</strong> — some models bill reasoning tokens as output tokens even if not visible in response text</li>
+          <li><strong>Batch vs standard pricing</strong> — batch-mode usage has different rates</li>
+          <li><strong>UTC boundary mismatch</strong> — local logs and the dashboard may use different UTC ranges</li>
+          <li><strong>Incomplete pagination</strong> — <code>next_page</code> tokens not followed result in partial totals</li>
+          <li><strong>Automatic retries</strong> — retries may generate additional usage not in application logs</li>
         </ul>
-        <p>
-          Inspect the response usage fields and current model pricing documentation to determine
-          how cached and reasoning tokens affect the final cost. Not all models return identical
-          reasoning-token fields.
-        </p>
-
-        <h2>Image, Audio and Tool Usage</h2>
-        <p>
-          Different API capabilities use different billing units. Examples include:
-        </p>
-        <ul>
-          <li><strong>Image generation</strong> — may be counted per image, per size, per quality tier or per source</li>
-          <li><strong>Audio transcription</strong> — typically measured in seconds of audio processed</li>
-          <li><strong>Audio speech</strong> — typically measured in characters of input text</li>
-          <li><strong>Vector stores</strong> — typically measured in bytes stored</li>
-          <li><strong>Code interpreter sessions</strong> — typically measured in session counts</li>
-          <li><strong>File search / web search</strong> — typically measured in calls or requests</li>
-        </ul>
-        <p>
-          Do not treat all usage as tokens. Use the relevant Usage API endpoint for each capability
-          and the Costs endpoint for financial totals.
-        </p>
-
-        <h2>Grouping by Project, User, API Key and Model</h2>
-        <p>
-          Completions and other Usage endpoints support <code>group_by</code> parameters that
-          break down usage by relevant fields such as:
-        </p>
-        <ul>
-          <li><code>project_id</code></li>
-          <li><code>user_id</code></li>
-          <li><code>api_key_id</code></li>
-          <li><code>model</code></li>
-        </ul>
-        <p>
-          Different Usage endpoints support different <code>group_by</code> values. Check the
-          current API reference for the specific endpoint to confirm which grouping options are
-          available.
-        </p>
-
-        <h2>Pagination and Time Buckets</h2>
-        <p>
-          Organization Usage API responses may be paginated. If a response includes a
-          <code>next_page</code> token, use it to retrieve subsequent pages until all records
-          are collected. An incomplete pagination results in under-reported totals.
-        </p>
-        <p>
-          For time-series data, Usage endpoints support a <code>bucket_width</code> parameter that
-          controls the granularity of time bucketing. Supported values depend on the endpoint.
-          For the completions usage endpoint, current supported values include <code>1m</code>,
-          <code>1h</code> and <code>1d</code>.
-        </p>
-        <p>
-          Time parameters use Unix timestamps in seconds:
-        </p>
-        <ul>
-          <li><code>start_time</code> is inclusive</li>
-          <li><code>end_time</code> is exclusive</li>
-        </ul>
-        <p>
-          Example completions usage request:
-        </p>
-        <pre><code>curl "https://api.openai.com/v1/organization/usage/completions?start_time=&lt;unix-seconds&gt;&bucket_width=1d" \
-  -H "Authorization: Bearer &lt;OPENAI_ADMIN_KEY&gt;"</code></pre>
-
-        <h2>Why Usage May Not Equal Final Cost</h2>
-        <p>
-          Token usage and billed cost are related but not always identical. Common reasons for
-          a discrepancy include:
-        </p>
-        <ul>
-          <li>Cached tokens — context caching may result in lower effective cost than raw token counts suggest</li>
-          <li>Reasoning tokens — some models bill reasoning tokens as output tokens even if they are not visible in the response text</li>
-          <li>Batch vs. standard pricing — batch-mode usage may have different rates than standard on-demand usage</li>
-          <li>UTC boundary mismatch — local logs and the Usage Dashboard may use different UTC ranges, causing apparent differences at month boundaries</li>
-          <li>Project or organization filter mismatch — different filter settings produce different totals</li>
-          <li>Automatic retries — retries may generate additional usage not reflected in application-level logs</li>
-          <li>Incomplete pagination — <code>next_page</code> tokens not followed result in partial totals</li>
-        </ul>
-
-        <h2>Worked Usage Reconciliation Example</h2>
-        <p>
-          A common reconciliation scenario:
-        </p>
-        <ul>
-          <li><strong>Usage Dashboard:</strong> 12,400 model requests, 8.2M input tokens, 1.4M output tokens</li>
-          <li><strong>Local application logs:</strong> 12,365 request records</li>
-          <li><strong>Difference:</strong> 35 requests not accounted for in local logs</li>
-        </ul>
-        <p>
-          Investigation steps:
-        </p>
-        <ul>
-          <li>Check for automatic retries in the application — retries may not appear in all log pipelines</li>
-          <li>Verify the UTC time range matches between the dashboard export and local log query</li>
-          <li>Confirm the project filter in the dashboard matches the application scope</li>
-          <li>Verify pagination was completed for the API export</li>
-          <li>Check whether the missing requests were batch or service-tier calls that use different API paths</li>
-          <li>Confirm the correct organization is selected</li>
-        </ul>
-        <p>
-          The 35-request difference does not necessarily mean they were overcharged — it means
-          the two records were not compared on the same basis.
-        </p>
 
         <h2>Usage Reconciliation Checklist</h2>
         <ul class="checklist">
-          <li><span class="checklist-icon">&#10003;</span><span>Confirm the correct organization and Usage Dashboard permission</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Confirm correct organization and Usage Dashboard permission</span></li>
           <li><span class="checklist-icon">&#10003;</span><span>Clear or select the intended project filter within the Usage page</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Normalize the time range to UTC — confirm both dashboard and local query use the same UTC boundaries</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Normalize time range to UTC — confirm both dashboard and API use the same UTC boundaries</span></li>
           <li><span class="checklist-icon">&#10003;</span><span>Use inclusive start_time and exclusive end_time for API queries</span></li>
           <li><span class="checklist-icon">&#10003;</span><span>Export Activity data for usage investigation</span></li>
           <li><span class="checklist-icon">&#10003;</span><span>Export Cost data for spend reconciliation</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Match models, projects and API key IDs between records</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Compare response-level usage with organization-level aggregates</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Follow all <code>next_page</code> tokens to complete pagination</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Separate usage units by capability (tokens vs images vs seconds vs sessions)</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Use Costs endpoint or Cost export rather than token estimates for financial totals</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Follow all <code>next_page</code> tokens for complete pagination</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Use Costs endpoint for financial totals, not token estimates</span></li>
           <li><span class="checklist-icon">&#10003;</span><span>Compare with the <a href="/api-billing-mismatch/">API Billing Mismatch</a> guide when totals still differ</span></li>
         </ul>
 
@@ -386,22 +402,21 @@ const internalLinks = [
           <li><span class="checklist-icon">&#10003;</span><span>Never paste API keys into browser tools, chat interfaces or support tickets</span></li>
           <li><span class="checklist-icon">&#10003;</span><span>Redact keys from screenshots before sharing evidence with support</span></li>
           <li><span class="checklist-icon">&#10003;</span><span>Rotate Admin API keys regularly and immediately upon suspected exposure</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Apply the principle of least privilege — grant Usage Dashboard access only to users who need it</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Save request_id, timestamp, model, project, local status, input/output usage and retry count for every request at the application level</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Apply least privilege — grant Usage Dashboard access only to users who need it</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Save request_id, timestamp, model, project, input/output usage and retry count for every request</span></li>
         </ul>
 
         <h2>Official Sources Reviewed</h2>
         <p class="official-sources">
-          The information on this page is based on OpenAI's official documentation reviewed as
-          of {lastReviewed}. OpenAI's API usage features may change; always verify current
-          behavior in the API Platform and API reference.
+          Information on this page is based on OpenAI official documentation reviewed as
+          of {lastReviewed}. OpenAI API usage features may change; verify current behavior
+          in the API Platform and API reference.
         </p>
         <ul>
           <li>OpenAI Help: Understanding your API usage</li>
           <li>OpenAI Help: How do I export monthly usage details from the API Usage Dashboard</li>
           <li>OpenAI API Reference: Organization Usage — Costs endpoint</li>
           <li>OpenAI API Reference: Administration overview</li>
-          <li>OpenAI Cookbook: Completions usage API examples</li>
           <li>OpenAI API Docs: Pricing</li>
         </ul>
 
@@ -415,52 +430,48 @@ const internalLinks = [
         <div class="ai-summary-block">
           <div class="ai-summary-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg> AI Summary</div>
           <p>
-            The OpenAI Usage Dashboard and organization Usage APIs provide aggregated usage data scoped
-            to a single organization and time range, using UTC. Only Organization Owners or explicitly
-            authorized users can access the dashboard. Activity exports support granular breakdowns by
-            project, user, API key, model and service tier. Cost exports and the Costs endpoint are
-            the preferred source for financial reconciliation. Admin API keys — distinct from application
-            keys — are required for organization administration endpoints. Token usage alone does not
-            equal final billed cost; use the Costs endpoint for financial totals. Apply inclusive
-            start_time and exclusive end_time when querying APIs, follow all next_page tokens for complete
-            results, and always normalize to UTC when comparing records. AICostPlanner is an independent
-            educational cost-planning site and is not affiliated with OpenAI.
+            The OpenAI Usage Dashboard and organization Usage APIs provide usage quantities (tokens, requests,
+            images, seconds) scoped to a single organization and UTC time range. Only Organization Owners
+            or explicitly authorized users can access them. Admin API keys — distinct from application
+            keys — are required for all organization administration endpoints. Activity exports support
+            granular breakdowns by project, user, API key, model and service tier. Cost exports and the
+            Costs endpoint are the preferred source for financial reconciliation. Token usage alone does
+            not equal final billed cost; use the Costs endpoint for spend totals. Apply inclusive
+            start_time and exclusive end_time, follow all next_page tokens, and always normalize to UTC
+            when comparing records. Use the 2026 AI API Cost Benchmark to estimate costs before scaling.
+            AICostPlanner is an independent educational site and is not affiliated with OpenAI.
           </p>
         </div>
 
         <h2>Frequently Asked Questions</h2>
         <div class="faq-list">
           <div class="faq-item">
-            <h3 class="faq-question">Who can view the OpenAI API Usage Dashboard?</h3>
-            <p class="faq-answer">Only Organization Owners or users explicitly granted Usage Dashboard permission can access it. Ordinary project members and API key holders do not automatically have access. If the dashboard is not visible, verify the current organization, account role, permission grant, project filter and browser login.</p>
+            <h3 class="faq-question">How do I group OpenAI API usage by model?</h3>
+            <p class="faq-answer">Use the organization Usage endpoint for the relevant capability (such as completions) with the group_by parameter set to model. For example: GET /v1/organization/usage/completions?start_time=...&#38;group_by=model. Different endpoints support different group_by values — check the current API reference for the specific endpoint.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">What is the difference between the Usage API and Costs API?</h3>
+            <p class="faq-answer">The organization Usage endpoints return usage quantities (tokens, images, seconds) broken down by API capability. The Costs endpoint (GET /v1/organization/costs) returns spend amounts in USD grouped by line item. Use Usage for investigating token and request patterns; use Costs for financial reconciliation.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Does the Usage API return the final billed amount?</h3>
+            <p class="faq-answer">No. The organization Usage endpoints return usage quantities, not monetary amounts. Token counts alone do not equal final billed cost because of cached tokens, reasoning tokens, batch pricing and other factors. Use the Costs endpoint or Cost tab for financial totals.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Which API key is required for organization usage endpoints?</h3>
+            <p class="faq-answer">An Admin API key is required for organization Usage and Costs endpoints. An ordinary application API key used for model inference does not grant access to administration endpoints. Admin keys must be stored in environment variables and never placed in browser code or support tickets.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Why does the Usage Dashboard show no data?</h3>
+            <p class="faq-answer">Common causes: wrong organization selected, account lacks Usage Dashboard permission, project filter is restricting the view, date range is outside the period with usage, or the browser is logged into a different account. Confirm the organization, role, project filter and UTC date range.</p>
           </div>
           <div class="faq-item">
             <h3 class="faq-question">What timezone does the OpenAI Usage Dashboard use?</h3>
-            <p class="faq-answer">The Usage Dashboard uses UTC for all time ranges and filters. When comparing usage data against local logs, invoices or support tickets, always normalize to UTC to avoid boundary mismatches at month boundaries.</p>
+            <p class="faq-answer">The Usage Dashboard uses UTC for all time ranges and filters. When comparing usage data against local logs or invoices, always normalize both records to UTC to avoid boundary mismatches at month boundaries.</p>
           </div>
           <div class="faq-item">
-            <h3 class="faq-question">Does the Dashboard show all projects automatically?</h3>
-            <p class="faq-answer">No. The project selector within the Usage page is independent of the top-right organization/project selector. If no project is selected in the Usage page, the view shows all projects in the selected organization. After changing the selected organization, re-check the project filter within the Usage page before comparing totals. The Usage Dashboard does not consolidate data across multiple organizations.</p>
-          </div>
-          <div class="faq-item">
-            <h3 class="faq-question">What is the difference between Activity and Cost exports?</h3>
-            <p class="faq-answer">Activity exports provide granular usage data filterable by project, user, API key, model, batch or service tier — useful for investigating usage patterns. Cost exports provide spend data grouped by line item — the preferred source for spend reporting, invoice reconciliation and calendar-month financial totals.</p>
-          </div>
-          <div class="faq-item">
-            <h3 class="faq-question">Does the Usage API return final billed cost?</h3>
-            <p class="faq-answer">No. The organization Usage endpoints return usage quantities (tokens, images, seconds, and so on), not monetary amounts. Use the Costs endpoint or the Costs tab in the Usage Dashboard for financial totals. Usage and spend may not reconcile perfectly due to cached tokens, reasoning tokens, batch pricing and other factors.</p>
-          </div>
-          <div class="faq-item">
-            <h3 class="faq-question">Do I need an Admin API key for organization usage data?</h3>
-            <p class="faq-answer">Yes. The organization Usage and Costs endpoints are part of the Administration API and require an Admin API key. An ordinary application API key used for model requests does not grant access to administration endpoints. Admin keys must not be used for model inference or pasted into support tickets.</p>
-          </div>
-          <div class="faq-item">
-            <h3 class="faq-question">Why does local token usage differ from the Costs endpoint?</h3>
-            <p class="faq-answer">Differences can come from cached-token pricing, reasoning tokens, batch or service-tier pricing, UTC boundary mismatches, organization or project filter mismatches, incomplete pagination, or locally missing retry records. Usage and spend are recorded through different systems, so use the Costs endpoint or Cost export for financial totals.</p>
-          </div>
-          <div class="faq-item">
-            <h3 class="faq-question">Can the Dashboard combine multiple organizations?</h3>
-            <p class="faq-answer">No. Usage data is scoped to a single organization. The Usage Dashboard does not automatically combine or consolidate data across multiple organizations. You must select one organization at a time and apply the appropriate filters.</p>
+            <h3 class="faq-question">How do I export monthly OpenAI API costs as CSV?</h3>
+            <p class="faq-answer">Navigate to the Usage Dashboard in the API Platform, select the target organization and project, choose the calendar-month UTC date range, switch to the Cost tab, and download the CSV. The Cost export provides spend data grouped by line item, suitable for invoice reconciliation.</p>
           </div>
         </div>
 
@@ -487,7 +498,13 @@ const internalLinks = [
   .content-section { padding: var(--space-12) 0 var(--space-16); background: var(--color-bg-light); }
   .quick-answer { background: var(--color-bg-light-elevated); border-left: 4px solid var(--color-accent-blue); padding: var(--space-6); border-radius: 0 var(--radius-md) var(--radius-md) 0; margin-bottom: var(--space-10); }
   .quick-answer h2 { font-size: 1.125rem; font-weight: 600; color: var(--color-text-light); margin-bottom: var(--space-3); }
-  .quick-answer p { margin: 0; color: var(--color-text-light); line-height: 1.7; }
+  .quick-answer p { margin: 0 0 var(--space-4) 0; color: var(--color-text-light); line-height: 1.7; }
+  .intent-table { border: 1px solid var(--color-border-light); border-radius: var(--radius-md); overflow: hidden; margin: var(--space-4) 0 var(--space-6); }
+  .intent-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-border-light); font-size: 0.875rem; }
+  .intent-row:last-child { border-bottom: none; }
+  .intent-header { background: var(--color-bg-light-elevated); font-weight: 600; color: var(--color-text-light); }
+  .intent-row:not(.intent-header) { color: var(--color-text-light-muted); }
+  .intent-row code { font-size: 0.8125em; }
   h2 { font-size: 1.5rem; font-weight: 600; color: var(--color-text-light); margin: var(--space-10) 0 var(--space-4); padding-top: var(--space-6); border-top: 1px solid var(--color-border-light); }
   h2:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
   h3 { font-size: 1.125rem; font-weight: 600; color: var(--color-text-light); margin: var(--space-6) 0 var(--space-3); }

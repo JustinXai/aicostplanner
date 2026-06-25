@@ -8,7 +8,7 @@ import '../styles/global.css';
 const siteUrl = 'https://aicostplanner.com';
 const currentDate = new Date().toISOString().split('T')[0];
 const route = '/openrouter-credits/';
-const lastReviewed = 'June 14, 2026';
+const lastReviewed = 'June 25, 2026';
 
 const breadcrumbs = [{ label: 'OpenRouter Credits', href: route }];
 const internalLinks = [
@@ -17,12 +17,13 @@ const internalLinks = [
   { href: '/failed-generation-cost/', label: 'Failed Generation Cost' },
   { href: '/small-prepaid-test/', label: 'Small Prepaid Test' },
   { href: '/agent-token-usage/', label: 'Agent Token Usage' },
+  { href: '/ai-api-cost-benchmark/', label: 'AI API Cost Benchmark' },
 ];
 ---
 
 <PageLayout
-  title="OpenRouter Credit Expiry and 402 Errors"
-  description="Learn when OpenRouter credits may expire, how to check balance and usage, and why insufficient-credit requests return HTTP 402."
+  title="OpenRouter Credits: Expiry & 402 Errors"
+  description="OpenRouter may expire unused credits after 365 days. Learn how to check balance, understand API key limits, and fix 402 and 403 errors."
   canonical={`${siteUrl}${route}`}
   type="article"
   lastUpdated={currentDate}
@@ -30,8 +31,8 @@ const internalLinks = [
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org", "@type": "Article",
-      "headline": "OpenRouter Credit Expiry and 402 Errors",
-      "description": "Learn when OpenRouter credits may expire, how to check purchased and used credits, and why insufficient-credit requests return HTTP 402.",
+      "headline": "OpenRouter Credits: Expiry & 402 Errors",
+      "description": "OpenRouter may expire unused credits after 365 days. Learn how to check balance, understand API key limits, and fix 402 and 403 errors.",
       "author": { "@type": "Organization", "name": "AICostPlanner" },
       "publisher": { "@type": "Organization", "name": "AICostPlanner", "url": siteUrl },
       "datePublished": currentDate, "dateModified": currentDate,
@@ -51,7 +52,7 @@ const internalLinks = [
     <section class="hero-dark">
       <div class="container">
         <Breadcrumb items={breadcrumbs} />
-        <h1 class="page-title">OpenRouter Credits: Expiry, Balance and Insufficient Credits</h1>
+        <h1 class="page-title">OpenRouter Credits: Expiry, Balance and API Key Limits</h1>
         <p class="page-meta"><span class="label-mono">Last reviewed: {lastReviewed}</span></p>
       </div>
     </section>
@@ -62,12 +63,14 @@ const internalLinks = [
         <div class="quick-answer">
           <h2>Quick Answer</h2>
           <p>
-            OpenRouter's current FAQ says it reserves the right to expire unused credits after one year
-            from purchase. If an account or API key lacks sufficient credits, OpenRouter documents the
-            request error as HTTP <span class="mono">402</span>; HTTP <span class="mono">403</span> is
-            used for permission, guardrail or moderation failures. Check the Activity page and, when
-            you have a management key, <span class="mono">GET /api/v1/credits</span> to compare
-            <span class="mono">total_credits</span> purchased with <span class="mono">total_usage</span>.
+            OpenRouter reserves the right to expire unused credits 365 days after purchase. HTTP
+            <span class="mono">402</span> indicates insufficient credits; HTTP <span class="mono">403</span>
+            indicates insufficient permissions, a guardrail block or a moderation flag. Account
+            credits and API-key spending limits are different controls. Check the Activity page and,
+            when you have a management key, <span class="mono">GET /api/v1/credits</span> to compare
+            <span class="mono">total_credits</span> with <span class="mono">total_usage</span>.
+            Use the <a href="/ai-api-cost-benchmark/">AI API Cost Benchmark</a> to turn usage
+            assumptions into an estimated monthly budget.
           </p>
         </div>
 
@@ -200,6 +203,41 @@ const internalLinks = [
           may see 402 on free models too — check the limits documentation.
         </p>
 
+        <h2>"The request is prohibited due to a violation of provider terms of service"</h2>
+        <p>
+          This error is not a credit-balance issue. According to OpenRouter's error documentation,
+          HTTP <span class="mono">403</span> covers insufficient permissions, guardrail blocks and
+          moderation flags. A request blocked for terms-of-service reasons falls into one of these
+          categories on the upstream provider side.
+        </p>
+        <p>What this error typically means:</p>
+        <ul>
+          <li>The upstream provider's content policy flagged the request content</li>
+          <li>A guardrail configured on the account blocked the request before it reached the model</li>
+          <li>The request content or attachments violate the provider's acceptable-use policy</li>
+          <li>The account with the upstream provider has a restriction</li>
+        </ul>
+        <p>Check these when investigating the error:</p>
+        <ul>
+          <li><strong>Provider and model</strong> — which provider and model slug generated the error</li>
+          <li><strong>Request content</strong> — inspect the input messages, system prompt and attachments for policy-sensitive material</li>
+          <li><strong>Error metadata</strong> — <span class="mono">error.metadata</span> may contain a <span class="mono">reason</span> or <span class="mono">provider_name</span> field</li>
+          <li><strong>Moderation output</strong> — if the error relates to a moderation flag, the response may include the specific flagged segment</li>
+          <li><strong>Request ID</strong> — record the <span class="mono">request_id</span> from the error response for support escalation</li>
+        </ul>
+        <p>What this error does not mean:</p>
+        <ul>
+          <li>It is not a credit-balance problem; HTTP <span class="mono">402</span> covers insufficient credits</li>
+          <li>It is not a rate-limit problem; HTTP <span class="mono">429</span> covers rate limits</li>
+          <li>Switching providers or models does not guarantee the same content will pass elsewhere — each provider has its own acceptable-use policy</li>
+          <li>Automatically retrying the same request across multiple providers may generate the same error and multiply credit charges on a pay-per-request basis</li>
+        </ul>
+        <p>
+          Do not attempt to circumvent a provider's terms-of-service policy. If a request has been
+          flagged, revise the content to comply with the provider's policy rather than attempting to
+          route around the block.
+        </p>
+
         <h2>"Your Prepayment Credits Are Depleted" Troubleshooting</h2>
         <p>
           If a client or SDK displays the message "your prepayment credits are depleted," treat it
@@ -244,6 +282,10 @@ const internalLinks = [
           <li><strong>Tool calls and agent workflows</strong> — multi-step workflows accumulate token overhead quickly</li>
           <li><strong>Parallel sessions</strong> — running several agent instances simultaneously multiplies credit usage</li>
         </ul>
+        <p>
+          Use the <a href="/ai-api-cost-benchmark/">AI API Cost Benchmark</a> to turn expected
+          usage into an estimated monthly cost before adding a large balance.
+        </p>
 
         <h2>Small Prepaid Test Checklist</h2>
         <ul class="checklist">
@@ -262,7 +304,6 @@ const internalLinks = [
           <li>https://openrouter.ai/docs/api/reference/errors-and-debugging</li>
           <li>https://openrouter.ai/docs/api/api-reference/credits/get-credits</li>
           <li>https://openrouter.ai/docs/api/reference/limits</li>
-          <li>https://openrouter.ai/docs/cookbook/administration/usage-accounting</li>
         </ul>
         <p>
           AICostPlanner is an independent educational cost-planning site and is not affiliated with OpenRouter.
@@ -278,14 +319,14 @@ const internalLinks = [
         <div class="ai-summary-block">
           <div class="ai-summary-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg> AI Summary</div>
           <p>
-            OpenRouter credits are a prepaid balance. The official FAQ says OpenRouter reserves the right to
-            expire unused credits after one year — do not assume credits never expire. Insufficient-credit
-            failures are documented as HTTP 402, not 403; 403 covers permission, guardrail and moderation
-            blocks. Use <span class="mono">GET /api/v1/credits</span> with a management key to compare
-            <span class="mono">total_credits</span> and <span class="mono">total_usage</span>, but cross-reference
-            with the Activity page and per-request <span class="mono">usage.cost</span>. Do not blindly retry
-            402 or 429 responses; inspect the actual error code and body first. This page is educational, not
-            official OpenRouter documentation.
+            OpenRouter reserves the right to expire unused credits 365 days after purchase. Insufficient-credit
+            failures are documented as HTTP 402, not 403; 403 covers insufficient permissions, guardrail
+            blocks and moderation flags. Use <span class="mono">GET /api/v1/credits</span> with a management
+            key to compare <span class="mono">total_credits</span> and <span class="mono">total_usage</span>,
+            but cross-reference with the Activity page and per-request <span class="mono">usage.cost</span>.
+            A 403 response related to provider terms of service is a content or permissions issue, not a
+            credit-balance issue. Do not blindly retry 402 or 429 responses; inspect the actual error code
+            and body first. This page is educational, not official OpenRouter documentation.
           </p>
         </div>
 
@@ -294,18 +335,18 @@ const internalLinks = [
           <div class="faq-item">
             <h3 class="faq-question">Do OpenRouter credits expire?</h3>
             <p class="faq-answer">
-              OpenRouter's current FAQ says it reserves the right to expire unused credits after one year
-              of purchase. Do not rewrite this as "credits always expire on day 365" or assume older
-              balances are automatically removed. Check the current OpenRouter FAQ, account notices and
-              purchase records before relying on an older balance.
+            OpenRouter reserves the right to expire unused credits 365 days after purchase. The official
+            wording is "reserves the right" — this is not a guarantee that every balance expires
+            automatically on an exact date. Check the current OpenRouter FAQ, account notices and
+            purchase records before relying on an older balance.
             </p>
           </div>
           <div class="faq-item">
             <h3 class="faq-question">Does OpenRouter always expire credits exactly after one year?</h3>
             <p class="faq-answer">
-              The official wording is "reserves the right to expire unused credits after one year."
-              This is not a guarantee that every balance is automatically removed on an exact date.
-              Treat the current OpenRouter FAQ as the authoritative source.
+            The official wording is "reserves the right to expire unused credits 365 days after purchase."
+            This is not a guarantee that every balance is automatically removed on an exact date.
+            Treat the current OpenRouter FAQ as the authoritative source.
             </p>
           </div>
           <div class="faq-item">

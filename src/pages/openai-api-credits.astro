@@ -8,23 +8,24 @@ import '../styles/global.css';
 const siteUrl = 'https://aicostplanner.com';
 const currentDate = new Date().toISOString().split('T')[0];
 const route = '/openai-api-credits/';
-const lastReviewed = 'June 14, 2026';
+const lastReviewed = 'June 25, 2026';
 
 const breadcrumbs = [{ label: 'OpenAI API Credits', href: route }];
 const internalLinks = [
+  { href: '/openai-api-usage/', label: 'OpenAI API Usage' },
+  { href: '/openai-api-billing/', label: 'OpenAI API Billing' },
   { href: '/api-billing-mismatch/', label: 'API Billing Mismatch' },
   { href: '/small-prepaid-test/', label: 'Small Prepaid Test' },
   { href: '/billing-transparency/', label: 'Billing Transparency' },
   { href: '/agent-token-usage/', label: 'Agent Token Usage' },
   { href: '/openrouter-credits/', label: 'OpenRouter Credits' },
-  { href: '/image-generation-api-cost/', label: 'Image Generation API Cost' },
-  { href: '/failed-generation-cost/', label: 'Failed Generation Cost' },
+  { href: '/ai-api-cost-benchmark/', label: 'AI API Cost Benchmark' },
 ];
 ---
 
 <PageLayout
-  title="OpenAI API Credits: Expiry, Prepaid Billing"
-  description="Learn when OpenAI API credits expire, how prepaid billing and auto recharge work, where to check credits, and why quota errors can occur."
+  title="OpenAI API Credits: Expiry & Refunds"
+  description="OpenAI purchased API credits expire after one year and are non-refundable. Learn how to check balance, add credits, use auto recharge and fix quota errors."
   canonical={`${siteUrl}${route}`}
   type="article"
   lastUpdated={currentDate}
@@ -32,8 +33,8 @@ const internalLinks = [
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org", "@type": "Article",
-      "headline": "OpenAI API Credits: Expiry, Balance and Prepaid Billing",
-      "description": "Learn when OpenAI API credits expire, how prepaid billing and auto recharge work, where to check credits, and why quota errors can occur.",
+      "headline": "OpenAI API Credits: Expiry & Refunds",
+      "description": "OpenAI purchased API credits expire after one year and are non-refundable. Learn how to check balance, add credits, use auto recharge and fix quota errors.",
       "author": { "@type": "Organization", "name": "AICostPlanner" },
       "publisher": { "@type": "Organization", "name": "AICostPlanner", "url": siteUrl },
       "datePublished": currentDate, "dateModified": currentDate,
@@ -46,6 +47,18 @@ const internalLinks = [
         { "@type": "ListItem", "position": 2, "name": "OpenAI API Credits", "item": `${siteUrl}${route}` }
       ]
     })} />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org", "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Do OpenAI API credits expire?", "acceptedAnswer": { "@type": "Answer", "text": "Purchased API credits expire after one year and are non-refundable according to OpenAI's current prepaid-billing documentation. Free or promotional credits have their own terms listed in the credit grant details. Check the credit grant details for the expiry policy of each credit type in the account." }},
+        { "@type": "Question", "name": "Does ChatGPT Plus include OpenAI API credits?", "acceptedAnswer": { "@type": "Answer", "text": "No. ChatGPT and the API Platform use separate billing systems. A ChatGPT Plus or ChatGPT Pro subscription does not provide API Platform credits. Payment methods, account structures and billing interfaces are different products." }},
+        { "@type": "Question", "name": "How do I check my OpenAI API credit balance?", "acceptedAnswer": { "@type": "Answer", "text": "Check the organization Billing page on the API Platform for the current credit balance, purchased credits and credit grants. The Usage Dashboard shows aggregated usage and spend — it is not a real-time balance display. The API Platform Billing page and the ChatGPT billing page are separate products." }},
+        { "@type": "Question", "name": "What is the minimum OpenAI API credit purchase?", "acceptedAnswer": { "@type": "Answer", "text": "As of June 25, 2026, OpenAI's help article lists a $5 minimum purchase and a default initial purchase amount of $10. The trust tier determines the maximum credit balance. Check the live billing page before purchasing because these amounts and account rules may change." }},
+        { "@type": "Question", "name": "Why is my OpenAI API balance showing negative?", "acceptedAnswer": { "@type": "Answer", "text": "Billing-system processing delays can allow usage to continue briefly after the credit balance is consumed, producing a negative balance that may be deducted from the next credit purchase. This reflects a processing timing gap, not a penalty. Not every account experiences this." }},
+        { "@type": "Question", "name": "Does auto recharge prevent all service interruptions?", "acceptedAnswer": { "@type": "Answer", "text": "No. Auto recharge helps prevent interruptions from credit exhaustion but does not override rate limits, API key restrictions or organizational spending limits. Rate limits and credit balance are independent controls." }},
+        { "@type": "Question", "name": "Can expired OpenAI API credits be refunded?", "acceptedAnswer": { "@type": "Answer", "text": "OpenAI's current prepaid-billing documentation states that purchased credits are non-refundable. Promotional or grant credits may have different terms — check the credit grant details for each active grant." }}
+      ]
+    })} />
   </Fragment>
 
   <Header />
@@ -53,7 +66,7 @@ const internalLinks = [
     <section class="hero-dark">
       <div class="container">
         <Breadcrumb items={breadcrumbs} />
-        <h1 class="page-title">OpenAI API Credits Explained</h1>
+        <h1 class="page-title">OpenAI API Credits: Expiry, Balance and Prepaid Billing</h1>
         <p class="page-meta"><span class="label-mono">Last reviewed: {lastReviewed}</span></p>
       </div>
     </section>
@@ -64,21 +77,52 @@ const internalLinks = [
         <div class="quick-answer">
           <h2>Quick Answer</h2>
           <p>
-            OpenAI's current API prepaid-billing documentation says purchased credits expire after one year
-            and are non-refundable. API usage is deducted from prepaid credits first, and additional usage
-            may be billed according to the account's billing setup. Check API credits and usage in the
-            organization Billing and Usage pages. A ChatGPT subscription does not provide API credits
-            because ChatGPT and the API Platform use separate billing systems.
+            OpenAI purchased API credits expire after one year and are non-refundable.
+            Check the balance in the API Platform Billing page — not the ChatGPT billing page.
+            ChatGPT subscriptions and API Platform credits use separate billing systems.
+            Auto recharge is available and defaults to on, but does not override rate limits.
           </p>
+          <div class="intent-table">
+            <div class="intent-row intent-header">
+              <span>Question</span><span>Answer</span>
+            </div>
+            <div class="intent-row">
+              <span>Do purchased credits expire?</span>
+              <span>Yes — after one year, non-refundable</span>
+            </div>
+            <div class="intent-row">
+              <span>Can I get a refund?</span>
+              <span>No — purchased credits are non-refundable</span>
+            </div>
+            <div class="intent-row">
+              <span>Where to check balance?</span>
+              <span>API Platform Billing page</span>
+            </div>
+            <div class="intent-row">
+              <span>ChatGPT Plus credits work for API?</span>
+              <span>No — separate billing systems</span>
+            </div>
+            <div class="intent-row">
+              <span>Auto recharge available?</span>
+              <span>Yes, defaults to on, $5 minimum</span>
+            </div>
+            <div class="intent-row">
+              <span>Negative balance normal?</span>
+              <span>Processing delay — not a penalty</span>
+            </div>
+            <div class="intent-row">
+              <span>Project budget blocks requests?</span>
+              <span>No — soft threshold, alerts only</span>
+            </div>
+          </div>
         </div>
 
         <h2>What Are OpenAI API Credits?</h2>
         <p>
-          OpenAI's current API billing setup uses a prepaid model. You purchase credits upfront, and
+          OpenAI's API Platform uses a prepaid billing model. You purchase credits upfront, and
           API usage is deducted from that balance. New accounts currently start on prepaid billing.
-          OpenAI applies prepaid credits to API usage first. Depending on the account's billing setup,
-          usage beyond the prepaid balance may be billed separately or requests may stop with a
-          billing-quota error. Billing-processing delays can also briefly produce a negative balance.
+          Usage beyond the prepaid balance may be billed separately or requests stop with an
+          <code>insufficient_quota</code> error.
         </p>
         <p>
           API credits are separate from a ChatGPT subscription. The API Platform and ChatGPT use
@@ -87,66 +131,52 @@ const internalLinks = [
 
         <h2>Do OpenAI API Credits Expire?</h2>
         <p>
-          OpenAI's current prepaid-billing documentation states: purchased API credits expire after one
-          year and are non-refundable.
+          OpenAI's current prepaid-billing documentation states: purchased API credits expire
+          after one year and are non-refundable.
         </p>
         <p>
-          This policy applies to purchased prepaid credits specifically. Other credit types — such as
-          promotional credits, free grants, or credits associated with Enterprise agreements — may have
-          different expiry terms. Check the credit grant details in the organization Billing page for
-          the specific expiry terms of each credit type.
-        </p>
-        <p>
-          Do not assume all credit types in an OpenAI account follow the same expiry policy.
+          This policy applies to purchased prepaid credits specifically. Other credit types —
+          such as promotional credits, free grants or credits associated with Enterprise
+          agreements — may have different expiry terms. Check the credit grant details in the
+          organization Billing page for the specific expiry terms of each credit type.
         </p>
 
-        <h2>Purchased Credits vs Free or Promotional Credits</h2>
-        <p>
-          OpenAI API accounts can hold multiple credit types simultaneously:
-        </p>
+        <h2>Where to Check OpenAI API Credit Balance</h2>
+        <p>Three views serve different purposes:</p>
         <ul>
-          <li><strong>Purchased prepaid credits</strong> — bought with real funds; expire after one year; non-refundable</li>
-          <li><strong>Free or promotional credits</strong> — may be provided with a new account or a special offer; have their own expiry terms listed in the credit grant details</li>
-          <li><strong>Credit grants</strong> — associated with specific agreements; terms vary per grant</li>
-          <li><strong>Enterprise credits</strong> — governed by the order form; separate from prepaid billing</li>
+          <li><strong>API Platform Billing page</strong> — shows purchased credits, free credits and credit grants with current balance</li>
+          <li><strong>Credit grants details</strong> — lists active grants and their individual expiry terms</li>
+          <li><strong>Usage Dashboard</strong> — shows aggregated usage and spend over time; accessible only to Organization Owners and authorized users; not a real-time balance display</li>
         </ul>
         <p>
-          OpenAI's prepaid-billing documentation says free credits, if present, are consumed before
-          purchased credits. Check the credit grant details to understand which credit type is being
-          used first.
+          The API Platform Billing page and the ChatGPT billing page are different products.
+          Always use the API Platform Billing page for API credits.
         </p>
 
-        <h2>How Prepaid Billing Works</h2>
+        <h2>How to Add OpenAI API Credits</h2>
         <p>
-          OpenAI's current prepaid billing documentation describes this workflow:
+          OpenAI's prepaid-billing documentation describes the following:
         </p>
         <ul>
-          <li>You purchase credits before making API requests</li>
-          <li>API usage is deducted from the prepaid credit balance</li>
-          <li>If the balance is insufficient for a request, the API returns an <code>insufficient_quota</code> error</li>
-          <li>New accounts currently start on prepaid billing by default</li>
+          <li>Purchase credits in the API Platform Billing page</li>
+          <li>As of June 25, 2026, the minimum purchase is $5 with a default initial amount of $10</li>
+          <li>The trust tier determines the maximum credit balance</li>
+          <li>Purchased credits may take a couple of minutes to appear after payment</li>
         </ul>
         <p>
-          As of June 14, 2026, OpenAI's help article lists a $5 minimum purchase and a default
-          initial purchase amount of $10. The trust tier determines the maximum credit balance an
-          account can hold. Check the live billing page before purchasing because these amounts
-          and rules may change.
-        </p>
-        <p>
-          Do not treat these amounts as fixed recommendations. The billing screen always reflects
-          the current terms.
+          Check the live billing page before purchasing — these amounts and rules may change.
+          Use the <a href="/ai-api-cost-benchmark/">AI API Cost Benchmark</a> to estimate
+          monthly spend before deciding how much to add.
         </p>
 
         <h2>How Auto Recharge Works</h2>
-        <p>
-          OpenAI's prepaid-billing documentation describes auto recharge as follows:
-        </p>
+        <p>OpenAI's prepaid-billing documentation describes auto recharge as follows:</p>
         <ul>
-          <li>Auto recharge is enabled by default when you set up prepaid billing</li>
+          <li>Auto recharge is enabled by default when prepaid billing is set up</li>
           <li>You can disable it before confirming the purchase</li>
           <li>You can set the recharge amount, the threshold that triggers a recharge, and an optional monthly recharge limit</li>
           <li>Manual credit purchases do not count toward the monthly auto-recharge limit</li>
-          <li>As of June 14, 2026, the auto recharge minimum is $5</li>
+          <li>As of June 25, 2026, the auto recharge minimum is $5</li>
           <li>The trust tier limits the maximum recharge amount</li>
         </ul>
         <p>
@@ -155,104 +185,59 @@ const internalLinks = [
           of the credit balance.
         </p>
 
-        <h2>How to Check OpenAI API Credits</h2>
+        <h2>Why OpenAI API Credits Can Show a Negative Balance</h2>
         <p>
-          OpenAI's documentation identifies these places to check credits:
+          Billing-system processing delays can allow API usage to continue briefly after the credit
+          balance is consumed. This excess usage may appear as a negative credit balance and may
+          be deducted from the next credit purchase.
         </p>
+        <p>
+          A negative balance reflects a processing timing gap, not a penalty. Not every account
+          will experience this. It depends on the billing-system processing state at the time
+          the balance was consumed.
+        </p>
+
+        <h2>Purchased Credits vs Promotional Credits</h2>
+        <p>OpenAI API accounts can hold multiple credit types simultaneously:</p>
         <ul>
-          <li>The organization <strong>Billing page</strong> in the API Platform — shows purchased credits, free credits and credit grants</li>
-          <li>The <strong>Credit grants details</strong> section — lists active grants and their expiry terms</li>
-          <li>The <strong>Usage Dashboard</strong> — shows usage over time; accessible only to Organization Owners and explicitly authorized users</li>
-          <li>The <strong>API Platform settings</strong> — for auto recharge configuration and credit purchase history</li>
+          <li><strong>Purchased prepaid credits</strong> — bought with real funds; expire after one year; non-refundable</li>
+          <li><strong>Free or promotional credits</strong> — may be provided with new accounts or special offers; have their own expiry terms listed in the credit grant details</li>
+          <li><strong>Credit grants</strong> — associated with specific agreements; terms vary per grant</li>
+          <li><strong>Enterprise credits</strong> — governed by the order form; separate from prepaid billing</li>
         </ul>
         <p>
-          The Usage Dashboard uses UTC timestamps. The organization Billing page shows the current
-          credit balance. The UI paths may change; always use the current API Platform interface.
+          Free credits are consumed before purchased credits. Check the credit grant details to
+          understand which credit type is used first.
         </p>
 
-        <h2>Billing Page vs Usage Dashboard</h2>
-        <p>
-          These two views serve different purposes:
-        </p>
-        <ul>
-          <li><strong>Billing page</strong> — shows the current credit balance, credit grants, purchase history and auto recharge settings</li>
-          <li><strong>Usage Dashboard</strong> — shows aggregated usage and spend across selected time ranges, projects and models; uses UTC; accessible by Organization Owners and authorized users. It is not a substitute for application-level request logs.</li>
-        </ul>
-        <p>
-          The Usage Dashboard may not automatically merge data across multiple organizations.
-          If your account has multiple organizations, select the correct one before reviewing usage.
-          Project-level filters in the Usage Dashboard can also narrow the displayed data.
-        </p>
-
-        <h2>Why Credits May Not Appear Immediately</h2>
-        <p>
-          OpenAI's help article notes that purchased credits may take a couple of minutes to appear
-          in the account balance.
-        </p>
-        <p>
-          If the balance still does not update after a short wait:
-        </p>
-        <ul>
-          <li>Verify the correct organization is selected</li>
-          <li>Check the payment result in your payment method's records</li>
-          <li>Confirm the Billing page is the API Platform billing page, not the ChatGPT billing page</li>
-          <li>Allow a brief additional delay before retrying requests</li>
-        </ul>
-        <p>
-          Do not regenerate an API key as a first step. Check the balance and organization first.
-        </p>
-
-        <h2>Negative Credit Balance Explained</h2>
-        <p>
-          OpenAI's prepaid-billing documentation acknowledges that billing-system delays can allow
-          API usage to continue briefly after the credit balance is consumed. This excess usage
-          may appear as a negative credit balance and may be deducted from the next credit purchase.
-        </p>
-        <p>
-          A negative balance does not mean the account is being penalized. It reflects the timing
-          gap between when usage occurred and when the billing system processed the deduction.
-        </p>
-        <p>
-          Not every account will experience a negative balance. It depends on the billing-system
-          processing state at the time the balance was consumed.
-        </p>
-
-        <h2>ChatGPT Plus/Pro vs API Credits</h2>
+        <h2>OpenAI API Credits vs ChatGPT Credits</h2>
         <p>
           OpenAI documents ChatGPT and the API Platform as separate billing systems.
         </p>
         <p>
-          A ChatGPT Plus or ChatGPT Pro subscription does not include API Platform credits. Paying
-          for a ChatGPT subscription does not recharge your API Platform balance. The payment
-          methods, account structures and billing interfaces are different.
+          A ChatGPT Plus or ChatGPT Pro subscription does not include API Platform credits.
+          Paying for a ChatGPT subscription does not recharge your API Platform balance.
+          Payment methods, account structures and billing interfaces are different products.
         </p>
         <p>
           To check API credits, use the API Platform Billing page — not the ChatGPT billing page.
-          These are separate products with separate billing.
         </p>
 
-        <h2>Insufficient Quota vs Rate Limit</h2>
+        <h2>What insufficient_quota Means</h2>
         <p>
           OpenAI's error documentation distinguishes between two common HTTP 429 causes:
         </p>
         <ul>
-          <li><code>rate_limit_reached</code> — the organization has hit its RPM (requests per minute) or TPM (tokens per minute) limit; adding more credits does not resolve this</li>
-          <li><code>insufficient_quota</code> — the billing balance, quota or API key allocation does not cover the request; check credits and account setup</li>
+          <li><code>rate_limit_reached</code> — the organization has hit its RPM or TPM limit; adding more credits does not resolve this; exponential backoff is appropriate</li>
+          <li><code>insufficient_quota</code> — the billing balance, quota or API key allocation does not cover the request; check credits and account setup; exponential backoff is not effective</li>
         </ul>
         <p>
-          Do not diagnose every HTTP 429 as a credit-balance problem. Inspect the returned
-          <code>error.type</code>, <code>error.code</code> and the error message before deciding
-          whether to recharge or to wait for the rate limit window to reset.
+          Inspect the returned <code>error.type</code>, <code>error.code</code> and the error
+          message before deciding whether to recharge or to wait for the rate limit window to reset.
         </p>
         <p>
-          For <code>rate_limit_reached</code>, exponential backoff is appropriate while waiting
-          for the rate limit window to reset. For <code>insufficient_quota</code>, exponential
-          backoff is not effective — add credits or check the account allocation.
-        </p>
-        <p>
-          When troubleshooting a 429, check: HTTP status, <code>error.type</code>, <code>error.code</code>,
-          error message, organization, project, API key scope, billing balance, usage limits, and
-          RPM / TPM limits.
+          Project budgets are soft monitoring thresholds that do not block requests automatically.
+          A budget alert does not mean the account is out of credits.
         </p>
 
         <h2>Credit and Usage Reconciliation Checklist</h2>
@@ -261,33 +246,29 @@ const internalLinks = [
           <li><span class="checklist-icon">&#10003;</span><span>Confirm the correct organization is selected</span></li>
           <li><span class="checklist-icon">&#10003;</span><span>Confirm the credit purchase payment succeeded</span></li>
           <li><span class="checklist-icon">&#10003;</span><span>Check purchased credits and credit grant expiry terms separately</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Check the Usage Dashboard in UTC for the relevant period</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Clear project filters or select the intended project to see all usage</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Check organizational usage limits and trust tier</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Inspect HTTP status and JSON error body for 429 responses</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Distinguish <code>rate_limit_reached</code> from <code>insufficient_quota</code></span></li>
           <li><span class="checklist-icon">&#10003;</span><span>Allow a short balance-update delay after purchasing credits</span></li>
           <li><span class="checklist-icon">&#10003;</span><span>Check for a negative balance from billing-system processing delay</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Inspect HTTP status and JSON error body for 429 responses</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Distinguish <code>rate_limit_reached</code> from <code>insufficient_quota</code></span></li>
           <li><span class="checklist-icon">&#10003;</span><span>Record <span class="mono">request_id</span> values before contacting OpenAI support</span></li>
         </ul>
 
         <h2>Small Prepaid Test Checklist</h2>
-        <p>
-          Before scaling API usage, run a small controlled test:
-        </p>
+        <p>Before scaling API usage, run a controlled test:</p>
         <ul class="checklist">
           <li><span class="checklist-icon">&#10003;</span><span>Define the test scope: model, expected input and output size, request count, concurrency</span></li>
           <li><span class="checklist-icon">&#10003;</span><span>Calculate estimated cost at the current per-token or per-operation rate</span></li>
           <li><span class="checklist-icon">&#10003;</span><span>Set a spending cap and a balance-monitoring stop trigger</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Record <span class="mono">request_id</span>, timestamp, model, input tokens, output tokens and relevant cached or reasoning-token fields for each request. Reconstruct estimated cost using the applicable pricing, then compare it with the Usage Dashboard or organization cost records.</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Compare local logs against the provider Usage Dashboard after the test</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Record <span class="mono">request_id</span>, timestamp, model, input tokens and output tokens for each request</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Compare local logs against the Usage Dashboard after the test</span></li>
           <li><span class="checklist-icon">&#10003;</span><span>Investigate any unexplained cost difference before scaling</span></li>
         </ul>
 
         <h2>Official Sources Reviewed</h2>
         <p class="official-sources">
-          The information on this page is based on OpenAI's official documentation reviewed as of {lastReviewed}.
-          OpenAI's billing setup may change; always verify current terms on the API Platform Billing page.
+          The information on this page is based on OpenAI's official documentation reviewed as
+          of {lastReviewed}. OpenAI's billing setup may change; always verify current terms on
+          the API Platform Billing page.
         </p>
         <ul>
           <li>OpenAI Help: How can I set up prepaid billing</li>
@@ -307,15 +288,17 @@ const internalLinks = [
         <div class="ai-summary-block">
           <div class="ai-summary-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg> AI Summary</div>
           <p>
-            OpenAI's current API prepaid-billing documentation says purchased credits expire after one year
-            and are non-refundable, while free or promotional credits follow separate terms. API usage is
-            deducted from prepaid credits first. New accounts start on prepaid billing; a $5 minimum purchase
-            and $10 default initial amount are listed as of June 14, 2026. Auto recharge is available and
-            defaults to on, but does not override rate limits. A billing-system processing delay may briefly
-            allow usage after the balance is consumed, producing a negative balance that is deducted from the
-            next purchase. ChatGPT subscriptions and API Platform credits use separate billing systems. HTTP
-            429 errors require inspecting <code>error.code</code> to distinguish <code>rate_limit_reached</code>
-            from <code>insufficient_quota</code>. This page is educational, not financial or OpenAI-specific
+            OpenAI's current prepaid-billing documentation says purchased credits expire after one year
+            and are non-refundable, while free or promotional credits follow separate terms. API usage
+            is deducted from prepaid credits first. New accounts start on prepaid billing; a $5 minimum
+            purchase and $10 default initial amount are listed as of June 25, 2026. Auto recharge is
+            available and defaults to on, but does not override rate limits. A billing-system processing
+            delay may briefly allow usage after the balance is consumed, producing a negative balance
+            that is deducted from the next purchase. ChatGPT subscriptions and API Platform credits use
+            separate billing systems. HTTP 429 errors require inspecting <code>error.code</code> to
+            distinguish <code>rate_limit_reached</code> from <code>insufficient_quota</code>. Project
+            budgets are soft thresholds that do not block requests. Use the 2026 AI API Cost Benchmark
+            to estimate costs before scaling. This page is educational, not financial or OpenAI-specific
             guidance. AICostPlanner is an independent educational site and is not affiliated with OpenAI.
           </p>
         </div>
@@ -324,31 +307,27 @@ const internalLinks = [
         <div class="faq-list">
           <div class="faq-item">
             <h3 class="faq-question">Do OpenAI API credits expire?</h3>
-            <p class="faq-answer">OpenAI's current prepaid-billing documentation says purchased API credits expire after one year and are non-refundable. Free or promotional credits have their own terms listed in the credit grant details. Check the credit grant details to see the expiry policy for each credit type in the account.</p>
+            <p class="faq-answer">Purchased API credits expire after one year and are non-refundable according to OpenAI's current prepaid-billing documentation. Free or promotional credits have their own terms listed in the credit grant details. Check the credit grant details for the expiry policy of each credit type in the account.</p>
           </div>
           <div class="faq-item">
             <h3 class="faq-question">Does ChatGPT Plus include OpenAI API credits?</h3>
-            <p class="faq-answer">No. OpenAI documents ChatGPT and the API Platform as separate billing systems. A ChatGPT Plus or ChatGPT Pro subscription does not provide API Platform credits. The payment methods, account structures and billing interfaces are different products.</p>
+            <p class="faq-answer">No. ChatGPT and the API Platform use separate billing systems. A ChatGPT Plus or ChatGPT Pro subscription does not provide API Platform credits. Payment methods, account structures and billing interfaces are different products.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">How do I check my OpenAI API credit balance?</h3>
+            <p class="faq-answer">Check the organization Billing page on the API Platform for the current credit balance, purchased credits and credit grants. The Usage Dashboard shows aggregated usage and spend — it is not a real-time balance display. The API Platform Billing page and the ChatGPT billing page are separate products.</p>
           </div>
           <div class="faq-item">
             <h3 class="faq-question">What is the minimum OpenAI API credit purchase?</h3>
-            <p class="faq-answer">As of June 14, 2026, OpenAI's help article lists a $5 minimum purchase and a default initial purchase amount of $10. The trust tier determines the maximum credit balance. Check the live billing page before purchasing because these amounts and account rules may change.</p>
-          </div>
-          <div class="faq-item">
-            <h3 class="faq-question">How long do credits take to appear after purchase?</h3>
-            <p class="faq-answer">OpenAI says there may be a couple of minutes of delay while systems update the credit balance. If the balance still does not update, verify the correct organization, confirm the payment result, and check the API Platform Billing page before retrying requests.</p>
+            <p class="faq-answer">As of June 25, 2026, OpenAI's help article lists a $5 minimum purchase and a default initial purchase amount of $10. The trust tier determines the maximum credit balance. Check the live billing page before purchasing because these amounts and account rules may change.</p>
           </div>
           <div class="faq-item">
             <h3 class="faq-question">Why is my OpenAI API balance showing negative?</h3>
-            <p class="faq-answer">OpenAI's prepaid-billing documentation acknowledges that billing-system processing delays can allow usage to continue briefly after the credit balance is consumed, producing a negative balance. This excess usage may be deducted from the next credit purchase. Not every account experiences this. A negative balance reflects a processing timing gap, not a penalty.</p>
+            <p class="faq-answer">Billing-system processing delays can allow usage to continue briefly after the credit balance is consumed, producing a negative balance that may be deducted from the next credit purchase. This reflects a processing timing gap, not a penalty. Not every account experiences this.</p>
           </div>
           <div class="faq-item">
-            <h3 class="faq-question">Does HTTP 429 always mean I ran out of credits?</h3>
-            <p class="faq-answer">No. OpenAI's error documentation distinguishes between <code>rate_limit_reached</code>, which indicates RPM or TPM limits, and <code>insufficient_quota</code>, which points to billing, quota or account allocation. Inspect <code>error.type</code>, <code>error.code</code> and the error message before deciding whether to recharge or wait for a rate limit window to reset.</p>
-          </div>
-          <div class="faq-item">
-            <h3 class="faq-question">Where can I see my OpenAI API credits?</h3>
-            <p class="faq-answer">Check the organization Billing page on the API Platform for the current credit balance, purchased credits and credit grants. The Usage Dashboard shows aggregated usage and spend — it is not a substitute for application-level request logs. The API Platform Billing page and the ChatGPT billing page are different products — use the API Platform page for API credits.</p>
+            <h3 class="faq-question">Does auto recharge prevent all service interruptions?</h3>
+            <p class="faq-answer">No. Auto recharge helps prevent interruptions from credit exhaustion but does not override rate limits, API key restrictions or organizational spending limits. Rate limits and credit balance are independent controls.</p>
           </div>
           <div class="faq-item">
             <h3 class="faq-question">Can expired OpenAI API credits be refunded?</h3>
@@ -362,7 +341,6 @@ const internalLinks = [
           <div class="cta-buttons">
             <a href="https://app.rutaapi.com/register?lng=en" class="btn btn-primary" target="_blank" rel="noopener">Create API Key</a>
             <a href="https://app.rutaapi.com/pricing" class="btn btn-secondary-dark" target="_blank" rel="noopener">View Live Pricing</a>
-            <a href="https://app.rutaapi.com/register?lng=en" class="btn btn-secondary-dark" target="_blank" rel="noopener">Start with a Small Prepaid Test</a>
           </div>
         </div>
 
@@ -380,7 +358,12 @@ const internalLinks = [
   .content-section { padding: var(--space-12) 0 var(--space-16); background: var(--color-bg-light); }
   .quick-answer { background: var(--color-bg-light-elevated); border-left: 4px solid var(--color-accent-blue); padding: var(--space-6); border-radius: 0 var(--radius-md) var(--radius-md) 0; margin-bottom: var(--space-10); }
   .quick-answer h2 { font-size: 1.125rem; font-weight: 600; color: var(--color-text-light); margin-bottom: var(--space-3); }
-  .quick-answer p { margin: 0; color: var(--color-text-light); line-height: 1.7; }
+  .quick-answer p { margin: 0 0 var(--space-4) 0; color: var(--color-text-light); line-height: 1.7; }
+  .intent-table { border: 1px solid var(--color-border-light); border-radius: var(--radius-md); overflow: hidden; margin-top: var(--space-4); }
+  .intent-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-border-light); font-size: 0.875rem; }
+  .intent-row:last-child { border-bottom: none; }
+  .intent-header { background: var(--color-bg-light-elevated); font-weight: 600; color: var(--color-text-light); }
+  .intent-row:not(.intent-header) { color: var(--color-text-light-muted); }
   h2 { font-size: 1.5rem; font-weight: 600; color: var(--color-text-light); margin: var(--space-10) 0 var(--space-4); padding-top: var(--space-6); border-top: 1px solid var(--color-border-light); }
   h2:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
   p { color: var(--color-text-light-muted); line-height: 1.75; margin-bottom: var(--space-4); }
