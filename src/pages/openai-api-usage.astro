@@ -171,6 +171,8 @@ const internalLinks = [
         <p>
           OpenAI provides a set of organization-level administration endpoints for programmatic
           usage and cost retrieval. All require an Admin API key.
+          The following endpoints are selected examples; additional endpoints may exist —
+          check the current OpenAI API reference for the full list.
         </p>
         <div class="intent-table">
           <div class="intent-row intent-header">
@@ -186,14 +188,14 @@ const internalLinks = [
           </div>
           <div class="intent-row">
             <span><code>GET /v1/organization/usage/images</code></span>
-            <span>Image generation usage (count, size, quality)</span>
+            <span>Image usage counts with optional grouping by model, size and source</span>
           </div>
           <div class="intent-row">
-            <span><code>GET /v1/organization/usage/audio/speech</code></span>
+            <span><code>GET /v1/organization/usage/audio_speeches</code></span>
             <span>Audio speech usage (characters, requests)</span>
           </div>
           <div class="intent-row">
-            <span><code>GET /v1/organization/usage/audio/transcriptions</code></span>
+            <span><code>GET /v1/organization/usage/audio_transcriptions</code></span>
             <span>Audio transcription usage (seconds, requests)</span>
           </div>
           <div class="intent-row">
@@ -205,7 +207,15 @@ const internalLinks = [
             <span>Vector store usage (bytes, requests)</span>
           </div>
           <div class="intent-row">
-            <span><code>GET /v1/organization/usage/code_interpreter/sessions</code></span>
+            <span><code>GET /v1/organization/usage/file_search_calls</code></span>
+            <span>File search call counts</span>
+          </div>
+          <div class="intent-row">
+            <span><code>GET /v1/organization/usage/web_search_calls</code></span>
+            <span>Web search call counts</span>
+          </div>
+          <div class="intent-row">
+            <span><code>GET /v1/organization/usage/code_interpreter_sessions</code></span>
             <span>Code interpreter session counts</span>
           </div>
           <div class="intent-row">
@@ -278,7 +288,7 @@ async function getOrgCosts(startTime, endTime) &#123;
           </div>
           <div class="intent-row">
             <span><code>start_time</code></span>
-            <span>Inclusive Unix timestamp (seconds). Defaults to the start of the current month.</span>
+            <span>Required. Inclusive Unix timestamp (seconds) marking the beginning of the reporting range.</span>
           </div>
           <div class="intent-row">
             <span><code>end_time</code></span>
@@ -286,32 +296,36 @@ async function getOrgCosts(startTime, endTime) &#123;
           </div>
           <div class="intent-row">
             <span><code>group_by</code></span>
-            <span>Supported by capability endpoints (completions, etc.). Values vary by endpoint — check the current API reference. Common values include model, project_id, user_id, api_key_id.</span>
+            <span>Supported by capability endpoints (completions, etc.). Values vary by endpoint. Common values include model, project_id, user_id and api_key_id; the completions endpoint may also support batch and service_tier. Supported values differ per endpoint — check the current OpenAI API reference, especially when sending multiple group_by values.</span>
           </div>
           <div class="intent-row">
             <span><code>bucket_width</code></span>
             <span>Time-bucket granularity for the completions endpoint. Supported values include 1m (one minute), 1h (one hour), 1d (one day).</span>
           </div>
           <div class="intent-row">
-            <span><code>next_page</code></span>
-            <span>Pagination token. When a response includes next_page, pass it to retrieve subsequent results. Incomplete pagination results in under-reported totals.</span>
+            <span><code>page</code></span>
+            <span>Cursor for the next page. Read the next_page value from the response body, then pass it as the page query parameter in the next request.</span>
           </div>
         </div>
 
         <h3>Pagination</h3>
         <pre><code>// Fetch all pages of usage data
-let nextPage = null;
+let page = null;
 let allData = [];
 
 do &#123;
-  const params = new URLSearchParams(&#123; start_time: startTime, end_time: endTime &#125;);
-  if (nextPage) params.set('next_page', nextPage);
+  const params = new URLSearchParams(&#123;
+    start_time: String(startTime),
+    end_time: String(endTime)
+  &#125;);
+  if (page) &#123;
+    params.set('page', page);
+  &#125;
 
   const response = await getOrgUsage(params);
-  allData = allData.concat(response.data || []);
-
-  nextPage = response.next_page || null;
-&#125; while (nextPage);</code></pre>
+  allData = allData.concat(response.data ?? []);
+  page = response.next_page ?? null;
+&#125; while (page);</code></pre>
 
         <h2>Usage API vs Costs API</h2>
         <div class="intent-table">
@@ -391,7 +405,7 @@ do &#123;
           <li><span class="checklist-icon">&#10003;</span><span>Use inclusive start_time and exclusive end_time for API queries</span></li>
           <li><span class="checklist-icon">&#10003;</span><span>Export Activity data for usage investigation</span></li>
           <li><span class="checklist-icon">&#10003;</span><span>Export Cost data for spend reconciliation</span></li>
-          <li><span class="checklist-icon">&#10003;</span><span>Follow all <code>next_page</code> tokens for complete pagination</span></li>
+          <li><span class="checklist-icon">&#10003;</span><span>Follow all <code>next_page</code> cursors and pass them as the page query parameter</span></li>
           <li><span class="checklist-icon">&#10003;</span><span>Use Costs endpoint for financial totals, not token estimates</span></li>
           <li><span class="checklist-icon">&#10003;</span><span>Compare with the <a href="/api-billing-mismatch/">API Billing Mismatch</a> guide when totals still differ</span></li>
         </ul>

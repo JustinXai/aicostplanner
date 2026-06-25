@@ -39,6 +39,24 @@ const BANNED_CLAIMS = [
   'authorized dealer'
 ];
 
+// API path errors that must not appear in built HTML
+const BANNED_API_PATHS = [
+  '/v1/organization/usage/audio/speech',
+  '/v1/organization/usage/audio/transcriptions',
+  '/v1/organization/usage/code_interpreter/sessions',
+  "params.set('next_page'",
+  'params.set("next_page"',
+];
+
+// Required correct strings that must appear in the usage page HTML
+const REQUIRED_USAGE_PATTERNS = [
+  '/v1/organization/usage/audio_speeches',
+  '/v1/organization/usage/audio_transcriptions',
+  '/v1/organization/usage/code_interpreter_sessions',
+  "params.set('page'",
+  'params.set("page"',
+];
+
 // Case-insensitive patterns that need special handling
 const BANNED_PATTERNS = [
   /cheapest/gi,
@@ -64,6 +82,22 @@ async function checkFile(filePath, fileName) {
     const matches = content.match(regex);
     if (matches) {
       fileErrors.push(`Banned claim found: "${claim}" (${matches.length} occurrences)`);
+    }
+  }
+
+  // Check for banned API path errors (usage page specific)
+  for (const badPath of BANNED_API_PATHS) {
+    if (content.includes(badPath)) {
+      fileErrors.push(`Banned API path in HTML: "${badPath}"`);
+    }
+  }
+
+  // For the usage page, verify required correct strings are present
+  if (fileName === 'openai-api-usage/index.html') {
+    for (const reqPattern of REQUIRED_USAGE_PATTERNS) {
+      if (!content.includes(reqPattern)) {
+        fileErrors.push(`Required correct string missing from usage page: "${reqPattern}"`);
+      }
     }
   }
   
